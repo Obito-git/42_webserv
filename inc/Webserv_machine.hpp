@@ -13,6 +13,10 @@ private:
 	std::map<int, Socket *> _client_sockets;
 	std::vector<Server *>	_servers;
 	fd_set					_fd_set;
+
+public:
+	Webserv_machine(/* config file */);
+
 };
 
 
