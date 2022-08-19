@@ -9,6 +9,7 @@
 #include <set>
 #include <map>
 #include <vector>
+#include <fstream>
 
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -16,17 +17,39 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <exception>
+#include <cctype>
+#include <cstdlib>
+
+// Colors
+# define RED "\033[31m"
+# define GREEN "\033[32m"
+# define YELLOW "\033[33m"
+# define RESET "\033[0m"
+
+#define MAX_SERV_KEYWORDS 9
+
+std::vector<std::string>* ft_split(std::string s, char delim);
+std::string ft_read_file(const std::string& path);
 
 enum HTTP_METHOD {
-	GET = 0,
-	POST = 1,
-	DELETE = 2,
-	OTHER = 3
+	GET,
+	POST,
+	DELETE,
+	OTHER
 };
 
+enum SERVER_KEYWORDS {
+	LISTEN,
+	PORT,
+	SERVER_NAME,
+	ERR_PAGE,
+	CLIENT_BODY_SIZE,
+	FILE_UPLOAD,
+	METHODS,
+	INDEX,
+	AUTOINDEX
+};
 
-
-typedef struct location location_t;
 
 
 #endif //WEBSERV_WEBSERV_HPP

@@ -1,0 +1,10 @@
+server {
+	listen localhost
+	port 8080
+	port    8081 8082
+	port 8900
+	server_name test
+	error_page 404 Makefile
+	client_max_body_size 2048
+	file_upload on
+}

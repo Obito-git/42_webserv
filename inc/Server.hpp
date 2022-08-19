@@ -12,48 +12,42 @@ class Socket;
 
 class Server {
 private:
-	std::vector<Socket*>			_sockets;
-	std::set <int>					_ports;
-	//in_addr_t						_host;
-	struct sockaddr_in              _address;
-	std::string						_server_name;
-	std::map<short, std::string>	_error_pages;
-	std::set<Location>		        _locations;
-	Location settings;
-public:
-	const sockaddr_in &getAddress() const;
-	void setAddress(const sockaddr_in &address);
-	void launch();
-
-private:
-	Location						_settings;
-
+	std::vector<Socket*>		_sockets;
+	std::set <int>				_ports;
+	std::string					_ip;
+	struct sockaddr_in			_address;
+	std::vector<std::string>	_server_name;
+	std::vector<Location>		_locations;
+	Location					_settings;
 public:
 	Server();
+	static const std::string    _server_keywords[];
+	void launch();
 
+/******************************************************************************************************************
+ ************************************************** GETTERS *******************************************************
+ *****************************************************************************************************************/
+
+	const std::string &getIp() const;
 	const std::vector<Socket *> &getSockets() const;
+	const std::set<int> &getPorts() const;
+	const sockaddr_in &getAddress() const;
+	const std::vector<std::string> &getServerName() const;
+	Location &getSettings();
+	const std::vector<Location> &getLocations() const;
 
+/******************************************************************************************************************
+ ************************************************** SETTERS *******************************************************
+ *****************************************************************************************************************/
+ 
+	void setLocations(const Location &location);
+	void setIp(const std::string &ip);
 	void setSockets(const std::vector<Socket *> &sockets);
-
-	std::set<int> &getPorts() ;
-
-	void setPorts(const std::set<int> &ports);
-
-	const std::string &getServerName() const;
-
+	void setPorts(const int& port);
+	void setAddress(const sockaddr_in &address);
 	void setServerName(const std::string &serverName);
-
-	const std::map<short, std::string> &getErrorPages() const;
-
-	void setErrorPages(const std::map<short, std::string> &errorPages);
-
-	const std::set<Location> &getLocations() const;
-
-	void setLocations(const std::set<Location> &locations);
-
-	const Location &getSettings() const;
-
 	void setSettings(const Location &settings);
+
 };
 
 

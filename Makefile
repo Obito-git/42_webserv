@@ -3,7 +3,8 @@ CC = c++
 #CFLAGS = -Wall -Werror -Wextra -std=c++98 -g3 -Iinc
 CFLAGS = -std=c++98 -g3 -Iinc
 SRCS_DIR = srcs/
-SRCS = main.cpp Webserv_machine.cpp Socket.cpp Server.cpp Location.cpp
+SRCS = main.cpp Webserv_machine.cpp Socket.cpp Server.cpp Location.cpp ConfigParser.cpp utils.cpp
+
 OBJ/OBJECTS		=	$(patsubst $(SRCS_DIR)%.cpp, obj/%.o, $(SRCS))
 SRCS	:= $(foreach file,$(SRCS),$(SRCS_DIR)$(file))
 
