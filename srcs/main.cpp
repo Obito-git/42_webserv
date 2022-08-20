@@ -30,7 +30,7 @@ int main(int ac, char** av) {
 		std::cout << "No args detected" << std::endl;
 	else if (ac == 2) {
 		Webserv_machine ws(av[1]);
-		//ws.up();
+		ws.up();
 		std::cout << ws.getErrorMsg() << std::endl;
 	} else
 		test_configs(ac, av);

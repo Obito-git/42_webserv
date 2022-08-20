@@ -25,7 +25,17 @@ void Webserv_machine::up() {
 	while (true) {
 		int new_socket;
 		int valread;
-		const char *hello = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!";
+		/***************** TEST ***********************/
+		std::string html_page;
+		try {
+			html_page = ft_read_file("site/index.html");
+		} catch (std::exception& e) {
+			std::cout << "can't open index html" << std::endl;
+		}
+		std::string hello_str = "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: ";
+		hello_str.append(std::to_string(html_page.size()).append("\n\n")).append(html_page);
+		const char* hello = hello_str.data();
+		/**********************************************/
 		int addr_len = sizeof(serv->getAddress());
 		printf("\n+++++++ Waiting for new connection ++++++++\n\n");
 		if ((new_socket = accept((*serv->getSockets().begin())->getSocketFd(),
