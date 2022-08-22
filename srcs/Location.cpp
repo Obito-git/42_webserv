@@ -28,7 +28,7 @@ const std::string &Location::getRoot() const {
 bool Location::isAutoindex() const {
 	return _autoindex;
 }
-const std::vector<std::string> &Location::getIndex() const {
+const std::set<std::string> &Location::getIndex() const {
 	return _index;
 }
 
@@ -74,7 +74,7 @@ void Location::setAutoindex(bool autoindex) {
 }
 
 void Location::setIndex(const std::string &index) {
-	_index.push_back(index);
+	_index.insert(index);
 }
 
 void Location::setFileUpload(bool fileUpload) {

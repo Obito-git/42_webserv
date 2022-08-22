@@ -20,20 +20,23 @@ std::vector<std::string>* ft_split(std::string s, char delim) {
 	return tmp_res;
 }
 
-	std::string ft_read_file(const std::string& path) {
-		std::ifstream in;
-		std::string file_content;
 
-		//trying to open file and checking elementary errors
-		in.open(path, std::ios::in);
-		if (!in.is_open())
-			throw std::runtime_error("Cannot open file\n");
 
-		std::string tmp;
-		while (getline(in, tmp))
+
+std::string ft_read_file(const std::string& path) {
+	std::ifstream in;
+	std::string file_content;
+
+	//trying to open file and checking elementary errors
+	in.open(path, std::ios::in);
+	if (!in.is_open())
+		throw std::runtime_error("Cannot open file\n");
+
+	std::string tmp;
+	while (getline(in, tmp))
 			file_content.append(tmp).append("\n");
-		in.close();
-		return file_content;
-	}
+	in.close();
+	return file_content;
+}
 
 

@@ -10,6 +10,7 @@
 #include <map>
 #include <vector>
 #include <fstream>
+#include <iterator>
 
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -30,6 +31,14 @@
 
 std::vector<std::string>* ft_split(std::string s, char delim);
 std::string ft_read_file(const std::string& path);
+
+template <class InputIterator>
+std::string ft_strjoin(InputIterator begin, InputIterator end, const std::string& delim) {
+	std::string tmp;
+	while (begin != end)
+		tmp.append(std::string(*begin++)).append(delim);
+	return tmp;
+}
 
 enum HTTP_METHOD {
 	GET,

@@ -11,7 +11,7 @@ private:
 	std::string												_location;
 	std::string												_root;
 	bool													_autoindex;
-	std::vector<std::string>								_index;
+	std::set <std::string>									_index;
 	bool													_file_upload;
 	unsigned long											_max_body_size;
 	std::string 											_redirect_from;
@@ -29,7 +29,7 @@ public:
 
 	const std::string &getRoot() const;
 	bool isAutoindex() const;
-	const std::vector<std::string> &getIndex() const;
+	const std::set<std::string> &getIndex() const;
 	bool isFileUpload() const;
 	unsigned long getMaxBodySize() const;
 	const std::map<short, std::pair<std::string, std::string> > &getErrorPages() const;
