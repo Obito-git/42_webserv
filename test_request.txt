@@ -1,0 +1,20 @@
+GET /reference/string/basic_string/substr/ HTTP/1.1
+
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Accept-Encoding: gzip, deflate, br
+Accept-Language: ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7,zh-CN;q=0.6,zh;q=0.5
+Cache-Control: max-age=0
+Connection: keep-alive
+Cookie: __gpi=UID=0000037f0dfbf73e:T=1649110973:RT=1649110973:S=ALNI_MZbYBcMMr66glIhhvTxnCymDeXkyQ; __utmz=62705790.1656370216.30.2.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided); __gsas=ID=97aeb175d922e73c:T=1657670143:S=ALNI_MYXaynOTHlE2ISUzDp5g_Nry4Q48g; __utmc=62705790; tryBeta=; _ga=GA1.1.122675520.1660586124; __utma=62705790.615043534.1633034459.1660863696.1660872317.62; __gads=ID=493d9387c1b6f5e9-22b8ec37ded400bd:T=1633034459:RT=1660872324:S=ALNI_MbE-uMP8T25c2Dhu-PwonPe1O8d7Q; _ga_7TV1TJ13CV=GS1.1.1660952239.9.1.1660952256.0.0.0; FCCDCF=[null,null,null,["CPVj0fYPVj0fYEsABBENCFCoAP_AAH_AAAiQHQpD7T7FbSFCyP55fLsAMAhXRkCEAqQAAASABmABQAKQIAQCkkAQFASgBAACAAAgICZBAQIMCAgACUABQABAAAEEAAAABAAIIAAAgAEAAAAIAAACAIAAAAAIAAAAEAAAmwgAAIIACAAABAAAAAAAAAAAAAAAAgdCgPsLsVtIUJI_Gk8uwAgCFdGQIQCoAAAAIAGYAAAApAgBAKQQBAABKAAAAIAACAgJgEBAggACAABQAFAAEAAAAAAAAAAAAggAACAAQAAAAgAAAIAgAAAAAgAAAAAAACBCAAAggAIAAAAAAAAAAAAAAAAAAACAAA","1~2072.70.89.93.108.122.149.2202.162.167.196.2253.241.2299.259.2357.311.317.323.2373.338.358.415.440.449.2506.2526.482.486.494.495.2568.2571.2575.540.574.2677.817.864.981.1051.1095.1097.1127.1201.1205.1211.1276.1301.1365.1415.1449.1570.1577.1651.1716.1765.1870.1878.1889","6D85FC76-7810-4338-A816-526024B80A5F"],null,null,[]]; FCNEC=[["AKsRol9KFIqYBtDsEuiWmTtcXqJO61mND8DS4y5CzWg44ahDqXyCb1yiY1x0jupAmDjIgDqMl8Twbfgg5lCfCLYu9mHSsb3nhKBg0EvWxS4iS9sC_111jbWQ540_No5X61JQUmtp0DbubKmgD5ts2epW-GOtIu7ecg=="],null,[]]
+Host: legacy.cplusplus.com
+If-Modified-Since: Wed, 04 Dec 2013 11:03:37 GMT
+Referer: https://legacy.cplusplus.com/reference/string/basic_string/find/
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: same-origin
+Sec-Fetch-User: ?1
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36
+sec-ch-ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "macOS"

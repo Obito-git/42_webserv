@@ -20,6 +20,8 @@
 #include <exception>
 #include <cctype>
 #include <cstdlib>
+#include <sstream>
+#include <ctime>
 
 // Colors
 # define RED "\033[31m"
@@ -44,7 +46,8 @@ enum HTTP_METHOD {
 	GET,
 	POST,
 	DELETE,
-	OTHER
+	OTHER,
+	INIT
 };
 
 enum SERVER_KEYWORDS {
