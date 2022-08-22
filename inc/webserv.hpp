@@ -17,16 +17,17 @@
 #include <unistd.h>
 #include <exception>
 
+#include <fstream>
+#include <sstream>
+#include <ctime>
+
+
 enum HTTP_METHOD {
 	GET = 0,
 	POST = 1,
 	DELETE = 2,
-	OTHER = 3
+	OTHER = 3,
+	INIT = 4
 };
-
-
-
-typedef struct location location_t;
-
 
 #endif //WEBSERV_WEBSERV_HPP
