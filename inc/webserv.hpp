@@ -24,11 +24,14 @@
 #include <sstream>
 #include <ctime>
 
+#include "HttpStatusCode.hpp"
+
 // Colors
 # define RED "\033[31m"
 # define GREEN "\033[32m"
 # define YELLOW "\033[33m"
 # define RESET "\033[0m"
+
 
 #define MAX_SERV_KEYWORDS	11
 #define MAX_LOC_KEYWORDS	9

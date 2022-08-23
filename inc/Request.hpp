@@ -50,6 +50,8 @@ class Request
 		void	_fill_up_protocol(std::string line);
 		void	_fill_up_host(std::map<std::string, std::string>::iterator it);
 
+		static std::string generate_error_body(Location &location, short status_code);
+
 
 };
 

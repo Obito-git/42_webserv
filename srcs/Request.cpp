@@ -216,4 +216,22 @@ int	Request::_fill_up_request()
 	return (0);
 }
 
+std::string Request::generate_error_body(Location &location, short status_code) {
+	const std::map<short, std::string>& error_pages = location.getErrorPages();
+	std::stringstream code;
+	code << status_code << " " << HttpStatus::reasonPhrase(status_code);
+	std::map<short, std::string>::const_iterator it = error_pages.find(status_code);
+	if (it != error_pages.end())
+		return (*it).second;
+	std::string s = "<html>\n<head><title>";
+	s.append(code.str());
+	s.append("</title></head>\n<body bgcolor=\"black\">\n<p><img style=\"display: block; margin-left: auto;"
+			 "margin-right: auto;\"src=\"https://http.cat/").append(code.str().substr(0,code.str().find(' ')));
+	s.append("\" alt=\"");
+	s.append(code.str()).append(" width=\"750\" height=\"600\"/></p>\n"
+					"<hr><center style=\"color:white\">okushnir and amyroshn webserv</center>\n</body>\n</html>");
+	location.setErrorPages(status_code, s);
+	return s;
+}
+
 // DELETION

@@ -300,7 +300,7 @@ ConfigParser::parse_errorpages_args(Location& loc, std::vector<std::string> &arg
 		throw ConfigUnexpectedToken(find_unexpected_token(ft_strjoin(args.begin(), args.end(),
 																	 " "),
 														  "error_page [STATUS CODE] [PATH] pattern").data());
-	loc.setErrorPages(static_cast<short>(err_code), std::make_pair(*(args.begin() + 1), err_page));
+	loc.setErrorPages(static_cast<short>(err_code), err_page);
 }
 
 void ConfigParser::parse_bodysize_args(Location& loc, std::vector<std::string> &args) {

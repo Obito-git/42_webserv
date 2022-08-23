@@ -30,6 +30,7 @@ int main(int ac, char** av) {
 		Webserv_machine ws(av[1]);
 		ws.up();
 		std::cout << ws.getErrorMsg() << std::endl;
+		//std::cout << Request::generate_error_body(l, HttpStatus::BadRequest);
 	} else
 		test_configs(ac, av);
 	//Webserv_machine ws(av[1]);

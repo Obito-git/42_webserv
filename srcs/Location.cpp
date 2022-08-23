@@ -48,7 +48,7 @@ unsigned long Location::getMaxBodySize() const {
 const std::set<HTTP_METHOD> &Location::getAllowedMethods() const {
 	return _allowed_methods;
 }
-const std::map<short, std::pair<std::string, std::string> > &Location::getErrorPages() const {
+const std::map<short, std::string> &Location::getErrorPages() const {
 	return _error_pages;
 }
 
@@ -91,7 +91,7 @@ void Location::setAllowedMethods(const HTTP_METHOD allowedMethods) {
 	_allowed_methods.insert(allowedMethods);
 }
 
-void Location::setErrorPages(short status_code, const std::pair<std::string, std::string> &errorPage) {
+void Location::setErrorPages(short status_code, const std::string &errorPage) {
 	_error_pages.insert(std::make_pair(status_code, errorPage));
 }
 

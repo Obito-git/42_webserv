@@ -15,7 +15,7 @@ private:
 	bool													_file_upload;
 	unsigned long											_max_body_size;
 	std::pair<std::string, std::string>						_redirect_to; //<filename, file content>
-	std::map<short, std::pair<std::string, std::string>	>	_error_pages;
+	std::map<short, std::string>							_error_pages;
 	std::vector<std::string>								_cgi_path;
 	std::set<HTTP_METHOD>									_allowed_methods;
 public:
@@ -32,7 +32,7 @@ public:
 	const std::set<std::string> &getIndex() const;
 	bool isFileUpload() const;
 	unsigned long getMaxBodySize() const;
-	const std::map<short, std::pair<std::string, std::string> > &getErrorPages() const;
+	const std::map<short, std::string> &getErrorPages() const;
 	const std::set<HTTP_METHOD> &getAllowedMethods() const;
 	const std::vector<std::string> &getCgiPath() const;
 	const std::string &getLocation() const;
@@ -48,7 +48,7 @@ public:
 	void setIndex(const std::string &index);
 	void setFileUpload(bool fileUpload);
 	void setMaxBodySize(unsigned long maxBodySize);
-	void setErrorPages(short status_code, const std::pair<std::string, std::string> &errorPage);
+	void setErrorPages(short status_code, const std::string &errorPage);
 	void setAllowedMethods(HTTP_METHOD allowedMethods);
 	void setCgiPath(const std::vector<std::string> &cgiPath);
 	void setRedirectTo(const std::pair<std::string, std::string> &redirectTo);
