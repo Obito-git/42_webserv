@@ -50,9 +50,28 @@ void Webserv_machine::up() {
 		char buffer[30000] = {0};
 		valread = read( new_socket , buffer, 30000);
 		(void) valread;
-		printf("%s\n",buffer );
+		std::cout << "********************* SERVER GOT ***************************" << std::endl << buffer << std::endl;
+		std::cout << "************************************************************" << std::endl << std::endl;
+		
+		std::cout << "############################################################" << std::endl;
+		std::cout << "OLYA RESPONSE:" << std::endl;
+		
+		Request request(buffer, this);
+		request._print_message();
+		request._print_dictionary();
+
+		std::cout << std::endl << "request._metod: " << request._method << std::endl;
+		std::cout << "request._url: " << request._url << std::endl;
+		std::cout << "request._http_version: " << request._http_version << std::endl;
+		std::cout << "request._host: " << request._host << std::endl;
+		std::cout << "############################################################" << std::endl;
+		
+		/********************* STOPPER START ***********************/
+		std::string str;
+		std::cin >> str;
+		/******************** STOPPER FINISH *********************/
+		
 		write(new_socket , hello , strlen(hello));
-		printf("------------------Hello message sent-------------------");
 		close(new_socket);
 	}
 }

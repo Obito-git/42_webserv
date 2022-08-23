@@ -3,7 +3,9 @@
 
 #include "parsingRequest.hpp"
 #include "Responce.hpp"
+#include "Webserv_machine.hpp"
 
+class Webserv_machine;
 class Request
 {
 	public:
@@ -16,13 +18,16 @@ class Request
 		std::vector<std::string>			_message;
 		responce							_responce;
 		std::string							_rep;
+		
+		/****** WEBSERV MACHINE ********/
+		Webserv_machine* ws;
 
 		// HeaderRequest	_header;
 		// Body			_request_body;
 
 	public:
 		Request();
-		Request(const char *filename);
+		Request(const char *message, Webserv_machine* webserv);
 		Request(const Request &other);
 		Request& operator=(const Request &other);
 		~Request();

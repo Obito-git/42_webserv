@@ -7,11 +7,10 @@
 #include "webserv.hpp"
 #include "Server.hpp"
 #include "ConfigParser.hpp"
+#include "Request.hpp"
 
 class Webserv_machine {
 private:
-	Webserv_machine();
-
 	std::map<int, Socket *>     _machine_sockets;
 	std::map<int, Socket *>     _client_sockets;
 	std::vector<Server *>	    _servers;

@@ -1,15 +1,17 @@
-#include "../inc/Request.hpp"
+#include "Request.hpp"
 
 Request::Request(): _method(INIT), _url(""), _http_version(""), _host(""),
 			_header(std::map<std::string, std::string>()),
 			_message(std::vector<std::string>()), _responce(responce()) {};
 
 
-Request::Request(const char *filename): _method(INIT), _url(""), _http_version(""), _host(""),
-			_header(std::map<std::string, std::string>()),
-			_message(std::vector<std::string>()), _responce(responce())
+Request::Request(const char *message, Webserv_machine* webserv): _method(INIT), _url(""), _http_version(""), _host(""),
+														   _header(std::map<std::string, std::string>()),
+														   _message(std::vector<std::string>()), _responce(responce()),
+														   ws(webserv)
+														   
 {
-	_read_message(filename);
+	_read_message(message);
 	_make_map_of_headers();
 	_fill_up_request();
 }
