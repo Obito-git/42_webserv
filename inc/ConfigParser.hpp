@@ -37,16 +37,16 @@ private:
 	
 
 	/* parsing args of parameters methods*/
-	void parse_listen_args(Server* s, std::vector<std::string>& args, std::string& file_content);
-	void parse_port_args(Server* s, std::vector<std::string>& args, std::string& file_content);
+	void parse_listen_args(Server* s, std::vector<std::string>& args);
+	void parse_port_args(Server* s, std::vector<std::string>& args);
 	void parse_servername_args(Server* s, std::vector<std::string>& args, std::string& file_content);
-	void parse_errorpages_args(Location& loc, std::vector<std::string>& args, std::string& file_content);
-	void parse_bodysize_args(Location& loc, std::vector<std::string>& args, std::string& file_content);
-	void parse_fileupload_args(Location& loc, std::vector<std::string>& args, std::string& file_content);
-	void parse_methods_args(Location& loc, std::vector<std::string>& args, std::string& file_content);
-	void parse_index_args(Location& loc, std::vector<std::string>& args, std::string& file_content);
-	void parse_autoindex_args(Location& loc, std::vector<std::string>& args, std::string& file_content);
-	void parse_root_args(Location& loc, std::vector<std::string>& args, std::string& file_content);
+	void parse_errorpages_args(Location& loc, std::vector<std::string>& args);
+	void parse_bodysize_args(Location& loc, std::vector<std::string>& args);
+	void parse_fileupload_args(Location& loc, std::vector<std::string>& args);
+	void parse_methods_args(Location& loc, std::vector<std::string>& args);
+	void parse_index_args(Location& loc, std::vector<std::string>& args);
+	void parse_autoindex_args(Location& loc, std::vector<std::string>& args);
+	void parse_root_args(Location& loc, std::vector<std::string>& args);
 	//void parse_return_args(Server* s, std::vector<std::string>& args, std::string& file_content);
 	
 /******************************************************************************************************************

@@ -4,7 +4,7 @@
 
 #include "ConfigParser.hpp"
 
-ConfigParser::ConfigParser(const std::string &path) : _path(path), _line_number(1) {}
+ConfigParser::ConfigParser(const std::string &path) : _line_number(1), _path(path) {}
 
 //getter
 const std::vector<Server *> &ConfigParser::getServers() {
@@ -109,16 +109,16 @@ void ConfigParser::parse_server_block(std::string &file_content, str_iter &it) {
 			args = parse_parameter_args(file_content, it);
 		//filling of server settings
 		switch (keyword_index) {
-			case ::LISTEN: parse_listen_args(s, args,  file_content); break;
-			case ::PORT: parse_port_args(s, args,  file_content); break;
+			case ::LISTEN: parse_listen_args(s, args); break;
+			case ::PORT: parse_port_args(s, args); break;
 			case ::SERVER_NAME: parse_servername_args(s, args,  file_content); break;
-			case ::ERR_PAGE: parse_errorpages_args(s->getDefault(), args,  file_content); break;
-			case ::CLIENT_BODY_SIZE: parse_bodysize_args(s->getDefault(), args,  file_content); break;
-			case ::FILE_UPLOAD: parse_fileupload_args(s->getDefault(), args,  file_content); break;
-			case ::METHODS: parse_methods_args(s->getDefault(), args,  file_content); break;
-			case ::INDEX: parse_index_args(s->getDefault(), args,  file_content); break;
-			case ::AUTOINDEX: parse_autoindex_args(s->getDefault(), args,  file_content); break;
-			case ::ROOT: parse_root_args(s->getDefault(), args, file_content); break;
+			case ::ERR_PAGE: parse_errorpages_args(s->getDefault(), args); break;
+			case ::CLIENT_BODY_SIZE: parse_bodysize_args(s->getDefault(), args); break;
+			case ::FILE_UPLOAD: parse_fileupload_args(s->getDefault(), args); break;
+			case ::METHODS: parse_methods_args(s->getDefault(), args); break;
+			case ::INDEX: parse_index_args(s->getDefault(), args); break;
+			case ::AUTOINDEX: parse_autoindex_args(s->getDefault(), args); break;
+			case ::ROOT: parse_root_args(s->getDefault(), args); break;
 			case ::LOCATION: locations_blocks.push_back(skip_location_block(file_content, it)); break;
 			default: {
 				std::string tmp = "Expected one of\n [";
@@ -182,34 +182,21 @@ void ConfigParser::parse_locations(Server *s, const Location &def, std::vector<s
 			int keyword_index = find_server_keyword(block, it);
 			std::vector<std::string> args = parse_parameter_args(block, it);
 			switch (keyword_index) {
-				case ROOT:
-					parse_root_args(result, args, block);
-					break;
-				case AUTOINDEX:
-					parse_autoindex_args(result, args, block);
-					break;
-				case INDEX:
-					parse_index_args(result, args, block);
-					break;
-				case FILE_UPLOAD:
-					parse_fileupload_args(result, args, block);
-					break;
-				case CLIENT_BODY_SIZE:
-					parse_bodysize_args(result, args, block);
-					break;
-				case ERR_PAGE:
-					parse_errorpages_args(result, args, block);
-					break;
-				case METHODS:
-					parse_methods_args(result, args, block);
-					break;
+				case ROOT: parse_root_args(result, args); break;
+				case AUTOINDEX: parse_autoindex_args(result, args); break;
+				case INDEX: parse_index_args(result, args); break;
+				case FILE_UPLOAD: parse_fileupload_args(result, args); break;
+				case CLIENT_BODY_SIZE: parse_bodysize_args(result, args); break;
+				case ERR_PAGE: parse_errorpages_args(result, args); break;
+				case METHODS: parse_methods_args(result, args); break;
 				default: {
 					std::string tmp = "Expected one of \n[";
 					for (int x = 0; x < MAX_LOC_KEYWORDS; x++) {
 						tmp.append(Location::_location_keywords[x]);
 						x < MAX_LOC_KEYWORDS - 1 ? tmp.append(", ") : tmp.append("]\n in block");
 					}
-					throw ConfigUnexpectedToken(find_unexpected_token(Server::_server_keywords[keyword_index], tmp.data()).data());
+					throw ConfigUnexpectedToken(find_unexpected_token(Server::_server_keywords[keyword_index],
+																	  tmp.data()).data());
 				}
 			}
 			it = skip_comments_and_spaces(block, it);
@@ -252,14 +239,14 @@ int ConfigParser::find_server_keyword(std::string &file_content, str_iter &it) {
 	return y;
 }
 
-void ConfigParser::parse_listen_args(Server *s, std::vector<std::string> &args, std::string &file_content) {
+void ConfigParser::parse_listen_args(Server *s, std::vector<std::string> &args) {
 	if (args.size() != 1)
 		throw ConfigUnexpectedToken(find_unexpected_token(ft_strjoin(args.begin(),
 										 args.end(), " "), "only one ip address/host").data());
 	s->setIp(*args.begin());
 }
 
-void ConfigParser::parse_port_args(Server *s, std::vector<std::string> &args, std::string& file_content) {
+void ConfigParser::parse_port_args(Server *s, std::vector<std::string> &args) {
 	for (std::vector<std::string>::iterator it = args.begin(); it != args.end(); it++) {
 		int port = atoi((*it).data());
 		if ((*it).find_first_not_of("0123456789") != std::string::npos ||
@@ -290,7 +277,7 @@ ConfigParser::parse_servername_args(Server *s, std::vector<std::string> &args, s
 }
 
 void
-ConfigParser::parse_errorpages_args(Location& loc, std::vector<std::string> &args, std::string &file_content) {
+ConfigParser::parse_errorpages_args(Location& loc, std::vector<std::string> &args) {
 	int err_code;
 	std::string err_page;
 
@@ -314,7 +301,7 @@ ConfigParser::parse_errorpages_args(Location& loc, std::vector<std::string> &arg
 	loc.setErrorPages(static_cast<short>(err_code), std::make_pair(*(args.begin() + 1), err_page));
 }
 
-void ConfigParser::parse_bodysize_args(Location& loc, std::vector<std::string> &args, std::string &file_content) {
+void ConfigParser::parse_bodysize_args(Location& loc, std::vector<std::string> &args) {
 	long body_size = atol((*args.begin()).data());
 	if (args.size() != 1 || (*args.begin()).find_first_not_of("0123456789") != std::string::npos || body_size < 0)
 		throw ConfigUnexpectedToken(find_unexpected_token(*args.begin(), "positive number").data());
@@ -322,7 +309,7 @@ void ConfigParser::parse_bodysize_args(Location& loc, std::vector<std::string> &
 }
 
 void
-ConfigParser::parse_fileupload_args(Location& loc, std::vector<std::string> &args, std::string &file_content) {
+ConfigParser::parse_fileupload_args(Location& loc, std::vector<std::string> &args) {
 	std::string str = *args.begin();
 	if (args.size() != 1 || (str != "on" && str != "off"))
 		throw ConfigUnexpectedToken(find_unexpected_token(
@@ -330,8 +317,7 @@ ConfigParser::parse_fileupload_args(Location& loc, std::vector<std::string> &arg
 	loc.setFileUpload(str == "on");
 }
 
-void ConfigParser::parse_methods_args(Location &loc, std::vector<std::string> &args,
-										 std::string &file_content) {
+void ConfigParser::parse_methods_args(Location &loc, std::vector<std::string> &args) {
 	for (std::vector<std::string>::iterator it = args.begin(); it != args.end(); it++) {
 		if (*it == "GET")
 			loc.setAllowedMethods(GET);
@@ -344,12 +330,12 @@ void ConfigParser::parse_methods_args(Location &loc, std::vector<std::string> &a
 	}
 }
 
-void ConfigParser::parse_index_args(Location &loc, std::vector<std::string> &args, std::string &file_content) {
+void ConfigParser::parse_index_args(Location &loc, std::vector<std::string> &args) {
 	for (std::vector<std::string>::iterator it = args.begin(); it != args.end(); it++)
 		loc.setIndex(*it);
 }
 
-void ConfigParser::parse_autoindex_args(Location &loc, std::vector<std::string> &args, std::string &file_content) {
+void ConfigParser::parse_autoindex_args(Location &loc, std::vector<std::string> &args) {
 	std::string str = *args.begin();
 	if (args.size() != 1 || (str != "on" && str != "off"))
 		throw ConfigUnexpectedToken(find_unexpected_token(
@@ -357,7 +343,7 @@ void ConfigParser::parse_autoindex_args(Location &loc, std::vector<std::string> 
 	loc.setAutoindex(str == "on");
 }
 
-void ConfigParser::parse_root_args(Location &loc, std::vector<std::string> &args, std::string &file_content) {
+void ConfigParser::parse_root_args(Location &loc, std::vector<std::string> &args) {
 	if (args.size() != 1)
 		throw ConfigUnexpectedToken(find_unexpected_token(ft_strjoin(args.begin(), args.end(),
 														 " "), "only root directory path").data());

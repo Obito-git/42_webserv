@@ -49,6 +49,7 @@ void Webserv_machine::up() {
 
 		char buffer[30000] = {0};
 		valread = read( new_socket , buffer, 30000);
+		(void) valread;
 		printf("%s\n",buffer );
 		write(new_socket , hello , strlen(hello));
 		printf("------------------Hello message sent-------------------");
