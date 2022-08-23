@@ -2,6 +2,7 @@ server {
 	listen localhost
 	port 8080 1234 8081
 	server_name test
+	root usr/site/www
 	error_page
 	client_max_body_size 2048
 	file_upload on

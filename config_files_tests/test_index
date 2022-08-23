@@ -6,6 +6,7 @@ server {
 	client_max_body_size 2048
 	file_upload on
 	autoindex off
+	root usr/site/www
 	methods POST GET DELETE
 	index                   
 }

@@ -30,6 +30,7 @@ void Webserv_machine::up() {
 	std::string hello_str = "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: ";
 	hello_str.append(std::to_string(html_page.size()).append("\n\n")).append(html_page);
 	const char* hello = hello_str.data();
+	
 	/**********************************************/
 	serv->setAddress(addr);
 	serv->launch();

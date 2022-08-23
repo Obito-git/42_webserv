@@ -7,5 +7,6 @@ test {
 	file_upload on
 	autoindex off
 	methods POST GET DELETE
+	root usr/site/www
 	index index.html index.php
 }

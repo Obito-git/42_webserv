@@ -1,6 +1,7 @@
 server {
 	listen localhost
 	port 8080 1234 8081
+	root usr/site/www
 	server_name test     test1       test2      
 	error_page 404 Makefile
 	client_max_body_size 2048

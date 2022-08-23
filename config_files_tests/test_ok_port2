@@ -2,6 +2,7 @@ server {
 	listen localhost
 	port 8080
 	port    8081 8082
+	root usr/site/www
 	port 8900
 	server_name test
 	error_page 404 Makefile

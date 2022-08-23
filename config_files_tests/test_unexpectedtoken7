@@ -4,6 +4,7 @@ server {
 	server_name test
 	error_page 404 Makefile
 	client_max_body_size 2048
+	root usr/site/www
 	test test
 	file_upload on
 	autoindex off

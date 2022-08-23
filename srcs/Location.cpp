@@ -3,6 +3,11 @@
 //
 
 #include "Location.hpp"
+const std::string Location::_location_keywords[MAX_SERV_KEYWORDS] = {"error_page", "client_max_body_size",
+																	 "file_upload", "methods", "index",
+																	 "autoindex", "root", "return",
+																	 "cgi_path"};
+
 /******************************************************************************************************************
  ************************************** CONSTRUCTORS/DESTRUCTORS **************************************************
  *****************************************************************************************************************/
@@ -46,9 +51,6 @@ const std::set<HTTP_METHOD> &Location::getAllowedMethods() const {
 const std::map<short, std::pair<std::string, std::string> > &Location::getErrorPages() const {
 	return _error_pages;
 }
-const std::string &Location::getRedirectFrom() const {
-	return _redirect_from;
-}
 
 const std::pair<std::string, std::string> &Location::getRedirectTo() const {
 	return _redirect_to;
@@ -91,10 +93,6 @@ void Location::setAllowedMethods(const HTTP_METHOD allowedMethods) {
 
 void Location::setErrorPages(short status_code, const std::pair<std::string, std::string> &errorPage) {
 	_error_pages.insert(std::make_pair(status_code, errorPage));
-}
-
-void Location::setRedirectFrom(const std::string &redirectFrom) {
-	_redirect_from = redirectFrom;
 }
 
 void Location::setRedirectTo(const std::pair<std::string, std::string> &redirectTo) {

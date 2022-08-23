@@ -8,4 +8,5 @@ server {
 	autoindex           off         
 	methods POST GET DELETE
 	index index.html index.php
+	root usr/site/www
 }

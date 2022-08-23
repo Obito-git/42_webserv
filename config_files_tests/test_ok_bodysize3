@@ -3,6 +3,7 @@ server {
 	port 8080 1234 8081
 	server_name test
 	error_page 404 Makefile
+	root usr/site/www
 	client_max_body_size 9223372036854775807321
 	file_upload on
 }

@@ -38,8 +38,7 @@ void ConfigParser::parse_config(const char *path) {
 		it = skip_comments_and_spaces(file_content, it);
 		// if server keyword is found, trying to find { and call parsing block function
 		if (*it != '{')
-			throw ConfigUnexpectedToken(find_unexpected_token(
-					file_content,"{").data());
+			throw ConfigUnexpectedToken(find_unexpected_token(file_content,"{").data());
 		parse_server_block(file_content, ++it);
 		it = skip_comments_and_spaces(file_content, it);
 	}
@@ -98,26 +97,37 @@ std::vector<std::string> ConfigParser::parse_parameter_args(std::string& file_co
 void ConfigParser::parse_server_block(std::string &file_content, str_iter &it) {
 	//creates new server and saves it
 	Server* s = new Server;
+	std::vector<std::string> args;
+	std::vector<std::pair<int, std::string> > locations_blocks;
 	_servers.push_back(s);
 	it = skip_comments_and_spaces(file_content, it);
 	while (*it != '}' && it != file_content.end()) {
 		//trying to find a keyword defined in Server::_server_keywords str array
 		int keyword_index = find_server_keyword(file_content, it);
 		//parsing of arguments of keyword
-		std::vector<std::string> args(parse_parameter_args(file_content, it));
+		if (keyword_index != LOCATION)
+			args = parse_parameter_args(file_content, it);
 		//filling of server settings
 		switch (keyword_index) {
 			case ::LISTEN: parse_listen_args(s, args,  file_content); break;
 			case ::PORT: parse_port_args(s, args,  file_content); break;
 			case ::SERVER_NAME: parse_servername_args(s, args,  file_content); break;
-			case ::ERR_PAGE: parse_errorpages_args(s->getSettings(), args,  file_content); break;
-			case ::CLIENT_BODY_SIZE: parse_bodysize_args(s->getSettings(), args,  file_content); break;
-			case ::FILE_UPLOAD: parse_fileupload_args(s->getSettings(), args,  file_content); break;
-			case ::METHODS: parse_methods_args(s->getSettings(), args,  file_content); break;
-			case ::INDEX: parse_index_args(s->getSettings(), args,  file_content); break;
-			case ::AUTOINDEX: parse_autoindex_args(s->getSettings(), args,  file_content); break;
-			default:
-				;
+			case ::ERR_PAGE: parse_errorpages_args(s->getDefault(), args,  file_content); break;
+			case ::CLIENT_BODY_SIZE: parse_bodysize_args(s->getDefault(), args,  file_content); break;
+			case ::FILE_UPLOAD: parse_fileupload_args(s->getDefault(), args,  file_content); break;
+			case ::METHODS: parse_methods_args(s->getDefault(), args,  file_content); break;
+			case ::INDEX: parse_index_args(s->getDefault(), args,  file_content); break;
+			case ::AUTOINDEX: parse_autoindex_args(s->getDefault(), args,  file_content); break;
+			case ::ROOT: parse_root_args(s->getDefault(), args, file_content); break;
+			case ::LOCATION: locations_blocks.push_back(skip_location_block(file_content, it)); break;
+			default: {
+				std::string tmp = "Expected one of\n [";
+				for (int x = 0; x < MAX_KEYWORDS; x++) {
+					tmp.append(Server::_server_keywords[x]);
+					x < MAX_KEYWORDS - 1 ? tmp.append(", ") : tmp.append("] \nin server block");
+				}
+				throw ConfigUnexpectedToken(find_unexpected_token(file_content,tmp.data()).data());
+			}
 		}
 		it = skip_comments_and_spaces(file_content, it);
 		if (it == file_content.end())
@@ -125,10 +135,90 @@ void ConfigParser::parse_server_block(std::string &file_content, str_iter &it) {
 					file_content, "}").data());
 	}
 	it++;
-	if (s->getIp().empty() || s->getPorts().empty())
+	if (s->getIp().empty() || s->getPorts().empty() || s->getDefault().getRoot().empty())
 		throw ConfigNoRequiredKeywords();
+	parse_locations(s, s->getDefault(), locations_blocks);
 }
 
+std::pair<int, std::string> ConfigParser::skip_location_block(std::string &file_content, ConfigParser::str_iter &it) {
+	std::pair<int, std::string> res = std::make_pair(_line_number, file_content);
+	if (*it == '{')
+		throw ConfigUnexpectedToken(find_unexpected_token(file_content,"location path").data());
+	while (it != file_content.end() && !isspace(*it)) it++;
+	while (isspace(*it) && *it != '\n') it++;
+	if (*it++ != '{')
+		throw ConfigUnexpectedToken(find_unexpected_token(file_content,"{").data());
+	while (it != file_content.end() && *it != '{' && *it != '}') {
+		if (*it == '\n') {
+			_line_number++;
+			it = file_content.erase(file_content.begin(), ++it);
+			continue;
+		}
+		it++;
+	}
+	if (*it == '{')
+		throw ConfigUnexpectedToken(find_unexpected_token(file_content,"You can't have "
+										   "another blocks inside location block. }").data());
+	if (it == file_content.end())
+		throw ConfigUnexpectedToken(find_unexpected_token(file_content,"}").data());
+	it = file_content.erase(file_content.begin(), ++it);
+	return res;
+}
+
+void ConfigParser::parse_locations(Server *s, const Location &def, std::vector<std::pair<int, std::string> > &loc) {
+	for (std::vector<std::pair<int, std::string> >::iterator location = loc.begin(); location != loc.end(); location++) {
+		_line_number = (*location).first;
+		std::string &block = (*location).second;
+		Location result = def;
+		str_iter it = block.begin();
+		while (!isspace(*it)) it++;
+		result.setLocation(block.substr(0, it - block.begin()));
+		it = skip_comments_and_spaces(block, it);
+		it = skip_comments_and_spaces(block, ++it);
+		if (*it == '}')
+			throw ConfigUnexpectedToken(find_unexpected_token(block,"Empty location block "
+																	"detected. Parameters").data());
+		while (it != block.end() && *it != '}') {
+			int keyword_index = find_server_keyword(block, it);
+			std::vector<std::string> args = parse_parameter_args(block, it);
+			switch (keyword_index) {
+				case ROOT:
+					parse_root_args(result, args, block);
+					break;
+				case AUTOINDEX:
+					parse_autoindex_args(result, args, block);
+					break;
+				case INDEX:
+					parse_index_args(result, args, block);
+					break;
+				case FILE_UPLOAD:
+					parse_fileupload_args(result, args, block);
+					break;
+				case CLIENT_BODY_SIZE:
+					parse_bodysize_args(result, args, block);
+					break;
+				case ERR_PAGE:
+					parse_errorpages_args(result, args, block);
+					break;
+				case METHODS:
+					parse_methods_args(result, args, block);
+					break;
+				default: {
+					std::string tmp = "Expected one of \n[";
+					for (int x = 0; x < MAX_LOC_KEYWORDS; x++) {
+						tmp.append(Location::_location_keywords[x]);
+						x < MAX_LOC_KEYWORDS - 1 ? tmp.append(", ") : tmp.append("]\n in block");
+					}
+					throw ConfigUnexpectedToken(find_unexpected_token(Server::_server_keywords[keyword_index], tmp.data()).data());
+				}
+			}
+			it = skip_comments_and_spaces(block, it);
+			if (it == block.end())
+					throw ConfigUnexpectedToken(find_unexpected_token(block, "}").data());
+		}
+		s->setLocations(result.getLocation(), result);
+	}
+}
 
 
 /******************************************************************************************************************
@@ -146,14 +236,14 @@ int ConfigParser::find_server_keyword(std::string &file_content, str_iter &it) {
 		throw ConfigUnexpectedToken(find_unexpected_token(file_content,
 														  "argument after keyword").data());
 	int y;
-	for (y = 0; y < MAX_SERV_KEYWORDS; y++)
+	for (y = 0; y < MAX_KEYWORDS; y++)
 		if (tmp == Server::_server_keywords[y])
 			break;
-	if (y == MAX_SERV_KEYWORDS) {
-		tmp = "Expected one of [";
-		for (int x = 0; x < MAX_SERV_KEYWORDS; x++) {
+	if (y == MAX_KEYWORDS) {
+		tmp = "Expected one of\n [";
+		for (int x = 0; x < MAX_KEYWORDS; x++) {
 			tmp.append(Server::_server_keywords[x]);
-			x < MAX_SERV_KEYWORDS - 1 ? tmp.append(", ") : tmp.append("] in server block");
+			x < MAX_KEYWORDS - 1 ? tmp.append(", ") : tmp.append("]\n in server block");
 		}
 		throw ConfigUnexpectedToken(find_unexpected_token(
 				file_content,tmp.data()).data());
@@ -267,6 +357,16 @@ void ConfigParser::parse_autoindex_args(Location &loc, std::vector<std::string> 
 	loc.setAutoindex(str == "on");
 }
 
+void ConfigParser::parse_root_args(Location &loc, std::vector<std::string> &args, std::string &file_content) {
+	if (args.size() != 1)
+		throw ConfigUnexpectedToken(find_unexpected_token(ft_strjoin(args.begin(), args.end(),
+														 " "), "only root directory path").data());
+	loc.setRoot(*args.begin());
+}
+
+
+
+
 /******************************************************************************************************************
  *********************************************** EXCEPTIONS *******************************************************
  *****************************************************************************************************************/
@@ -285,6 +385,7 @@ const char *ConfigParser::ConfigCriticalError::what() const throw() {
 
 const char *ConfigParser::ConfigNoRequiredKeywords::what() const throw() {
 	return ("Your config must have as least one server block "
-			"with listen and port parameters like:\n"
-			"server {\n\tlisten [IP ADDRESS]\n\tport [PORT]\n}");
+			"with listen, port, root parameters like:\n"
+			"server {\n\tlisten [IP ADDRESS]\n\tport [PORT]\n\troot usr/site/www\n}");
 }
+

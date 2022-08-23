@@ -16,6 +16,8 @@ server {
             	                    
             	                     
                 	port     8080    8081       12000
+                	
+                	root usr/site/www
                 	     
                 	     
                 	         

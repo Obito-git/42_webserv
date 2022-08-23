@@ -7,5 +7,6 @@ server {
 	file_upload on
 	autoindex
 	methods POST GET DELETE
+		root usr/site/www
 	index index.html index.php
 }

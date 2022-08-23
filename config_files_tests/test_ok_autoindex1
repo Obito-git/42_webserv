@@ -5,6 +5,7 @@ server {
 	error_page 404 Makefile
 	client_max_body_size 2048
 	file_upload on
+	root usr/site/www
             	autoindex        on     
 	methods POST GET DELETE
 	index index.html index.php

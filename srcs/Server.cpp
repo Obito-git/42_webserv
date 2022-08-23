@@ -3,10 +3,11 @@
 //
 
 #include "Server.hpp"
-const std::string Server::_server_keywords[MAX_SERV_KEYWORDS] = {"listen", "port","server_name",
+const std::string Server::_server_keywords[MAX_KEYWORDS] = {"listen", "port","server_name",
 																 "error_page","client_max_body_size",
 																 "file_upload","methods", "index", 
-																 "autoindex"};
+																 "autoindex", "root", "location",
+																 "return", "cgi_path"};
 
 Server::Server() {
 }
@@ -39,16 +40,17 @@ const std::vector<std::string> &Server::getServerName() const {
 	return _server_name;
 }
 
-Location &Server::getSettings() {
-	return _settings;
-}
 
 const std::string&Server::getIp() const {
 	return _ip;
 }
 
-const std::vector<Location> &Server::getLocations() const {
+const std::map<std::string, Location> &Server::getLocations() const {
 	return _locations;
+}
+
+Location &Server::getDefault() {
+	return _default;
 }
 
 /******************************************************************************************************************
@@ -76,10 +78,14 @@ void Server::setServerName(const std::string &serverName) {
 	_server_name.push_back(serverName);
 }
 
-void Server::setSettings(const Location &settings) {
-	_settings = settings;
+
+void Server::setLocations(const std::string& path, const Location &location) {
+	_locations.erase(path);
+	_locations.insert(std::make_pair(path, location));
 }
 
-void Server::setLocations(const Location &location) {
-	_locations.push_back(location);
+
+void Server::setDefault(const Location &location) {
+	_default = location;
 }
+

@@ -32,6 +32,9 @@ private:
 	int find_server_keyword(std::string& file_content, str_iter& it);
 	void parse_server_block(std::string& file_content, str_iter& it);
 	std::vector<std::string> parse_parameter_args(std::string &file_content, str_iter &it);
+	std::pair<int, std::string> skip_location_block(std::string &file_content, str_iter &it);
+	void parse_locations(Server *s, const Location &def, std::vector<std::pair<int, std::string> > &loc);	
+	
 
 	/* parsing args of parameters methods*/
 	void parse_listen_args(Server* s, std::vector<std::string>& args, std::string& file_content);
@@ -43,6 +46,7 @@ private:
 	void parse_methods_args(Location& loc, std::vector<std::string>& args, std::string& file_content);
 	void parse_index_args(Location& loc, std::vector<std::string>& args, std::string& file_content);
 	void parse_autoindex_args(Location& loc, std::vector<std::string>& args, std::string& file_content);
+	void parse_root_args(Location& loc, std::vector<std::string>& args, std::string& file_content);
 	//void parse_return_args(Server* s, std::vector<std::string>& args, std::string& file_content);
 	
 /******************************************************************************************************************

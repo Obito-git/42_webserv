@@ -27,7 +27,9 @@
 # define YELLOW "\033[33m"
 # define RESET "\033[0m"
 
-#define MAX_SERV_KEYWORDS 9
+#define MAX_SERV_KEYWORDS	11
+#define MAX_LOC_KEYWORDS	9
+#define MAX_KEYWORDS 13
 
 std::vector<std::string>* ft_split(std::string s, char delim);
 std::string ft_read_file(const std::string& path);
@@ -47,7 +49,7 @@ enum HTTP_METHOD {
 	OTHER
 };
 
-enum SERVER_KEYWORDS {
+enum KEYWORDS {
 	LISTEN,
 	PORT,
 	SERVER_NAME,
@@ -56,8 +58,14 @@ enum SERVER_KEYWORDS {
 	FILE_UPLOAD,
 	METHODS,
 	INDEX,
-	AUTOINDEX
+	AUTOINDEX,
+	ROOT,
+	LOCATION,
+	RETURN,
+	CGI_PATH
 };
+
+
 
 
 

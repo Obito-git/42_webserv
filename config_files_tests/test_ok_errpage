@@ -5,6 +5,7 @@ server {
 	error_page 404 Makefile
 	error_page   505 config_files_tests/test_errpage3    
 	error_page 505      config_files_tests/test_errpage3        
+	root usr/site/www
 	error_page  505  config_files_tests/test_errpage3 
 	client_max_body_size 2048
 	file_upload on

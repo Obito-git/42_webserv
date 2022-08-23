@@ -5,4 +5,5 @@ server {
 	error_page 404 Makefile
 	client_max_body_size             
 	file_upload on
+	root usr/site/www
 }
