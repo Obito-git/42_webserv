@@ -28,7 +28,7 @@ std::string ft_read_file(const std::string& path) {
 	std::string file_content;
 
 	//trying to open file and checking elementary errors
-	in.open(path, std::ios::in);
+	in.open(path.data(), std::ios::in);
 	if (!in.is_open())
 		throw std::runtime_error("Cannot open file\n");
 

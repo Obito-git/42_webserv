@@ -64,9 +64,11 @@ ConfigParser::str_iter ConfigParser::skip_comments_and_spaces(std::string& file_
 }
 
 std::string& ConfigParser::find_unexpected_token(std::string s, const char* token) {
+	std::stringstream sstm;
+	sstm >> _line_number;
 	_error_msg = "Error, unexpected token. ";
 	_error_msg.append(token).append(" expected at line ");
-	_error_msg.append(std::to_string(_line_number)).append(":\n");
+	_error_msg.append(sstm.str().append(":\n"));
 	_error_msg.append(s.find('\n') == std::string::npos ? s :
 					  s.substr(0, s.find('\n')));
 	return _error_msg;
@@ -261,8 +263,8 @@ void
 ConfigParser::parse_servername_args(Server *s, std::vector<std::string> &args, std::string &file_content) {
 	for (std::vector<std::string>::iterator it = args.begin(); it != args.end(); it++) {
 		for (std::vector<Server *>::iterator it_serv = _servers.begin(); it_serv != _servers.end(); it_serv++) {
-			for (std::vector<std::string>::const_iterator it_sname = (*it_serv)->getServerName().cbegin();
-				 it_sname != (*it_serv)->getServerName().cend(); it_sname++) {
+			for (std::vector<std::string>::const_iterator it_sname = (*it_serv)->getServerName().begin();
+				 it_sname != (*it_serv)->getServerName().end(); it_sname++) {
 				if (*it == *it_sname && (*it).empty())
 					throw ConfigUnexpectedToken(find_unexpected_token(file_content,
 									"Can't have 2 servers without server_name").data());

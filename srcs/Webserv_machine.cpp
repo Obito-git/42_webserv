@@ -2,11 +2,13 @@
 // Created by amyroshn on 8/16/22.
 //
 
+#include <cstring>
 #include "Webserv_machine.hpp"
 
 
 
 void Webserv_machine::up() {
+	std::stringstream sstm;
 	if (_servers.empty()) {
 		throw std::runtime_error("Servers empty"); //FIXME
 	}
@@ -28,7 +30,8 @@ void Webserv_machine::up() {
 	}
 	/***************** TEST ***********************/
 	std::string hello_str = "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: ";
-	hello_str.append(std::to_string(html_page.size()).append("\n\n")).append(html_page);
+	sstm << html_page.size();
+	hello_str.append(sstm.str().append("\n\n")).append(html_page);
 	const char* hello = hello_str.data();
 	
 	/**********************************************/

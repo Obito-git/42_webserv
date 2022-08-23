@@ -10,16 +10,14 @@ void test_configs(int ac, char** av) {
 		path.insert(0, "config_files_tests/");
 		Webserv_machine ws(path.data());
 		std::cout << "test=\"" << YELLOW << av[i] << RESET"\" ";
-		if (path.find("_ok") != std::string::npos && ws.getErrorMsg() != "OK")
-			std::cout << RED"KO"RESET;
-		else if (path.find("_ok") != std::string::npos && ws.getErrorMsg() == "OK")
-			std::cout << GREEN"OK"RESET;
-		else if (path.find("_ok") == std::string::npos && ws.getErrorMsg() == "OK")
-			std::cout << RED"KO"RESET;
-		else if (path.find("_ok") == std::string::npos && ws.getErrorMsg() != "OK")
-			std::cout << GREEN"OK"RESET;
+		if ((path.find("_ok") != std::string::npos && ws.getErrorMsg() != "OK")
+			|| (path.find("_ok") == std::string::npos && ws.getErrorMsg() == "OK"))
+			std::cout << RED << "KO" << RESET;
+		else if ((path.find("_ok") != std::string::npos && ws.getErrorMsg() == "OK")
+			|| (path.find("_ok") == std::string::npos && ws.getErrorMsg() != "OK"))
+			std::cout << GREEN << "OK" << RESET;
 		else
-			std::cout << RED"TEST FAILED"RESET;
+			std::cout << RED << "TEST FAILED" << RESET;
 		std::cout << std::endl;
 	}
 	std::cout << std::endl << "--------------------------------" << std::endl;
