@@ -2,13 +2,13 @@
 
 Request::Request(): _method(INIT), _url(""), _http_version(""), _host(""),
 			_header(std::map<std::string, std::string>()),
-			_message(std::vector<std::string>()), _responce(responce()) {};
+			_message(std::vector<std::string>()), _response(response()) {};
 
 
 Request::Request(const char *message, Webserv_machine* webserv):
 _method(INIT), _url(""), _http_version(""), _host(""),
 _header(std::map<std::string, std::string>()),
-_message(std::vector<std::string>()), _responce(responce()), ws(webserv)														   
+_message(std::vector<std::string>()), _response(response()), ws(webserv)														   
 {
 	_read_message(message);
 	_make_map_of_headers();
@@ -32,15 +32,15 @@ Request& Request::operator=(const Request &other)
 
 Request::~Request() {};
 
-// RESPONCE
+// response
 
 std::string	Request::_make_reponce(std::string version, int code, std::string msg)
 {
 	std::stringstream buf;
 
-	_responce._http_version = version;
-	_responce._status_code = code;
-	_responce._status_message = msg;
+	_response._http_version = version;
+	_response._status_code = code;
+	_response._status_message = msg;
 
 	std::time_t now = time(0);
 	tm *gmtm = gmtime(&now);

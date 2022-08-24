@@ -2,7 +2,7 @@
 #define REQUEST_HPP
 
 #include "parsingRequest.hpp"
-#include "Responce.hpp"
+#include "Response.hpp"
 #include "Webserv_machine.hpp"
 
 class Webserv_machine;
@@ -17,7 +17,7 @@ class Request
 		std::string							_content_length;
 		std::map<std::string, std::string> 	_header;
 		std::vector<std::string>			_message;
-		responce							_responce;
+		response							_response;
 		std::string							_rep;
 		
 		/****** WEBSERV MACHINE ********/
