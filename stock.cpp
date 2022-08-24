@@ -8,7 +8,7 @@ Request::Request(): _method(INIT), _url(""), _http_version(""), _host(""),
 Request::Request(const char *message, Webserv_machine* webserv):
 _method(INIT), _url(""), _http_version(""), _host(""),
 _header(std::map<std::string, std::string>()),
-_message(std::vector<std::string>()), _responce(responce()), ws(webserv)														   
+_message(std::vector<std::string>()), _responce(responce()), ws(webserv)									   
 {
 	_read_message(message);
 	_make_map_of_headers();
@@ -62,14 +62,12 @@ int	Request::_check_first_line()
 	size_t pos = (_message[0]).find(" ");
 	if (pos == 0 || pos == std::string::npos)
 	{
-		std::cout << "1" << std::endl;
 		_rep = _make_reponce("HTTP/1.0", 400, "Bad Request");
 		return (1);
 	}
 	elem = (_message[0]).substr(0,pos);
 	if (elem.compare("GET") && elem.compare("POST") && elem.compare("DELETE"))
 	{
-		std::cout << "2" << std::endl;
 		_rep = _make_reponce("HTTP/1.1", 405, "Method Not Allowed");
 		return (1);
 	}
@@ -78,7 +76,6 @@ int	Request::_check_first_line()
 	if (elem.compare("HTTP/1.0") && elem.compare("HTTP/1.1") &&
 			elem.compare("HTTP/2") && elem.compare("HTTP/3"))
 	{
-		std::cout << "3" << std::endl;
 		_rep = _make_reponce("HTTP/1.0", 400, "Bad Request");
 		return (1);
 	}
@@ -92,7 +89,7 @@ int	Request::_check_first_line()
 	return (0);
 }
 
-int	Request::_check_second_line()
+int	Request::_check_second_line() // \n ???
 {
 	if (_message[1][0] == '\t' || _message[1][0] == 0
 		|| _message[1][0] == '\v' || _message[1][0] == '\f' || _message[1][0] == '\r' || _message[1][0] == ' ')
@@ -103,15 +100,6 @@ int	Request::_check_second_line()
 	return (0);
 }
 
-void	Request::_check_line(std::string line)
-{
-	if (!line.empty())
-	{
-		line.pop_back();
-		_message.push_back(line);
-	}
-}
-
 
 // HELPERS PARSING
 void	Request::_read_message(const char * message)
@@ -120,17 +108,22 @@ void	Request::_read_message(const char * message)
 	std::string		line;
 
 	std::getline(text, line);
-	_check_line(line);
+	line.erase(line.end()-1);
+	_message.push_back(line);
+	std::cout << "line: " << line << std::endl;
 	if (!_check_first_line())
 	{
 		std::getline(text, line);
-		_check_line(line);
+		line.pop_back();
+		_message.push_back(line);
+		std::cout << "line: " << line << std::endl;
 		if (!_check_second_line())
 		{
 			while (!text.eof())
 			{
 				std::getline(text, line);
-				_check_line(line);
+				line.pop_back();
+				_message.push_back(line);
 			}
 		}
 		else

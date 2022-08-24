@@ -14,6 +14,7 @@ class Request
 		std::string							_url;
 		std::string							_http_version;
 		std::string							_host;
+		std::string							_content_length;
 		std::map<std::string, std::string> 	_header;
 		std::vector<std::string>			_message;
 		responce							_responce;
@@ -32,7 +33,8 @@ class Request
 		Request& operator=(const Request &other);
 		~Request();
 
-		void	_read_message(const char * filename);
+		void	_read_message(const char *message);
+		void	_check_line(std::string line);
 		int		_check_first_line();
 		int		_check_second_line();
 		void	_make_map_of_headers();
@@ -45,6 +47,7 @@ class Request
 		// fill_up_request
 
 		int		_fill_up_request();
+		int		_fill_up_content_length();
 		void	_fill_up_method(std::string elem);
 		void	_fill_up_url(std::string line);
 		void	_fill_up_protocol(std::string line);

@@ -10,8 +10,10 @@
 #include <map>
 #include <vector>
 #include <fstream>
+#include <istream>
 #include <iterator>
 #include <sstream>
+#include <algorithm>
 
 #include <sys/socket.h>
 #include <netinet/in.h>
