@@ -39,7 +39,7 @@ private:
 	/* parsing args of parameters methods*/
 	void parse_listen_args(Server* s, std::vector<std::string>& args);
 	void parse_port_args(Server* s, std::vector<std::string>& args);
-	void parse_servername_args(Server* s, std::vector<std::string>& args, std::string& file_content);
+	void parse_servername_args(Server* s, std::vector<std::string>& args);
 	void parse_errorpages_args(Location& loc, std::vector<std::string>& args);
 	void parse_bodysize_args(Location& loc, std::vector<std::string>& args);
 	void parse_fileupload_args(Location& loc, std::vector<std::string>& args);

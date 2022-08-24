@@ -1,0 +1,43 @@
+server {
+    location / {
+        root /sample/
+    }
+    
+    location / {
+        root /sample2
+    }
+	listen localhost
+	port 8080 8081 12000
+	server_name test
+	error_page 404 Makefile
+	root usr/site/www
+	client_max_body_size 2048
+	file_upload on
+	autoindex on
+	methods POST GET DELETE
+	index index.html index.php
+	
+	location . {
+	    root /sample3
+	}
+}
+
+server {
+    location / {
+        root /server2_sample
+    }
+	listen test.com
+	port 8080 9000
+	server_name test_serv2
+	error_page 404 Makefile
+	root usr/site2/www
+	client_max_body_size 2048
+	file_upload on
+	autoindex on
+	methods POST GET DELETE
+	index index.html index.php
+	
+	location . {
+	    root /sample3_serv2
+	}
+}

@@ -28,7 +28,7 @@ void ConfigParser::parse_config(const char *path) {
 		throw ConfigCriticalError("Cannot open config file\n");
 	}
 	//will read all file_content and delete already wrote part from file_content
-	for (it = file_content.begin(); file_content.length() && it != file_content.end(); it++) {
+	for (it = file_content.begin(); file_content.length() && it != file_content.end();) {
 		//trying to find server block
 		it = skip_comments_and_spaces(file_content, it);
 		if (file_content.find("server") != 0)
@@ -53,14 +53,7 @@ ConfigParser::str_iter ConfigParser::skip_comments_and_spaces(std::string& file_
 			_line_number++;
 		it++;
 	}
-	//return file_content.begin() == it ? it : file_content.erase(file_content.begin(), it);
-	if (file_content.begin() == it)
-		return it;
-	else if (it == file_content.end()) {
-		file_content.clear();
-		return file_content.end();
-	}
-	return file_content.erase(file_content.begin(), it);
+	return file_content.begin() == it ? it : file_content.erase(file_content.begin(), it);
 }
 
 std::string& ConfigParser::find_unexpected_token(std::string s, const char* token) {
@@ -113,7 +106,7 @@ void ConfigParser::parse_server_block(std::string &file_content, str_iter &it) {
 		switch (keyword_index) {
 			case ::LISTEN: parse_listen_args(s, args); break;
 			case ::PORT: parse_port_args(s, args); break;
-			case ::SERVER_NAME: parse_servername_args(s, args,  file_content); break;
+			case ::SERVER_NAME: parse_servername_args(s, args); break;
 			case ::ERR_PAGE: parse_errorpages_args(s->getDefault(), args); break;
 			case ::CLIENT_BODY_SIZE: parse_bodysize_args(s->getDefault(), args); break;
 			case ::FILE_UPLOAD: parse_fileupload_args(s->getDefault(), args); break;
@@ -260,22 +253,23 @@ void ConfigParser::parse_port_args(Server *s, std::vector<std::string> &args) {
 }
 
 void
-ConfigParser::parse_servername_args(Server *s, std::vector<std::string> &args, std::string &file_content) {
+ConfigParser::parse_servername_args(Server *s, std::vector<std::string> &args) {
 	for (std::vector<std::string>::iterator it = args.begin(); it != args.end(); it++) {
 		for (std::vector<Server *>::iterator it_serv = _servers.begin(); it_serv != _servers.end(); it_serv++) {
 			for (std::vector<std::string>::const_iterator it_sname = (*it_serv)->getServerName().begin();
 				 it_sname != (*it_serv)->getServerName().end(); it_sname++) {
 				if (*it == *it_sname && (*it).empty())
-					throw ConfigUnexpectedToken(find_unexpected_token(file_content,
+					throw ConfigUnexpectedToken(find_unexpected_token(*it,
 									"Can't have 2 servers without server_name").data());
 				else if (*it == *it_sname)
 					throw ConfigUnexpectedToken(find_unexpected_token(
-							file_content,"Server is already exist."
+							*it,"Server is already exist."
 										 " Uniq server_name").data());
-				s->setServerName(*it);
 			}
 		}
+		s->setServerName(*it);
 	}
+	
 }
 
 void
