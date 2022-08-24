@@ -7,41 +7,45 @@
 #include "webserv.hpp"
 #include "Server.hpp"
 #include "ConfigParser.hpp"
-#include "Request.hpp"
+#include "Socket.hpp"
+
+class Socket;
+class Server;
 
 class Webserv_machine {
 private:
-	std::map<int, Socket *>     _machine_sockets;
-	std::map<int, Socket *>     _client_sockets;
+	std::map<int, Socket *>     _machine_sockets; // <socket_fd, socket>
 	std::vector<Server *>	    _servers;
 	std::string 				_error_msg;
-	fd_set				    	_fd_set;
+	fd_set				    	_server_fd_set;
 
 public:
 	/*      construct / destruct        */
 	Webserv_machine(const char *path);
-	
+
+	virtual ~Webserv_machine();
+
 	void up();
+	
+private:
+	void run_listening_sockets();
+public:
+	
 
 /******************************************************************************************************************
  ************************************************** GETTERS *******************************************************
  *****************************************************************************************************************/
 
 	const std::map<int, Socket *> &getMachineSockets() const;
-	const std::map<int, Socket *> &getClientSockets() const;
 	const std::vector<Server *> &getServers() const;
 	const std::string &getErrorMsg() const;
-	const fd_set &getFdSet() const;
 	
 /******************************************************************************************************************
  ************************************************** SETTERS *******************************************************
  *****************************************************************************************************************/
 
-	void setMachineSockets(int fd, Socket *socket);
-	void setClientSockets(int fd, Socket *socket);
+	void setMachineSockets(int port, Socket *socket);
 	void setServers(Server *server);
-	void setErrorMsg(const std::string &errorMsg);
-	void setFdSet(const fd_set &fdSet);
 
 };
 

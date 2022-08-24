@@ -12,14 +12,6 @@ const std::string Server::_server_keywords[MAX_KEYWORDS] = {"listen", "port","se
 Server::Server() {
 }
 
-void Server::launch() {
-	Socket *s = new Socket();
-	s->setPort(*_ports.begin());
-	s->setAddress(_address);
-	_sockets.push_back(s);
-	s->open();
-}
-
 /******************************************************************************************************************
  ************************************************** GETTERS *******************************************************
  *****************************************************************************************************************/
@@ -31,9 +23,6 @@ const std::vector<Socket *> &Server::getSockets() const {
 
 const std::set<int> &Server::getPorts() const {
 	return _ports;
-}
-const sockaddr_in &Server::getAddress() const {
-	return _address;
 }
 
 const std::vector<std::string> &Server::getServerName() const {
@@ -68,10 +57,6 @@ void Server::setSockets(const std::vector<Socket *> &sockets) {
 
 void Server::setPorts(const int& port) {
 	_ports.insert(port);
-}
-
-void Server::setAddress(const sockaddr_in &address) {
-	_address = address;
 }
 
 void Server::setServerName(const std::string &serverName) {

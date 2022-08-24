@@ -19,12 +19,15 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <unistd.h>
 #include <exception>
 #include <cctype>
 #include <cstdlib>
 #include <sstream>
 #include <ctime>
+#include <unistd.h>
+#include <fcntl.h>
 
 #include "HttpStatusCode.hpp"
 
@@ -38,6 +41,7 @@
 #define MAX_SERV_KEYWORDS	11
 #define MAX_LOC_KEYWORDS	9
 #define MAX_KEYWORDS 13
+#define BUF_SIZE 65535
 
 std::vector<std::string>* ft_split(std::string s, char delim);
 std::string ft_read_file(const std::string& path);

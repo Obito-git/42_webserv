@@ -26,9 +26,19 @@ std::vector<std::string>* ft_split(std::string s, char delim) {
 std::string ft_read_file(const std::string& path) {
 	std::ifstream in;
 	std::string file_content;
+	struct stat s;
+	bool error = false;
+	if (stat(path.data(), &s) == 0) {
+		if (s.st_mode & S_IFDIR)
+			error = true;
+		else if(!(s.st_mode & S_IFREG))
+			error = true;
+	} else
+		error = true;
 
 	//trying to open file and checking elementary errors
-	in.open(path.data(), std::ios::in);
+	if (!error)
+		in.open(path.data(), std::ios::in);
 	if (!in.is_open())
 		throw std::runtime_error("Cannot open file\n");
 

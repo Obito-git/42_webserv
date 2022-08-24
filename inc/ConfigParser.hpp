@@ -7,6 +7,8 @@
 #include "webserv.hpp"
 #include "Server.hpp"
 
+class Server;
+struct Location;
 
 class ConfigParser {
 private:

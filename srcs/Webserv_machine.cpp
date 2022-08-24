@@ -8,75 +8,111 @@
 
 
 void Webserv_machine::up() {
-	std::stringstream sstm;
 	if (_servers.empty()) {
 		throw std::runtime_error("Servers empty"); //FIXME
 	}
-	Server *serv = *_servers.begin();
+	std::map<int, Socket *>     clients_to_read;
+	std::map<int, Socket *>     clients_to_write;
+	run_listening_sockets();
+	int max_fd_number = (--_machine_sockets.end())->first;
 	
-	/* FIX THIS PART */
-	struct sockaddr_in			addr;
-	addr.sin_family = AF_INET;
-	addr.sin_addr.s_addr = INADDR_ANY;
-	addr.sin_port = htons(*serv->getPorts().begin());
-	memset(addr.sin_zero, '\0', sizeof addr.sin_zero);
-	/************************/
+	while (42) {
+		std::map<int, Socket *>::iterator it;
+		fd_set read_set;
+		fd_set write_set;
+		int select_status = 0;
+		
+		
+		do {
+			memcpy(&read_set, &_server_fd_set, sizeof(_server_fd_set));
+			FD_ZERO(&write_set);
+			for (it = clients_to_write.begin(); it != clients_to_write.end(); it++)
+				FD_SET(it->first, &write_set);
+			std::cout << "Waiting for connections" << std::endl;
+		} while ((select_status = select(max_fd_number + 1, &read_set, &write_set, NULL, NULL)) == 0);
 
-	std::string html_page;
-	try {
-		html_page = ft_read_file("site/index.html");
-	} catch (std::exception& e) {
-		std::cout << "can't open index html" << std::endl;
-	}
-	/***************** TEST ***********************/
-	std::string hello_str = "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: ";
-	sstm << html_page.size();
-	hello_str.append(sstm.str().append("\n\n")).append(html_page);
-	const char* hello = hello_str.data();
-	
-	/**********************************************/
-	serv->setAddress(addr);
-	serv->launch();
-	while (true) {
-		int new_socket;
-		int valread;
-		int addr_len = sizeof(serv->getAddress());
-		printf("\n+++++++ Waiting for new connection ++++++++\n\n");
-		if ((new_socket = accept((*serv->getSockets().begin())->getSocketFd(),
-								 (struct sockaddr *)&serv->getAddress(),
-										 (socklen_t*)&addr_len))<0)
-		{
-			perror("In accept");
-			exit(EXIT_FAILURE);
+		//FIXME dont need exit
+		if (select_status == -1) {
+			std::cout << "Select error" << std::endl;
+			exit(1);
 		}
 
-		char buffer[30000] = {0};
-		valread = read( new_socket , buffer, 30000);
-		(void) valread;
-		std::cout << "********************* SERVER GOT ***************************" << std::endl << buffer << std::endl;
-		std::cout << "************************************************************" << std::endl << std::endl;
+		//trying to send answer
+		for (it = clients_to_write.begin(); select_status && it != clients_to_write.end(); it++) {
+			if (FD_ISSET(it->first, &write_set)) {
+				try {
+					if (it->second->answer()) {
+						clients_to_write.erase(it);
+						it = clients_to_write.end();
+					}
+				} catch (std::exception& e){
+					std::cout << e.what() << std::endl;
+					it->second->close();
+					FD_CLR(it->first, &_server_fd_set);
+					FD_CLR(it->first, &read_set);
+					FD_CLR(it->first, &write_set);
+					clients_to_read.erase(it);
+					clients_to_write.erase(it);
+				}
+				select_status = 0;
+				break;
+			}
+		}
 		
-		std::cout << "############################################################" << std::endl;
-		std::cout << "OLYA RESPONSE:" << std::endl;
+		// checking events on reading sockets
+		for (it = clients_to_read.begin(); select_status && it != clients_to_read.end(); it++) {
+			if (FD_ISSET(it->first, &read_set)) {
+				try {
+					if (it->second->process_msg(this)) {
+						clients_to_write.insert(*it);		
+						//FIXME need to delete from to_read?
+					}
+				} catch (std::exception& e) {
+					std::cout << e.what() << std::endl;
+					FD_CLR(it->first, &_server_fd_set);
+					FD_CLR(it->first, &read_set);
+					it->second->close();
+					it = clients_to_read.begin();
+					clients_to_read.erase(it->first);
+				}
+				select_status = 0;
+				break;
+			}
+		}
 		
-		Request request(buffer, this);
-		request._print_message();
-		request._print_dictionary();
-
-		std::cout << std::endl << "request._metod: " << request._method << std::endl;
-		std::cout << "request._url: " << request._url << std::endl;
-		std::cout << "request._http_version: " << request._http_version << std::endl;
-		std::cout << "request._host: " << request._host << std::endl;
-		std::cout << "############################################################" << std::endl;
-		
-		/********************* STOPPER START ***********************/
-		std::string str;
-		std::cin >> str;
-		/******************** STOPPER FINISH *********************/
-		
-		write(new_socket , hello , strlen(hello));
-		close(new_socket);
+		//checking is it new connection or not
+		for (it = _machine_sockets.begin(); select_status && it != _machine_sockets.end(); it++) {
+			if (FD_ISSET(it->first, &read_set)) {
+				std::cout << "new connection on " << it->second->getPort() << std::endl;
+				Socket *client = it->second->accept_connection(); //FIXME TRY CATCH
+				clients_to_read.insert(std::make_pair(client->getSocketFd(), client));
+				FD_SET(client->getSocketFd(), &_server_fd_set);
+				if (client->getSocketFd() > max_fd_number)
+					max_fd_number = client->getSocketFd();
+				std::cout << client->getSocketFd() << " is connected" << std::endl;
+				select_status = 0;
+				break;
+			}
+		}
 	}
+}
+
+void Webserv_machine::run_listening_sockets() {
+	FD_ZERO(&_server_fd_set);
+	for (std::vector<Server *>::iterator serv = _servers.begin(); serv != _servers.end(); serv++) {
+		for (std::set<int>::iterator port = (*serv)->getPorts().begin(); port != (*serv)->getPorts().end(); port++) {
+			std::map<int, Socket *>::iterator existing_socket = _machine_sockets.begin();
+			for (; existing_socket != _machine_sockets.end() && (*existing_socket).second->getPort() != *port;
+				existing_socket++);
+			if (existing_socket == _machine_sockets.end()) {
+				Socket *sock = new Socket(*port);
+				sock->open(); //FIXME NEED TRY CATCH
+				_machine_sockets.insert(std::make_pair(sock->getSocketFd(), sock));
+				FD_SET(sock->getSocketFd(), &_server_fd_set);
+			}
+		}
+	}
+
 }
 
 /******************************************************************************************************************
@@ -103,10 +139,6 @@ const std::map<int, Socket *> &Webserv_machine::getMachineSockets() const {
 	return _machine_sockets;
 }
 
-const std::map<int, Socket *> &Webserv_machine::getClientSockets() const {
-	return _client_sockets;
-}
-
 const std::vector<Server *> &Webserv_machine::getServers() const {
 	return _servers;
 }
@@ -115,31 +147,27 @@ const std::string &Webserv_machine::getErrorMsg() const {
 	return _error_msg;
 }
 
-const fd_set &Webserv_machine::getFdSet() const {
-	return _fd_set;
-}
-
 /******************************************************************************************************************
  ************************************************** SETTERS *******************************************************
  *****************************************************************************************************************/
 
-void Webserv_machine::setMachineSockets(int fd, Socket *socket) {
-	_machine_sockets.insert(std::make_pair(fd, socket));
+void Webserv_machine::setMachineSockets(int port, Socket *socket) {
+	_machine_sockets.insert(std::make_pair(port, socket));
 	
-}
-void Webserv_machine::setClientSockets(int fd, Socket *socket) {
-	_client_sockets.insert(std::make_pair(fd, socket));	
 }
 
 void Webserv_machine::setServers(Server *server) {
 	_servers.push_back(server);
 }
 
-void Webserv_machine::setErrorMsg(const std::string &errorMsg) {
-	_error_msg = errorMsg;
+Webserv_machine::~Webserv_machine() {
+	std::map<int, Socket *>::iterator it = _machine_sockets.begin();
+	while (it != _machine_sockets.end()) {
+		it->second->close();
+		it++;
+	}
+
 }
 
-void Webserv_machine::setFdSet(const fd_set &fdSet) {
-	_fd_set = fdSet;
-}
+
 

@@ -4,6 +4,7 @@
 #include "parsingRequest.hpp"
 #include "Response.hpp"
 #include "Webserv_machine.hpp"
+#include "Location.hpp"
 
 class Webserv_machine;
 class Request
