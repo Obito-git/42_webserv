@@ -1,9 +1,9 @@
-#ifndef RESPONCE_HPP
-#define RESPONCE_HPP
+#ifndef RESPONSE_HPP
+#define RESPONSE_HPP
 
 #include "webserv.hpp"
 
-struct responce
+struct response
 {
 	std::string		_http_version;
 	int				_status_code;

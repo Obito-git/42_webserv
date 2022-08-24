@@ -1,15 +1,14 @@
-#include "Request.hpp"
+#include "../inc/Request.hpp"
 
 Request::Request(): _method(INIT), _url(""), _http_version(""), _host(""),
 			_header(std::map<std::string, std::string>()),
-			_message(std::vector<std::string>()), _responce(responce()) {};
+			_message(std::vector<std::string>()), _response(response()) {};
 
 
-Request::Request(const char *message, Webserv_machine* webserv): _method(INIT), _url(""), _http_version(""), _host(""),
-														   _header(std::map<std::string, std::string>()),
-														   _message(std::vector<std::string>()), _responce(responce()),
-														   ws(webserv)
-														   
+Request::Request(const char *message, Webserv_machine* webserv):
+_method(INIT), _url(""), _http_version(""), _host(""),
+_header(std::map<std::string, std::string>()),
+_message(std::vector<std::string>()), _response(response()), ws(webserv)														   
 {
 	_read_message(message);
 	_make_map_of_headers();
@@ -33,15 +32,15 @@ Request& Request::operator=(const Request &other)
 
 Request::~Request() {};
 
-// RESPONCE
+// response
 
 std::string	Request::_make_reponce(std::string version, int code, std::string msg)
 {
 	std::stringstream buf;
 
-	_responce._http_version = version;
-	_responce._status_code = code;
-	_responce._status_message = msg;
+	_response._http_version = version;
+	_response._status_code = code;
+	_response._status_message = msg;
 
 	std::time_t now = time(0);
 	tm *gmtm = gmtime(&now);
@@ -63,12 +62,14 @@ int	Request::_check_first_line()
 	size_t pos = (_message[0]).find(" ");
 	if (pos == 0 || pos == std::string::npos)
 	{
+		std::cout << "1" << std::endl;
 		_rep = _make_reponce("HTTP/1.0", 400, "Bad Request");
 		return (1);
 	}
 	elem = (_message[0]).substr(0,pos);
 	if (elem.compare("GET") && elem.compare("POST") && elem.compare("DELETE"))
 	{
+		std::cout << "2" << std::endl;
 		_rep = _make_reponce("HTTP/1.1", 405, "Method Not Allowed");
 		return (1);
 	}
@@ -77,13 +78,21 @@ int	Request::_check_first_line()
 	if (elem.compare("HTTP/1.0") && elem.compare("HTTP/1.1") &&
 			elem.compare("HTTP/2") && elem.compare("HTTP/3"))
 	{
+		std::cout << "3" << std::endl;
 		_rep = _make_reponce("HTTP/1.0", 400, "Bad Request");
+		return (1);
+	}
+	pos = (_message[0]).find(" ");
+	size_t pos1 = (_message[0]).find_last_of(" ");
+	if (pos >= pos1)
+	{
+		_rep = _make_reponce("HTTP/1.0", 404, "Not Found");
 		return (1);
 	}
 	return (0);
 }
 
-int	Request::_check_second_line() // \n ???
+int	Request::_check_second_line()
 {
 	if (_message[1][0] == '\t' || _message[1][0] == 0
 		|| _message[1][0] == '\v' || _message[1][0] == '\f' || _message[1][0] == '\r' || _message[1][0] == ' ')
@@ -94,26 +103,34 @@ int	Request::_check_second_line() // \n ???
 	return (0);
 }
 
+void	Request::_check_line(std::string line)
+{
+	if (!line.empty())
+	{
+		line.pop_back();
+		_message.push_back(line);
+	}
+}
+
 
 // HELPERS PARSING
-void	Request::_read_message(const char * filename)
+void	Request::_read_message(const char * message)
 {
-	std::ifstream	text;
+	std::istringstream text(message);
 	std::string		line;
 
-	text.open(filename, std::ifstream::in);
 	std::getline(text, line);
-	_message.push_back(line);
+	_check_line(line);
 	if (!_check_first_line())
 	{
 		std::getline(text, line);
-		_message.push_back(line);
+		_check_line(line);
 		if (!_check_second_line())
 		{
 			while (!text.eof())
 			{
 				std::getline(text, line);
-				_message.push_back(line);
+				_check_line(line);
 			}
 		}
 		else
@@ -121,7 +138,6 @@ void	Request::_read_message(const char * filename)
 	}
 	else
 		std::cout << _rep;
-	text.close();
 }
 
 // MAKE MAP OF HEADERS
@@ -199,6 +215,20 @@ void	Request::_fill_up_host(std::map<std::string, std::string>::iterator it)
 	this->_host = (*it).second;
 }
 
+int	Request::_fill_up_content_length()
+{
+	std::map<std::string, std::string>::iterator it;
+	it = _header.find("Content-Length");
+	if (it != _header.end())
+		this->_content_length = (*it).second;
+	else
+	{
+		_rep = _make_reponce("HTTP/1.0", 411, "Length Required");
+		return (1);
+	}
+	return (0);
+}
+
 int	Request::_fill_up_request()
 {
 	std::string elem;
@@ -211,6 +241,10 @@ int	Request::_fill_up_request()
 	it = _header.find("Host");
 	if (it != _header.end())
 		_fill_up_host(it);
+	if (_method == POST)
+	{
+		_fill_up_content_length();
+	}
 	// else
 	// ?on fais quoi? erreur ou on mis le host par default?
 	return (0);

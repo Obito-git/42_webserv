@@ -1,6 +1,6 @@
 #include "../inc/webserv.hpp"
 #include "../inc/Request.hpp"
-#include "../inc/Responce.hpp"
+#include "../inc/response.hpp"
 
 int	main(int argc, char **argv)
 {

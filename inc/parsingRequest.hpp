@@ -26,12 +26,12 @@ struct message
 // 	std::string			autorization;
 // };
 
-// struct HeaderResponce
+// struct Headerresponse
 // {
 // 	std::string			cache_control;
 // 	std::string			content_type;
 // 	std::string			content_disposition;
-// 	std::string			location_responce;
+// 	std::string			location_response;
 // 	std::string			set_cookie;
 // 	std::string			www_authenticate;
 // 	std::string			content_encoding;

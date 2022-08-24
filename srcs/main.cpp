@@ -1,7 +1,7 @@
 //
 // Created by amyroshn on 8/16/22.
 //
-#include "Webserv_machine.hpp"
+#include "../inc/Webserv_machine.hpp"
 
 void test_configs(int ac, char** av) {
 	std::cout << "--------------------------------" << std::endl;
