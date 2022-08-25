@@ -19,9 +19,13 @@ Socket::Socket(int socket_fd, int port): _socket_fd(socket_fd), _port(port) {
 }
 
 void Socket::open() {
+	int opt = 1;
 	if (_socket_fd == -1) {
 		if ((_socket_fd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
 			throw CannotCreateSocketException("Can't create socket");
+		if (((setsockopt(_socket_fd, SOL_SOCKET, SO_REUSEADDR,(char *)&opt, sizeof(opt))) < 0) ||
+			(setsockopt(_socket_fd, SOL_SOCKET, SO_REUSEPORT, (char *)&opt, sizeof(opt)) < 0))
+			throw CannotCreateSocketException("Can't set up socket");
 		if (bind(_socket_fd, (struct sockaddr *) &_address, sizeof(_address)) == -1)
 			throw CannotCreateSocketException("Can't bind socket");
 		if (listen(_socket_fd, 32) == -1)

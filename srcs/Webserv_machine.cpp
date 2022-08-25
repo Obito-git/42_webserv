@@ -29,9 +29,20 @@ void Webserv_machine::up() {
 			for (it = clients_to_write.begin(); it != clients_to_write.end(); it++)
 				FD_SET(it->first, &write_set);
 			std::cout << "Waiting for connections" << std::endl;
-		} while ((select_status = select(max_fd_number + 1, &read_set, &write_set, NULL, NULL)) == 0);
+		} while (!got_signal && (select_status = select(max_fd_number + 1, &read_set, &write_set, NULL, NULL)) == 0);
 
 		//FIXME dont need exit
+		if (got_signal) {
+			for (it = clients_to_write.begin(); it != clients_to_write.end(); it++) {
+				it->second->close();
+				delete it->second;
+			}
+			for (it = clients_to_read.begin(); it != clients_to_read.end(); it++) {
+				it->second->close();
+				delete it->second;
+			}
+			break;
+		}
 		if (select_status == -1) {
 			std::cout << "Select error" << std::endl;
 			exit(1);
@@ -120,7 +131,7 @@ void Webserv_machine::run_listening_sockets() {
  *****************************************************************************************************************/
 
 
-Webserv_machine::Webserv_machine(const char *path) {
+Webserv_machine::Webserv_machine(const char *path): got_signal(false) {
 	ConfigParser config(path);
 	try {
 		_servers = config.getServers();
@@ -161,12 +172,16 @@ void Webserv_machine::setServers(Server *server) {
 }
 
 Webserv_machine::~Webserv_machine() {
-	std::map<int, Socket *>::iterator it = _machine_sockets.begin();
-	while (it != _machine_sockets.end()) {
+	for (std::map<int, Socket *>::iterator it = _machine_sockets.begin(); it != _machine_sockets.end(); it++) {
 		it->second->close();
-		it++;
+		delete it->second;
 	}
+	for (std::vector<Server *>::iterator it = _servers.begin(); it != _servers.end(); it++)
+		delete *it;
+}
 
+void Webserv_machine::setSignal(bool gotSignal) {
+	got_signal = gotSignal;
 }
 
 

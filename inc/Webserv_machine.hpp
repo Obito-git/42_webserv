@@ -18,7 +18,9 @@ private:
 	std::vector<Server *>	    _servers;
 	std::string 				_error_msg;
 	fd_set				    	_server_fd_set;
+	bool 						got_signal;
 
+	void run_listening_sockets();
 public:
 	/*      construct / destruct        */
 	Webserv_machine(const char *path);
@@ -26,11 +28,8 @@ public:
 	virtual ~Webserv_machine();
 
 	void up();
-	
-private:
-	void run_listening_sockets();
-public:
-	
+
+	void setSignal(bool gotSignal);
 
 /******************************************************************************************************************
  ************************************************** GETTERS *******************************************************

@@ -23,14 +23,24 @@ void test_configs(int ac, char** av) {
 	std::cout << std::endl << "--------------------------------" << std::endl;
 }
 
+Webserv_machine *ws;
+
+void handle_exit(int signal) {
+	(void) signal;
+	ws->setSignal(true);
+}
+
 int main(int ac, char** av) {
 	if (ac == 1)
 		std::cout << "No args detected" << std::endl;
 	else if (ac == 2) {
-		Webserv_machine ws(av[1]);
-		ws.up();
-		std::cout << ws.getErrorMsg() << std::endl;
+		signal(SIGINT, handle_exit);
+		ws = new Webserv_machine(av[1]);
+		ws->up();
+		
+		std::cout << ws->getErrorMsg() << std::endl;
 		//std::cout << Request::generate_error_body(l, HttpStatus::BadRequest);
+		delete ws;
 	} else
 		test_configs(ac, av);
 	//Webserv_machine ws(av[1]);
