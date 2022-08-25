@@ -9,7 +9,7 @@
 
 void Webserv_machine::up() {
 	if (_servers.empty()) {
-		throw std::runtime_error("Servers empty"); //FIXME
+		return;
 	}
 	std::map<int, Socket *>     clients_to_read;
 	std::map<int, Socket *>     clients_to_write;
@@ -134,12 +134,14 @@ void Webserv_machine::run_listening_sockets() {
 Webserv_machine::Webserv_machine(const char *path): got_signal(false) {
 	ConfigParser config(path);
 	try {
-		_servers = config.getServers();
-	} catch (std::exception &e) {
-		_error_msg =  e.what();
-		return;
+		_servers = config.getParsedServers();
+	} catch (std::exception& e) {
+		_error_msg = e.what();
+		std::vector<Server *>& s = config.getServers();
+		for (std::vector<Server *>::iterator it = s.begin(); it != s.end(); it++)
+			delete *it;
 	}
-	_error_msg = "OK";
+
 }
 
 /******************************************************************************************************************

@@ -8,13 +8,21 @@ void test_configs(int ac, char** av) {
 	for (int i = 1; i < ac; i++) {
 		std::string path = av[i];
 		path.insert(0, "config_files_tests/");
-		Webserv_machine ws(path.data());
+		std::string msg;
+		Webserv_machine *test;
+		try {
+			test = new Webserv_machine(path.data());
+			msg = test->getErrorMsg();
+		} catch (std::exception& e) {
+			msg = e.what();
+		}
+		delete test;
 		std::cout << "test=\"" << YELLOW << av[i] << RESET"\" ";
-		if ((path.find("_ok") != std::string::npos && ws.getErrorMsg() != "OK")
-			|| (path.find("_ok") == std::string::npos && ws.getErrorMsg() == "OK"))
+		if ((path.find("_ok") != std::string::npos && !msg.empty())
+			|| (path.find("_ok") == std::string::npos && msg.empty()))
 			std::cout << RED << "KO" << RESET;
-		else if ((path.find("_ok") != std::string::npos && ws.getErrorMsg() == "OK")
-			|| (path.find("_ok") == std::string::npos && ws.getErrorMsg() != "OK"))
+		else if ((path.find("_ok") != std::string::npos && msg.empty())
+			|| (path.find("_ok") == std::string::npos && !msg.empty()))
 			std::cout << GREEN << "OK" << RESET;
 		else
 			std::cout << RED << "TEST FAILED" << RESET;
@@ -37,11 +45,8 @@ int main(int ac, char** av) {
 		signal(SIGINT, handle_exit);
 		ws = new Webserv_machine(av[1]);
 		ws->up();
-		
 		std::cout << ws->getErrorMsg() << std::endl;
-		//std::cout << Request::generate_error_body(l, HttpStatus::BadRequest);
 		delete ws;
 	} else
 		test_configs(ac, av);
-	//Webserv_machine ws(av[1]);
 }

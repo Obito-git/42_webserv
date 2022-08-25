@@ -28,6 +28,8 @@
 #include <ctime>
 #include <unistd.h>
 #include <fcntl.h>
+#include <csignal>
+#include <cstring>
 
 #include "HttpStatusCode.hpp"
 

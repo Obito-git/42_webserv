@@ -21,7 +21,8 @@ public:
 	//constructor
 	ConfigParser(const std::string &path);
 	//getter
-	const std::vector<Server *> &getServers();
+	const std::vector<Server *> &getParsedServers();
+	std::vector<Server *> &getServers();
 
 private:
 	/******************************************************************************************************************

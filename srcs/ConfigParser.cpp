@@ -7,9 +7,13 @@
 ConfigParser::ConfigParser(const std::string &path) : _line_number(1), _path(path) {}
 
 //getter
-const std::vector<Server *> &ConfigParser::getServers() {
+const std::vector<Server *> &ConfigParser::getParsedServers() {
 	if (_servers.empty())
 		parse_config(_path.data());
+	return _servers;
+}
+
+std::vector<Server *> &ConfigParser::getServers() {
 	return _servers;
 }
 
