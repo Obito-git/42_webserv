@@ -8,11 +8,15 @@ Request::Request(): _method(INIT), _url(""), _http_version(""), _host(""),
 Request::Request(const char *message, Webserv_machine* webserv):
 _method(INIT), _url(""), _http_version(""), _host(""),
 _header(std::map<std::string, std::string>()),
-_message(std::vector<std::string>()), _response(response()), ws(webserv)														   
+_message(std::vector<std::string>()), _response(response()), _ws(webserv)														   
 {
-	_read_message(message);
-	_make_map_of_headers();
-	_fill_up_request();
+	if (message)
+	{
+		_read_message(message);
+		_make_map_of_headers();
+		_fill_up_request();
+		_create_response();
+	}
 }
 
 Request::Request(const Request &other) : _method(other._method), _url(other._url),
@@ -34,11 +38,123 @@ Request::~Request() {};
 
 // response
 
-std::string	Request::_make_reponce(std::string version, int code, std::string msg)
+int	Request::_check_server_name()
+{
+	std::cout << "!_host.empty()" << !_host.empty() << std::endl;
+	if (!_host.empty())
+	{
+		std::vector<Server *> servers = _ws->getServers();
+		std::vector<std::string> servers_name;
+		std::vector<Server *>::iterator it_serv = servers.begin();
+		std::vector<std::string>::iterator it_serv_nm;
+		for (; it_serv != servers.end(); ++it_serv)
+		{
+			servers_name = (*it_serv)->getServerName();
+			for (it_serv_nm = servers_name.begin(); it_serv_nm < servers_name.end(); ++it_serv_nm)
+			{
+				if ((*it_serv_nm).compare(_host) == 0)
+				{
+					_server = *it_serv;
+					return (1);
+				}
+			}
+		}
+		_rep = _generate_reponse_error(404, "Not Found");
+		return (0);
+	}
+	else
+		return (1);
+}
+
+int	Request::_check_location()
+{
+
+	std::string location = _url;
+	size_t pos = 0;
+	if (*(_url.end() - 1) != '/')
+	{
+		pos = location.find_last_of('/');	
+		location = location.substr(0, pos + 1);
+	}
+	while (location.length() != 1)
+	{
+		std::map<std::string, Location> map_loc = _server->getLocations();
+		std::map<std::string, Location>::iterator it_loc = map_loc.find(location);
+		if (it_loc != map_loc.end())
+		{
+			_location = &(*it_loc).second;
+			return (_check_methods());
+		}
+		else
+		{
+			location.pop_back();
+			pos = location.find_last_of('/');	
+			location = location.substr(0, pos + 1);
+		}
+	}
+	_location = &(_server->getDefault());
+	return (_check_methods());
+}
+
+int	Request::_check_methods()
+{
+	const std::set<HTTP_METHOD> methods = _location->getAllowedMethods();
+	if (methods.find(_method) != methods.end())
+		return (1);
+	_rep = _generate_reponse_error(405, "Method Not Allowed"); // header : alowd_metods
+	return (0);
+}
+
+std::string	Request::_concatenate_path()
+{
+
+	std::string path = _location->getRoot();
+	if (_url.compare("/"))
+		return (path.append(_url));
+	else
+		return (path);
+}
+
+void	Request::_create_response()
+{
+	if (_check_server_name() && _check_location())
+	{
+		try
+		{
+			std::string path = _concatenate_path();
+			std::string code_page = ft_read_file(path);
+			_rep = _generate_reponse_ok(code_page);
+		}
+		catch (std::exception& e)
+		{
+			std::cout << e.what() << std::endl;
+			_rep = _generate_reponse_error(404, "Not Found");
+		}
+	}
+}
+
+std::string	Request::_generate_reponse_ok(std::string code_page)
 {
 	std::stringstream buf;
 
-	_response._http_version = version;
+	std::time_t now = time(0);
+	tm *gmtm = gmtime(&now);
+	char* date = asctime(gmtm);
+
+	buf << "HTTP/1.1 " << 200 << " " << "OK" << std::endl;
+	buf << "Date: " << date;
+	buf << "Server:" << "Webserver" << std::endl;
+	buf << "Content-Type:" << "text/html" << std::endl << std::endl;
+	buf << code_page;
+	
+	return (buf.str());
+}
+
+std::string	Request::_generate_reponse_error(int code, std::string msg)
+{
+	std::stringstream buf;
+
+	// _response._http_version = version;
 	_response._status_code = code;
 	_response._status_message = msg;
 
@@ -46,7 +162,7 @@ std::string	Request::_make_reponce(std::string version, int code, std::string ms
 	tm *gmtm = gmtime(&now);
 	char* date = asctime(gmtm);
 
-	buf << version << " " << code << " " << msg << std::endl;
+	buf << "HTTP/1.1 " << code << " " << msg << std::endl;
 	buf << "Date: " << date;
 	buf << "Server:" << "Webserver" << std::endl;
 	buf << "Content-Type:" << "text/html" << std::endl;
@@ -62,15 +178,13 @@ int	Request::_check_first_line()
 	size_t pos = (_message[0]).find(" ");
 	if (pos == 0 || pos == std::string::npos)
 	{
-		std::cout << "1" << std::endl;
-		_rep = _make_reponce("HTTP/1.0", 400, "Bad Request");
+		_rep = _generate_reponse_error(400, "Bad Request");
 		return (1);
 	}
 	elem = (_message[0]).substr(0,pos);
 	if (elem.compare("GET") && elem.compare("POST") && elem.compare("DELETE"))
 	{
-		std::cout << "2" << std::endl;
-		_rep = _make_reponce("HTTP/1.1", 405, "Method Not Allowed");
+		_rep = _generate_reponse_error(405, "Method Not Allowed");
 		return (1);
 	}
 	pos = (_message[0]).find_last_of(" ");
@@ -78,15 +192,14 @@ int	Request::_check_first_line()
 	if (elem.compare("HTTP/1.0") && elem.compare("HTTP/1.1") &&
 			elem.compare("HTTP/2") && elem.compare("HTTP/3"))
 	{
-		std::cout << "3" << std::endl;
-		_rep = _make_reponce("HTTP/1.0", 400, "Bad Request");
+		_rep = _generate_reponse_error(400, "Bad Request");
 		return (1);
 	}
 	pos = (_message[0]).find(" ");
 	size_t pos1 = (_message[0]).find_last_of(" ");
-	if (pos >= pos1)
+	if (pos >= pos1 || _message[0][pos + 1] != '/')
 	{
-		_rep = _make_reponce("HTTP/1.0", 404, "Not Found");
+		_rep = _generate_reponse_error(404, "Not Found");
 		return (1);
 	}
 	return (0);
@@ -97,7 +210,7 @@ int	Request::_check_second_line()
 	if (_message[1][0] == '\t' || _message[1][0] == 0
 		|| _message[1][0] == '\v' || _message[1][0] == '\f' || _message[1][0] == '\r' || _message[1][0] == ' ')
 	{
-		_rep = _make_reponce("HTTP/1.0", 400, "Bad Request");
+		_rep = _generate_reponse_error(400, "Bad Request");
 		return (1);
 	}
 	return (0);
@@ -133,11 +246,7 @@ void	Request::_read_message(const char * message)
 				_check_line(line);
 			}
 		}
-		else
-			std::cout << _rep;
 	}
-	else
-		std::cout << _rep;
 }
 
 // MAKE MAP OF HEADERS
@@ -223,7 +332,7 @@ int	Request::_fill_up_content_length()
 		this->_content_length = (*it).second;
 	else
 	{
-		_rep = _make_reponce("HTTP/1.0", 411, "Length Required");
+		_rep = _generate_reponse_error(411, "Length Required");
 		return (1);
 	}
 	return (0);
@@ -245,8 +354,6 @@ int	Request::_fill_up_request()
 	{
 		_fill_up_content_length();
 	}
-	// else
-	// ?on fais quoi? erreur ou on mis le host par default?
 	return (0);
 }
 
@@ -267,5 +374,3 @@ std::string Request::generate_error_body(Location &location, short status_code) 
 	location.setErrorPages(status_code, s);
 	return s;
 }
-
-// DELETION

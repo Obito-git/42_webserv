@@ -64,6 +64,7 @@
 		"utility": "cpp",
 		"vector": "cpp",
 		"cinttypes": "cpp",
-		"hashtable": "cpp"
+		"hashtable": "cpp",
+		"csignal": "cpp"
 	}
 }

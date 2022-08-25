@@ -4,9 +4,11 @@
 #include "parsingRequest.hpp"
 #include "Response.hpp"
 #include "Webserv_machine.hpp"
-#include "Location.hpp"
 
 class Webserv_machine;
+class Server;
+struct Location;
+
 class Request
 {
 	public:
@@ -20,9 +22,11 @@ class Request
 		std::vector<std::string>			_message;
 		response							_response;
 		std::string							_rep;
+		Server								*_server;
+		Location							*_location;
 		
 		/****** WEBSERV MACHINE ********/
-		Webserv_machine* ws;
+		Webserv_machine* _ws;
 
 		// HeaderRequest	_header;
 		// Body			_request_body;
@@ -40,7 +44,14 @@ class Request
 		int		_check_second_line();
 		void	_make_map_of_headers();
 
-		std::string	_make_reponce(std::string version, int code, std::string msg);
+		// REPONSE
+		void	_create_response();
+		int		_check_server_name();
+		int		_check_location();
+		int		_check_methods();
+		std::string	_concatenate_path();
+		std::string	_generate_reponse_ok(std::string code_page);
+		std::string	_generate_reponse_error(int code, std::string msg);
 
 		void	_print_message();
 		void	_print_dictionary();
@@ -55,8 +66,6 @@ class Request
 		void	_fill_up_host(std::map<std::string, std::string>::iterator it);
 
 		static std::string generate_error_body(Location &location, short status_code);
-
-
 };
 
 #endif
