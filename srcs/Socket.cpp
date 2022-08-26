@@ -90,7 +90,7 @@ int Socket::getPort() const {
 	return _port;
 }
 
-std::vector<const Server *> Socket::getServers() const {
+const std::vector<const Server *> &Socket::getServers() const {
 	return _servers;
 }
 

@@ -33,6 +33,7 @@ public:
 	const std::vector<std::string> &getServerName() const;
 	const std::map<std::string, Location> &getLocations() const;
 	Location &getDefault();
+	const Location &getConstDefault() const;
 
 /******************************************************************************************************************
  ************************************************** SETTERS *******************************************************

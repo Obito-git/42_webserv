@@ -34,7 +34,7 @@ public:
 	const sockaddr_in &getAddress() const;
 	int getPort() const;
 
-	std::vector<const Server *> getServers() const;
+	const std::vector<const Server *> &getServers() const;
 	void setServers(const Server *serv);
 
 	const Socket *getParentSocket() const;

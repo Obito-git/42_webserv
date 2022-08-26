@@ -74,7 +74,7 @@ void Webserv_machine::up() {
 		for (it = clients_to_read.begin(); select_status && it != clients_to_read.end(); it++) {
 			if (FD_ISSET(it->first, &read_set)) {
 				try {
-					if (it->second->process_msg(this)) {
+					if (it->second->process_msg()) {
 						clients_to_write.insert(*it);		
 						//FIXME need to delete from to_read?
 					}

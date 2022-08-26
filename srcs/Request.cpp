@@ -1,14 +1,21 @@
 #include "../inc/Request.hpp"
 
-Request::Request(): _method(INIT), _url(""), _http_version(""), _host(""),
-			_header(std::map<std::string, std::string>()),
-			_message(std::vector<std::string>()), _response(response()) {};
+
+/******************************************************************************************************************
+ ************************************** CONSTRUCTORS/DESTRUCTORS **************************************************
+ *****************************************************************************************************************/
+
+Request::Request(): _method(INIT), _url(""), _http_version(""),
+_message(std::vector<std::string>()),
+_header(std::map<std::string, std::string>()), _host(""), _content_length(""),
+_server(NULL), _location(NULL), _index(std::set <std::string>()), _ws(std::vector<const Server*>()) {};
 
 
-Request::Request(const char *message, Webserv_machine* webserv):
-_method(INIT), _url(""), _http_version(""), _host(""),
-_header(std::map<std::string, std::string>()),
-_message(std::vector<std::string>()), _response(response()), _ws(webserv)														   
+Request::Request(const char *message, const std::vector<const Server*> &webserv):
+_method(INIT), _url(""), _http_version(""),
+_message(std::vector<std::string>()),
+_header(std::map<std::string, std::string>()), _host(""), _content_length(""),
+_server(NULL), _location(NULL), _index(std::set <std::string>()), _ws(webserv)														   
 {
 	if (message)
 	{
@@ -20,33 +27,42 @@ _message(std::vector<std::string>()), _response(response()), _ws(webserv)
 }
 
 Request::Request(const Request &other) : _method(other._method), _url(other._url),
-	_http_version(other._http_version), _host(other._host), _header(other._header), _message(other._message) {};
+	_http_version(other._http_version), _message(other._message),
+	_header(other._header), _host(other._host), _content_length(other._content_length),
+	_server(other._server), _location(other._location), _index(other._index), _ws(other._ws)
+	 {};
 
-Request& Request::operator=(const Request &other)
-{
-	_method = other._method;
-	_url = other._url;
-	_http_version = other._http_version;
-	_host = other._host;
-	_header = other._header;
-	_message = other._message;
-	return(*this);
-}
-
+// Request& Request::operator=(const Request &other) const
+// {
+// 	_method = other._method;
+// 	_url = other._url;
+// 	_http_version = other._http_version;
+// 	_host = other._host;
+// 	_header = other._header;
+// 	_message = other._message;
+// 	_content_length = other._content_length;
+// 	_server = other._server;
+// 	_location = other._location;
+// 	_index = other._index;
+// 	_ws = other._ws;
+// 	return(*this);
+// }
 
 Request::~Request() {};
 
-// response
+/******************************************************************************************************************
+ ******************************************** CHECK CONFIG ********************************************************
+ *****************************************************************************************************************/
 
 int	Request::_check_server_name()
 {
 	if (!_host.empty())
 	{
-		std::vector<Server *> servers = _ws->getServers();
+		// std::vector<Server *> servers = _ws->getServers();
 		std::vector<std::string> servers_name;
-		std::vector<Server *>::iterator it_serv = servers.begin();
+		std::vector<const Server *>::const_iterator it_serv = _ws.begin();
 		std::vector<std::string>::iterator it_serv_nm;
-		for (; it_serv != servers.end(); ++it_serv)
+		for (; it_serv != _ws.end(); ++it_serv)
 		{
 			servers_name = (*it_serv)->getServerName();
 			for (it_serv_nm = servers_name.begin(); it_serv_nm < servers_name.end(); ++it_serv_nm)
@@ -91,7 +107,7 @@ int	Request::_check_location()
 			location = location.substr(0, pos + 1);
 		}
 	}
-	_location = &(_server->getDefault());
+	_location = &(_server->getConstDefault());
 	return (_check_methods());
 }
 
@@ -114,6 +130,44 @@ std::string	Request::_concatenate_path()
 		return (path);
 }
 
+/******************************************************************************************************************
+ ******************************************** REPONSE *************************************************************
+ *****************************************************************************************************************/
+
+void	Request::_path_is_to_folder(std::string path)
+{
+	std::set <std::string>::iterator it_index = _index.begin();
+	for (; it_index != _index.end(); ++it_index)
+	{
+		path = path + (*it_index);
+		try
+		{
+			std::string code_page = ft_read_file(path);
+			_rep = _generate_reponse_ok(200, code_page);
+			break ;
+		}
+		catch (std::exception& e)
+		{
+			std::cout << e.what() << std::endl;
+		}
+		_rep = _generate_reponse_error(404, "Not Found");
+	}
+}
+
+void	Request::_path_is_to_file(std::string path)
+{
+	try
+	{
+		std::string code_page = ft_read_file(path);
+		_rep = _generate_reponse_ok(200, code_page);
+	}
+	catch (std::exception& e)
+	{
+		std::cout << e.what() << std::endl;
+		_rep = _generate_reponse_error(404, "Not Found");
+	}
+}
+
 void	Request::_create_response()
 {
 	if (_check_server_name() && _check_location())
@@ -121,41 +175,13 @@ void	Request::_create_response()
 		_index = _location->getIndex();
 		std::string path = _concatenate_path();
 		if (path[path.length() - 1] == '/' && _index.size() != 0) // FIXME apres ajouter condition si index vide pour auto index
-		{
-			std::set <std::string>::iterator it_index = _index.begin();
-			for (; it_index != _index.end(); ++it_index)
-			{
-				path = path + (*it_index);
-				try
-				{
-					std::string code_page = ft_read_file(path);
-					_rep = _generate_reponse_ok(code_page);
-					break ;
-				}
-				catch (std::exception& e)
-				{
-					std::cout << e.what() << std::endl;
-				}
-				_rep = _generate_reponse_error(404, "Not Found");
-			}
-		}
+			_path_is_to_folder(path);
 		else
-		{
-			try
-			{
-				std::string code_page = ft_read_file(path);
-				_rep = _generate_reponse_ok(code_page);
-			}
-			catch (std::exception& e)
-			{
-				std::cout << e.what() << std::endl;
-				_rep = _generate_reponse_error(404, "Not Found");
-			}
-		}
+			_path_is_to_file(path);
 	}
 }
 
-std::string	Request::_generate_reponse_ok(std::string code_page)
+std::string	Request::_generate_reponse_headers(int code, std::string code_page)
 {
 	std::stringstream buf;
 
@@ -163,12 +189,19 @@ std::string	Request::_generate_reponse_ok(std::string code_page)
 	tm *gmtm = gmtime(&now);
 	char* date = asctime(gmtm);
 
-	buf << "HTTP/1.1 " << 200 << " " << "OK" << std::endl;
+	buf << "HTTP/1.1 " << code << " " << code_page << std::endl;
 	buf << "Date: " << date;
 	buf << "Server:" << "Webserver" << std::endl;
 	buf << "Content-Type:" << "text/html" << std::endl << std::endl;
+	return (buf.str());
+}
+
+std::string	Request::_generate_reponse_ok(int code,std::string code_page)
+{
+	std::stringstream buf;
+
+	buf << _generate_reponse_headers(code, "OK"); //FIXME
 	buf << code_page;
-	
 	return (buf.str());
 }
 
@@ -176,23 +209,39 @@ std::string	Request::_generate_reponse_error(int code, std::string msg)
 {
 	std::stringstream buf;
 
-	// _response._http_version = version;
-	_response._status_code = code;
-	_response._status_message = msg;
-
-	std::time_t now = time(0);
-	tm *gmtm = gmtime(&now);
-	char* date = asctime(gmtm);
-
-	buf << "HTTP/1.1 " << code << " " << msg << std::endl;
-	buf << "Date: " << date;
-	buf << "Server:" << "Webserver" << std::endl;
-	buf << "Content-Type:" << "text/html" << std::endl;
-
+	buf << _generate_reponse_headers(code, msg);
+	buf << _generate_error_body(_location, code);
 	return (buf.str());
 }
 
-// CHECKER
+std::string Request::_generate_error_body(const Location *location, short status_code)
+{
+	std::string s = "<html>\n<head><title>";
+	std::stringstream code;
+	code << status_code << " " << HttpStatus::reasonPhrase(status_code);
+
+	s.append(code.str());
+	s.append("</title></head>\n<body bgcolor=\"black\">\n<p><img style=\"display: block; margin-left: auto;"
+			 "margin-right: auto;\"src=\"https://http.cat/").append(code.str().substr(0,code.str().find(' ')));
+	s.append("\" alt=\"");
+	s.append(code.str()).append(" width=\"750\" height=\"520\"/></p>\n"
+					"<hr><center style=\"color:white\">okushnir and amyroshn webserv</center>\n</body>\n</html>");
+
+	if (location != NULL)
+	{
+		const std::map<short, std::string>& error_pages = (*location).getErrorPages();
+		std::map<short, std::string>::const_iterator it = error_pages.find(status_code);
+		if (it != error_pages.end())
+			return (*it).second;
+		// else
+		// 	(*location).setErrorPages(status_code, s);
+	}
+	return s;
+}
+
+/******************************************************************************************************************
+ ******************************************** CHECK REQUEST *******************************************************
+ *****************************************************************************************************************/
 
 int	Request::_check_first_line()
 {
@@ -230,7 +279,8 @@ int	Request::_check_first_line()
 int	Request::_check_second_line()
 {
 	if (_message[1][0] == '\t' || _message[1][0] == 0
-		|| _message[1][0] == '\v' || _message[1][0] == '\f' || _message[1][0] == '\r' || _message[1][0] == ' ')
+		|| _message[1][0] == '\v' || _message[1][0] == '\f'
+		|| _message[1][0] == '\r' || _message[1][0] == ' ')
 	{
 		_rep = _generate_reponse_error(400, "Bad Request");
 		return (1);
@@ -247,8 +297,10 @@ void	Request::_check_line(std::string line)
 	}
 }
 
+/******************************************************************************************************************
+ ******************************************** PARSING *************************************************************
+ *****************************************************************************************************************/
 
-// HELPERS PARSING
 void	Request::_read_message(const char * message)
 {
 	std::istringstream text(message);
@@ -260,7 +312,7 @@ void	Request::_read_message(const char * message)
 	{
 		std::getline(text, line);
 		_check_line(line);
-		if (!_check_second_line())
+		if (!_check_second_line()) // FIXME
 		{
 			while (!text.eof())
 			{
@@ -291,27 +343,9 @@ void	Request::_make_map_of_headers()
 	}
 }
 
-// HELPERS FOR PRINTING
-
-void Request::_print_message()
-{
-	std::vector<std::string>::iterator first = _message.begin();
-	std::cout << std::endl;
-	for (; first != _message.end(); first++)
-		std::cout << *first << std::endl;
-}
-
-void Request::_print_dictionary()
-{
-	std::map<std::string, std::string>::iterator first = _header.begin();
-	for (; first != _header.end(); first++)
-	{
-		std::cout << "key : " <<
-		(*first).first << " value : " << (*first).second << std::endl;
-	}
-}
-
-// FILL_UP_REQUEST
+/******************************************************************************************************************
+ ******************************************** FILL_UP_REQUEST *****************************************************
+ *****************************************************************************************************************/
 
 void	Request::_fill_up_method(std::string elem)
 {
@@ -379,20 +413,24 @@ int	Request::_fill_up_request()
 	return (0);
 }
 
-std::string Request::generate_error_body(Location &location, short status_code) {
-	const std::map<short, std::string>& error_pages = location.getErrorPages();
-	std::stringstream code;
-	code << status_code << " " << HttpStatus::reasonPhrase(status_code);
-	std::map<short, std::string>::const_iterator it = error_pages.find(status_code);
-	if (it != error_pages.end())
-		return (*it).second;
-	std::string s = "<html>\n<head><title>";
-	s.append(code.str());
-	s.append("</title></head>\n<body bgcolor=\"black\">\n<p><img style=\"display: block; margin-left: auto;"
-			 "margin-right: auto;\"src=\"https://http.cat/").append(code.str().substr(0,code.str().find(' ')));
-	s.append("\" alt=\"");
-	s.append(code.str()).append(" width=\"750\" height=\"600\"/></p>\n"
-					"<hr><center style=\"color:white\">okushnir and amyroshn webserv</center>\n</body>\n</html>");
-	location.setErrorPages(status_code, s);
-	return s;
+/******************************************************************************************************************
+ ******************************************** PRINTING ************************************************************
+ *****************************************************************************************************************/
+
+void Request::_print_message()
+{
+	std::vector<std::string>::iterator first = _message.begin();
+	std::cout << std::endl;
+	for (; first != _message.end(); first++)
+		std::cout << *first << std::endl;
+}
+
+void Request::_print_dictionary()
+{
+	std::map<std::string, std::string>::iterator first = _header.begin();
+	for (; first != _header.end(); first++)
+	{
+		std::cout << "key : " <<
+		(*first).first << " value : " << (*first).second << std::endl;
+	}
 }

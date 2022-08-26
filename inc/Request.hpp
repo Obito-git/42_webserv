@@ -16,57 +16,62 @@ class Request
 		HTTP_METHOD 						_method;
 		std::string							_url;
 		std::string							_http_version;
+		std::vector<std::string>			_message;
+		std::map<std::string, std::string> 	_header;
 		std::string							_host;
 		std::string							_content_length;
-		std::map<std::string, std::string> 	_header;
-		std::vector<std::string>			_message;
-		response							_response;
 		std::string							_rep;
-		Server								*_server;
-		Location							*_location;
+		const Server						*_server;
+		const Location						*_location;
 		std::set <std::string>				_index;
-		
-		/****** WEBSERV MACHINE ********/
-		Webserv_machine* _ws;
-
-		// HeaderRequest	_header;
-		// Body			_request_body;
+		const std::vector<const Server*>	_ws;
 
 	public:
 		Request();
-		Request(const char *message, Webserv_machine* webserv);
+		Request(const char *message, const std::vector<const Server*> &webserv);
 		Request(const Request &other);
-		Request& operator=(const Request &other);
+		// Request& operator=(const Request &other) const;
 		~Request();
 
-		void	_read_message(const char *message);
-		void	_check_line(std::string line);
-		int		_check_first_line();
-		int		_check_second_line();
-		void	_make_map_of_headers();
 
-		// REPONSE
-		void	_create_response();
-		int		_check_server_name();
-		int		_check_location();
-		int		_check_methods();
-		std::string	_concatenate_path();
-		std::string	_generate_reponse_ok(std::string code_page);
-		std::string	_generate_reponse_error(int code, std::string msg);
+		// parsing
 
-		void	_print_message();
-		void	_print_dictionary();
+		void		_read_message(const char *message);
+		void		_make_map_of_headers();
+
+		// check request
+		void		_check_line(std::string line);
+		int			_check_first_line();
+		int			_check_second_line();
 
 		// fill_up_request
+		int			_fill_up_request();
+		int			_fill_up_content_length();
+		void		_fill_up_method(std::string elem);
+		void		_fill_up_url(std::string line);
+		void		_fill_up_protocol(std::string line);
+		void		_fill_up_host(std::map<std::string, std::string>::iterator it);
 
-		int		_fill_up_request();
-		int		_fill_up_content_length();
-		void	_fill_up_method(std::string elem);
-		void	_fill_up_url(std::string line);
-		void	_fill_up_protocol(std::string line);
-		void	_fill_up_host(std::map<std::string, std::string>::iterator it);
+		// check config
+		int			_check_server_name();
+		int			_check_location();
+		int			_check_methods();
 
-		static std::string generate_error_body(Location &location, short status_code);
+		// reponse
+		void		_create_response();
+		std::string	_concatenate_path();
+		void		_path_is_to_folder(std::string path);
+		void		_path_is_to_file(std::string path);
+		std::string	_generate_reponse_headers(int code, std::string code_page);
+		std::string	_generate_reponse_ok(int code, std::string code_page);
+		std::string	_generate_reponse_error(int code, std::string msg);
+		std::string _generate_error_body(const Location *location, short status_code);
+
+		// printing
+
+		void		_print_message();
+		void		_print_dictionary();
+
 };
 
 #endif
