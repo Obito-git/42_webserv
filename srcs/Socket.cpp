@@ -11,11 +11,8 @@ Socket::Socket(int port) : _socket_fd(-1), _port(port) {
 	memset(_address.sin_zero, '\0', sizeof _address.sin_zero);
 }
 
-Socket::Socket(int socket_fd, int port): _socket_fd(socket_fd), _port(port) {
-	_address.sin_family = AF_INET;
-	_address.sin_addr.s_addr = INADDR_ANY;
-	_address.sin_port = htons(port);
-	memset(_address.sin_zero, '\0', sizeof _address.sin_zero);
+Socket::Socket(const Socket *parent, int socket_fd): _socket_fd(socket_fd), _parent_socket(parent),
+													_address(parent->getAddress()), _port(parent->getPort()){
 }
 
 void Socket::open() {
@@ -31,7 +28,7 @@ void Socket::open() {
 		if (listen(_socket_fd, 32) == -1)
 			throw CannotCreateSocketException("Can't listen socket");
 	} else
-		throw CannotCreateSocketException("Can't open already open socket");
+		throw CannotCreateSocketException("Can't open already opened socket");
 }
 
 void Socket::close() {
@@ -46,10 +43,10 @@ Socket *Socket::accept_connection() const {
 	if (accepted_fd == -1)
 		throw CannotCreateSocketException("Accept error");
 	fcntl(accepted_fd, F_SETFL, O_NONBLOCK);
-	return new Socket(accepted_fd, _port);
+	return new Socket(this, accepted_fd);
 }
 
-bool Socket::process_msg(Webserv_machine *ws) {
+bool Socket::process_msg() {
 	char *data[BUF_SIZE];
 	
 	ssize_t read_status = read(_socket_fd, data, BUF_SIZE);
@@ -60,7 +57,7 @@ bool Socket::process_msg(Webserv_machine *ws) {
 	_client_msg.append(reinterpret_cast<const char *>(data), read_status);
 	/* FIXME POTENTIAL BUF IF MSG SIZE IS GREATER THAN 65535 BITES */
 	if (_client_msg.find("\r\n\r\n") != std::string::npos || _client_msg.find("\n\n") != std::string::npos) {
-		Request r(_client_msg.data(), ws);
+		Request r(_client_msg.data(), _parent_socket->getServers());
 		std::cout << std::endl << std::endl << "Message from " << _socket_fd << ":" << std::endl << _client_msg << std::endl;
 		_client_msg = r._rep;
 		return true;
@@ -91,6 +88,18 @@ const sockaddr_in &Socket::getAddress() const {
 
 int Socket::getPort() const {
 	return _port;
+}
+
+std::vector<const Server *> Socket::getServers() const {
+	return _servers;
+}
+
+void Socket::setServers(const Server *serv) {
+	_servers.push_back(serv);
+}
+
+const Socket *Socket::getParentSocket() const {
+	return _parent_socket;
 }
 
 

@@ -29,10 +29,10 @@ void Webserv_machine::up() {
 			for (it = clients_to_write.begin(); it != clients_to_write.end(); it++)
 				FD_SET(it->first, &write_set);
 			std::cout << "Waiting for connections" << std::endl;
-		} while (!got_signal && (select_status = select(max_fd_number + 1, &read_set, &write_set, NULL, NULL)) == 0);
+		} while (!got_shutdown_signal && (select_status = select(max_fd_number + 1, &read_set, &write_set, NULL, NULL)) == 0);
 
 		//FIXME dont need exit
-		if (got_signal) {
+		if (got_shutdown_signal) {
 			for (it = clients_to_write.begin(); it != clients_to_write.end(); it++) {
 				it->second->close();
 				delete it->second;
@@ -113,6 +113,8 @@ void Webserv_machine::run_listening_sockets() {
 	for (std::vector<Server *>::iterator serv = _servers.begin(); serv != _servers.end(); serv++) {
 		for (std::set<int>::iterator port = (*serv)->getPorts().begin(); port != (*serv)->getPorts().end(); port++) {
 			std::map<int, Socket *>::iterator existing_socket = _machine_sockets.begin();
+			int test = *port;
+			(void) test;
 			for (; existing_socket != _machine_sockets.end() && (*existing_socket).second->getPort() != *port;
 				existing_socket++);
 			if (existing_socket == _machine_sockets.end()) {
@@ -120,7 +122,9 @@ void Webserv_machine::run_listening_sockets() {
 				sock->open(); //FIXME NEED TRY CATCH
 				_machine_sockets.insert(std::make_pair(sock->getSocketFd(), sock));
 				FD_SET(sock->getSocketFd(), &_server_fd_set);
-			}
+				sock->setServers(*serv);
+			} else
+				existing_socket->second->setServers(*serv);
 		}
 	}
 
@@ -131,7 +135,7 @@ void Webserv_machine::run_listening_sockets() {
  *****************************************************************************************************************/
 
 
-Webserv_machine::Webserv_machine(const char *path): got_signal(false) {
+Webserv_machine::Webserv_machine(const char *path): got_shutdown_signal(false) {
 	ConfigParser config(path);
 	try {
 		_servers = config.getParsedServers();
@@ -183,7 +187,7 @@ Webserv_machine::~Webserv_machine() {
 }
 
 void Webserv_machine::setSignal(bool gotSignal) {
-	got_signal = gotSignal;
+	got_shutdown_signal = gotSignal;
 }
 
 

@@ -15,25 +15,30 @@ class Webserv_machine;
 class Socket {
 private:
 	int						_socket_fd;
-	//Socket*					_parent_socket; //FIXME
+	const Socket*			_parent_socket; //defined for client socket, pointed on listening socket for get _server
 	struct sockaddr_in      _address;
 	int						_port;
 	std::string 			_client_msg;
-	std::vector<Server *>	_servers;
+	std::vector<const Server *>	_servers;
 public:
 	Socket(int port);
-	Socket(int socket_fd, int port);
+	Socket(const Socket *parent, int socket_fd);
 	
 	void open();
 	void close();
 	Socket *accept_connection() const;
-	bool process_msg(Webserv_machine *ws);
+	bool process_msg();
 	bool answer();
 
 	int getSocketFd() const;
 	const sockaddr_in &getAddress() const;
 	int getPort() const;
-	
+
+	std::vector<const Server *> getServers() const;
+	void setServers(const Server *serv);
+
+	const Socket *getParentSocket() const;
+
 
 	class CannotCreateSocketException: public std::exception {
 	private:
