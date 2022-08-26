@@ -40,7 +40,6 @@ Request::~Request() {};
 
 int	Request::_check_server_name()
 {
-	std::cout << "!_host.empty()" << !_host.empty() << std::endl;
 	if (!_host.empty())
 	{
 		std::vector<Server *> servers = _ws->getServers();
@@ -110,7 +109,7 @@ std::string	Request::_concatenate_path()
 
 	std::string path = _location->getRoot();
 	if (_url.compare("/"))
-		return (path.append(_url));
+		return path.append(_url);
 	else
 		return (path);
 }
@@ -119,16 +118,39 @@ void	Request::_create_response()
 {
 	if (_check_server_name() && _check_location())
 	{
-		try
+		_index = _location->getIndex();
+		std::string path = _concatenate_path();
+		if (path[path.length() - 1] == '/' && _index.size() != 0) // FIXME apres ajouter condition si index vide pour auto index
 		{
-			std::string path = _concatenate_path();
-			std::string code_page = ft_read_file(path);
-			_rep = _generate_reponse_ok(code_page);
+			std::set <std::string>::iterator it_index = _index.begin();
+			for (; it_index != _index.end(); ++it_index)
+			{
+				path = path + (*it_index);
+				try
+				{
+					std::string code_page = ft_read_file(path);
+					_rep = _generate_reponse_ok(code_page);
+					break ;
+				}
+				catch (std::exception& e)
+				{
+					std::cout << e.what() << std::endl;
+				}
+				_rep = _generate_reponse_error(404, "Not Found");
+			}
 		}
-		catch (std::exception& e)
+		else
 		{
-			std::cout << e.what() << std::endl;
-			_rep = _generate_reponse_error(404, "Not Found");
+			try
+			{
+				std::string code_page = ft_read_file(path);
+				_rep = _generate_reponse_ok(code_page);
+			}
+			catch (std::exception& e)
+			{
+				std::cout << e.what() << std::endl;
+				_rep = _generate_reponse_error(404, "Not Found");
+			}
 		}
 	}
 }

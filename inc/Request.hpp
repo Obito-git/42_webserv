@@ -24,6 +24,7 @@ class Request
 		std::string							_rep;
 		Server								*_server;
 		Location							*_location;
+		std::set <std::string>				_index;
 		
 		/****** WEBSERV MACHINE ********/
 		Webserv_machine* _ws;
