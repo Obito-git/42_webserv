@@ -13,7 +13,8 @@ void Webserv_machine::up() {
 	}
 	std::map<int, Socket *>     clients_to_read;
 	std::map<int, Socket *>     clients_to_write;
-	run_listening_sockets();
+	if (!run_listening_sockets())
+		return ;
 	int max_fd_number = (--_machine_sockets.end())->first;
 	
 	while (42) {
@@ -108,18 +109,26 @@ void Webserv_machine::up() {
 	}
 }
 
-void Webserv_machine::run_listening_sockets() {
+bool Webserv_machine::run_listening_sockets() {
 	FD_ZERO(&_server_fd_set);
 	for (std::vector<Server *>::iterator serv = _servers.begin(); serv != _servers.end(); serv++) {
 		for (std::set<int>::iterator port = (*serv)->getPorts().begin(); port != (*serv)->getPorts().end(); port++) {
 			std::map<int, Socket *>::iterator existing_socket = _machine_sockets.begin();
-			int test = *port;
-			(void) test;
-			for (; existing_socket != _machine_sockets.end() && (*existing_socket).second->getPort() != *port;
-				existing_socket++);
+			while (existing_socket != _machine_sockets.end()) {
+				if ((*existing_socket).second->getPort() == *port && 
+				(*serv)->getHost() == (*existing_socket).second->getHost())
+					break;
+				existing_socket++;
+			}
 			if (existing_socket == _machine_sockets.end()) {
-				Socket *sock = new Socket(*port);
-				sock->open(); //FIXME NEED TRY CATCH
+				Socket *sock = new Socket((*serv)->getHost(), *port);
+				try {
+					sock->open();
+				} catch (std::exception& e) {
+					std::cout << e.what() << std::endl;
+					delete sock;
+					return false;
+				}
 				_machine_sockets.insert(std::make_pair(sock->getSocketFd(), sock));
 				FD_SET(sock->getSocketFd(), &_server_fd_set);
 				sock->setServers(*serv);
@@ -127,7 +136,7 @@ void Webserv_machine::run_listening_sockets() {
 				existing_socket->second->setServers(*serv);
 		}
 	}
-
+	return true;
 }
 
 /******************************************************************************************************************

@@ -20,7 +20,7 @@ private:
 	fd_set				    	_server_fd_set;
 	bool 						got_shutdown_signal;
 
-	void run_listening_sockets();
+	bool run_listening_sockets();
 public:
 	/*      construct / destruct        */
 	Webserv_machine(const char *path);

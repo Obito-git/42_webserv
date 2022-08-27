@@ -134,7 +134,7 @@ void ConfigParser::parse_server_block(std::string &file_content, str_iter &it) {
 					file_content, "}").data());
 	}
 	it++;
-	if (s->getIp().empty() || s->getPorts().empty() || s->getDefault().getRoot().empty())
+	if (s->getHost().empty() || s->getPorts().empty() || s->getDefault().getRoot().empty())
 		throw ConfigNoRequiredKeywords();
 	parse_locations(s, s->getDefault(), locations_blocks);
 }
@@ -242,7 +242,10 @@ void ConfigParser::parse_listen_args(Server *s, std::vector<std::string> &args) 
 	if (args.size() != 1)
 		throw ConfigUnexpectedToken(find_unexpected_token(ft_strjoin(args.begin(),
 										 args.end(), " "), "only one ip address/host").data());
-	s->setIp(*args.begin());
+	if (*args.begin() != "localhost")
+		s->setHost(*args.begin());
+	else
+		s->setHost("127.0.0.1");
 }
 
 void ConfigParser::parse_port_args(Server *s, std::vector<std::string> &args) {
@@ -269,6 +272,7 @@ ConfigParser::parse_servername_args(Server *s, std::vector<std::string> &args) {
 					throw ConfigUnexpectedToken(find_unexpected_token(
 							*it,"Server is already exist."
 										 " Uniq server_name").data());
+//FIXME test empty servername
 			}
 		}
 		s->setServerName(*it);

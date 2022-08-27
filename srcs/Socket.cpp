@@ -4,9 +4,13 @@
 
 #include "Socket.hpp"
 
-Socket::Socket(int port) : _socket_fd(-1), _port(port) {
+/******************************************************************************************************************
+ ************************************** CONSTRUCTORS/DESTRUCTORS **************************************************
+ *****************************************************************************************************************/
+ 
+Socket::Socket(const std::string& host, int port) : _socket_fd(-1), _port(port), _host(host) {
 	_address.sin_family = AF_INET;
-	_address.sin_addr.s_addr = INADDR_ANY;
+	_address.sin_addr.s_addr = inet_addr(host.data());
 	_address.sin_port = htons(port);
 	memset(_address.sin_zero, '\0', sizeof _address.sin_zero);
 }
@@ -15,17 +19,21 @@ Socket::Socket(const Socket *parent, int socket_fd): _socket_fd(socket_fd), _par
 													_address(parent->getAddress()), _port(parent->getPort()){
 }
 
+/******************************************************************************************************************
+ ******************************************* SOCKET METHODS *******************************************************
+ *****************************************************************************************************************/
+ 
 void Socket::open() {
 	int opt = 1;
 	if (_socket_fd == -1) {
-		if ((_socket_fd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
+		if ((_socket_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
 			throw CannotCreateSocketException("Can't create socket");
 		if (((setsockopt(_socket_fd, SOL_SOCKET, SO_REUSEADDR,(char *)&opt, sizeof(opt))) < 0) ||
 			(setsockopt(_socket_fd, SOL_SOCKET, SO_REUSEPORT, (char *)&opt, sizeof(opt)) < 0))
 			throw CannotCreateSocketException("Can't set up socket");
-		if (bind(_socket_fd, (struct sockaddr *) &_address, sizeof(_address)) == -1)
+		if (bind(_socket_fd, (struct sockaddr *) &_address, sizeof(_address)) < 0)
 			throw CannotCreateSocketException("Can't bind socket");
-		if (listen(_socket_fd, 32) == -1)
+		if (listen(_socket_fd, 32) < 0)
 			throw CannotCreateSocketException("Can't listen socket");
 	} else
 		throw CannotCreateSocketException("Can't open already opened socket");
@@ -59,7 +67,7 @@ bool Socket::process_msg() {
 	if (_client_msg.find("\r\n\r\n") != std::string::npos || _client_msg.find("\n\n") != std::string::npos) {
 		Request r(_client_msg.data(), _parent_socket->getServers());
 		std::cout << std::endl << std::endl << "Message from " << _socket_fd << ":" << std::endl << _client_msg << std::endl;
-		_client_msg = r._rep;
+		_client_msg = r._rep; //FIXME GETTER
 		return true;
 	}
 	return false;
@@ -78,6 +86,10 @@ bool Socket::answer() {
 	return false;
 }
 
+/******************************************************************************************************************
+ ************************************************** GETTERS *******************************************************
+ *****************************************************************************************************************/
+
 int Socket::getSocketFd() const {
 	return _socket_fd;
 }
@@ -94,28 +106,21 @@ const std::vector<const Server *> &Socket::getServers() const {
 	return _servers;
 }
 
+const std::string &Socket::getHost() const {
+	return _host;
+}
+
+/******************************************************************************************************************
+ ************************************************** SETTERS *******************************************************
+ *****************************************************************************************************************/
+
 void Socket::setServers(const Server *serv) {
 	_servers.push_back(serv);
 }
 
-const Socket *Socket::getParentSocket() const {
-	return _parent_socket;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//exception
+/******************************************************************************************************************
+ *********************************************** EXCEPTIONS *******************************************************
+ *****************************************************************************************************************/
 
 Socket::CannotCreateSocketException::CannotCreateSocketException(const char *msg): _msg(msg) {}
 

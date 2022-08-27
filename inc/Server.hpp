@@ -12,9 +12,9 @@ class Socket;
 
 class Server {
 private:
-	std::vector<Socket*>				_sockets; //always empty. maybe dont need
+	std::vector<Socket*>				_sockets; //FIXME always empty. maybe dont need
 	std::set <int>						_ports;
-	std::string							_ip;
+	std::string							_host;
 	std::vector<std::string>			_server_name;
 	std::map<std::string, Location>		_locations;
 	Location							_default;
@@ -27,7 +27,7 @@ public:
  ************************************************** GETTERS *******************************************************
  *****************************************************************************************************************/
 
-	const std::string &getIp() const;
+	const std::string &getHost() const;
 	const std::vector<Socket *> &getSockets() const;
 	const std::set<int> &getPorts() const;
 	const std::vector<std::string> &getServerName() const;
@@ -40,7 +40,7 @@ public:
  *****************************************************************************************************************/
  
 	void setLocations(const std::string& path, const Location &location);
-	void setIp(const std::string &ip);
+	void setHost(const std::string &ip);
 	void setSockets(const std::vector<Socket *> &sockets);
 	void setPorts(const int& port);
 	void setServerName(const std::string &serverName);

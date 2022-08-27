@@ -30,8 +30,8 @@ const std::vector<std::string> &Server::getServerName() const {
 }
 
 
-const std::string&Server::getIp() const {
-	return _ip;
+const std::string &Server::getHost() const {
+	return _host;
 }
 
 const std::map<std::string, Location> &Server::getLocations() const {
@@ -51,8 +51,8 @@ const Location &Server::getConstDefault() const{
  *****************************************************************************************************************/
 
 
-void Server::setIp(const std::string &ip) {
-	_ip = ip;
+void Server::setHost(const std::string &ip) {
+	_host = ip;
 }
 
 void Server::setSockets(const std::vector<Socket *> &sockets) {
