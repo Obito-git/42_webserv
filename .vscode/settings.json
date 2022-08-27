@@ -65,6 +65,12 @@
 		"vector": "cpp",
 		"cinttypes": "cpp",
 		"hashtable": "cpp",
-		"csignal": "cpp"
+		"csignal": "cpp",
+		"__errc": "cpp",
+		"__node_handle": "cpp",
+		"bit": "cpp",
+		"deque": "cpp",
+		"optional": "cpp",
+		"stack": "cpp"
 	}
 }

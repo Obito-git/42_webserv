@@ -7,14 +7,14 @@
 
 Request::Request(): _method(INIT), _url(""), _http_version(""),
 _message(std::vector<std::string>()),
-_header(std::map<std::string, std::string>()), _host(""), _content_length(""),
+_header(std::map<std::string, std::string>()), _host(""), _content_type(""), _content_length(""),
 _server(NULL), _location(NULL), _index(std::set <std::string>()), _ws(std::vector<const Server*>()) {};
 
 
 Request::Request(const char *message, const std::vector<const Server*> &webserv):
 _method(INIT), _url(""), _http_version(""),
 _message(std::vector<std::string>()),
-_header(std::map<std::string, std::string>()), _host(""), _content_length(""),
+_header(std::map<std::string, std::string>()), _host(""), _content_type(""), _content_length(""),
 _server(NULL), _location(NULL), _index(std::set <std::string>()), _ws(webserv)														   
 {
 	if (message)
@@ -194,7 +194,10 @@ std::string	Request::_generate_reponse_headers(int code, std::string code_page, 
 	buf << "Date: " << date;
 	buf << "Server:" << "Webserver" << std::endl;
 	buf << "Content-Length: " << size << std::endl;
+	if (_content_type != "")
+		buf << "Content-Type: " << _content_type << std::endl;
 	buf << "Content-Type:" << "text/html" << std::endl << std::endl;
+
 	return (buf.str());
 }
 
@@ -411,6 +414,9 @@ int	Request::_fill_up_request()
 	it = _header.find("Host");
 	if (it != _header.end())
 		_fill_up_host(it);
+	it = _header.find("Accept");
+	if (it != _header.end())
+		this->_content_type = (*it).second;//FIXME à faire une new fonction
 	if (_method == POST)
 	{
 		_fill_up_content_length();
