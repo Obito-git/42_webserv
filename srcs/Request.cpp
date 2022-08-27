@@ -193,10 +193,10 @@ std::string	Request::_generate_reponse_headers(int code, std::string code_page, 
 	buf << "HTTP/1.1 " << code << " " << code_page << std::endl;
 	buf << "Date: " << date;
 	buf << "Server:" << "Webserver" << std::endl;
-	buf << "Content-Length: " << size << std::endl;
 	if (_content_type != "")
 		buf << "Content-Type: " << _content_type << std::endl;
-	buf << "Content-Type:" << "text/html" << std::endl << std::endl;
+	buf << "Content-Length: " << size << std::endl << std::endl;
+
 
 	return (buf.str());
 }
