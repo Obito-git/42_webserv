@@ -181,8 +181,9 @@ void	Request::_create_response()
 	}
 }
 
-std::string	Request::_generate_reponse_headers(int code, std::string code_page)
+std::string	Request::_generate_reponse_headers(int code, std::string code_page, size_t size)
 {
+	(void) size;
 	std::stringstream buf;
 
 	std::time_t now = time(0);
@@ -192,6 +193,7 @@ std::string	Request::_generate_reponse_headers(int code, std::string code_page)
 	buf << "HTTP/1.1 " << code << " " << code_page << std::endl;
 	buf << "Date: " << date;
 	buf << "Server:" << "Webserver" << std::endl;
+	buf << "Content-Length: " << size << std::endl;
 	buf << "Content-Type:" << "text/html" << std::endl << std::endl;
 	return (buf.str());
 }
@@ -200,8 +202,9 @@ std::string	Request::_generate_reponse_ok(int code,std::string code_page)
 {
 	std::stringstream buf;
 
-	buf << _generate_reponse_headers(code, "OK"); //FIXME
-	buf << code_page;
+	size_t size = code_page.length();
+	buf << _generate_reponse_headers(code, "OK", size); //FIXME
+	buf << code_page << std::endl << std::endl;
 	return (buf.str());
 }
 
@@ -209,8 +212,10 @@ std::string	Request::_generate_reponse_error(int code, std::string msg)
 {
 	std::stringstream buf;
 
-	buf << _generate_reponse_headers(code, msg);
-	buf << _generate_error_body(_location, code);
+	std::string body = _generate_error_body(_location, code);
+
+	buf << _generate_reponse_headers(code, msg, body.length());
+	buf << body;
 	return (buf.str());
 }
 

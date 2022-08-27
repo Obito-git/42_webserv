@@ -62,7 +62,7 @@ class Request
 		std::string	_concatenate_path();
 		void		_path_is_to_folder(std::string path);
 		void		_path_is_to_file(std::string path);
-		std::string	_generate_reponse_headers(int code, std::string code_page);
+		std::string	_generate_reponse_headers(int code, std::string code_page, size_t size);
 		std::string	_generate_reponse_ok(int code, std::string code_page);
 		std::string	_generate_reponse_error(int code, std::string msg);
 		std::string _generate_error_body(const Location *location, short status_code);
