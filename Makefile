@@ -1,6 +1,7 @@
 NAME = webserv
 CC = c++
-CFLAGS = -Wall -Werror -Wextra -std=c++98 -g3 -fsanitize=address -Iinc
+#CFLAGS = -Wall -Werror -Wextra -g3 -fsanitize=address -Iinc
+CFLAGS = -Wall -Werror -Wextra -g3 -Iinc
 SRCS_DIR = srcs/
 SRCS = Request.cpp Logger.cpp main.cpp Webserv_machine.cpp Socket.cpp Server.cpp Location.cpp ConfigParser.cpp utils.cpp
 

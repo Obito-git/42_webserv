@@ -62,7 +62,6 @@ void Webserv_machine::up() {
 				try {
 					if (it->second->answer()) {
 						clients_to_write.erase(it);
-						it = clients_to_write.end();
 					}
 				} catch (std::exception& e){
 					Logger::println(Logger::TXT_BLACK,Logger::BG_RED, e.what());
@@ -91,7 +90,6 @@ void Webserv_machine::up() {
 					FD_CLR(it->first, &read_set);
 					it->second->close();
 					delete it->second;
-					it = clients_to_read.begin();
 					clients_to_read.erase(it->first);
 				}
 				select_status = 0;
