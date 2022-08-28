@@ -109,7 +109,7 @@ int	Request::_check_location()
 int	Request::_check_methods()
 {
 	const std::set<HTTP_METHOD> methods = _location->getAllowedMethods();
-	if (methods.find(_method) != methods.end())
+	if (methods.empty() || methods.find(_method) != methods.end())
 		return (1);
 	_rep = _generate_reponse_error(405, "Method Not Allowed"); // header : alowd_metods
 	return (0);
