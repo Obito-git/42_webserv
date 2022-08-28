@@ -56,6 +56,7 @@ Socket *Socket::accept_connection() const {
 
 bool Socket::process_msg() {
 	char *data[BUF_SIZE];
+	size_t not_space_pos;
 	
 	ssize_t read_status = read(_socket_fd, data, BUF_SIZE);
 	if (read_status == 0)
@@ -63,12 +64,18 @@ bool Socket::process_msg() {
 	if (read_status == -1)
 		throw CannotAccessDataException("Error of read. Connection closed");
 	_client_msg.append(reinterpret_cast<const char *>(data), read_status);
+	not_space_pos = _client_msg.find_first_not_of(" \f\n\r\t\v");
+	if (not_space_pos != std::string::npos && not_space_pos != 0)
+		_client_msg.erase(not_space_pos);
 	/* FIXME POTENTIAL BUF IF MSG SIZE IS GREATER THAN 65535 BITES */
-	if (_client_msg.find("\r\n\r\n") != std::string::npos || _client_msg.find("\n\n") != std::string::npos) {
+	if (not_space_pos != std::string::npos && (_client_msg.find("\r\n\r\n") != std::string::npos
+		|| _client_msg.find("\n\n") != std::string::npos)) {
 		Request r(_client_msg.data(), _parent_socket->getServers());
 		std::cout << std::endl << std::endl << "Message from " << _socket_fd << ":" << std::endl << _client_msg << std::endl;
 		_client_msg = r._rep; //FIXME GETTER
 		return true;
+	} else if (not_space_pos == std::string::npos) {
+		_client_msg.clear();
 	}
 	return false;
 }
