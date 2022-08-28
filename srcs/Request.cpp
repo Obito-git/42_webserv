@@ -97,7 +97,7 @@ int	Request::_check_location()
 		}
 		else
 		{
-			location.pop_back();
+			location.erase(location.end() - 1);
 			pos = location.find_last_of('/');	
 			location = location.substr(0, pos + 1);
 		}
@@ -299,7 +299,8 @@ void	Request::_check_line(std::string line)
 {
 	if (!line.empty())
 	{
-		line.pop_back();
+		if (line.back() == '\r')
+			line.erase(line.end() - 1);
 		_message.push_back(line);
 	}
 }
