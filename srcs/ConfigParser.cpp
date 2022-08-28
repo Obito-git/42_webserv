@@ -29,7 +29,7 @@ void ConfigParser::parse_config(const char *path) {
 	try {
 		file_content = ft_read_file(path).append(" ");
 	} catch (std::exception& e) {
-		throw ConfigCriticalError("Cannot open config file\n");
+		throw ConfigCriticalError("Cannot open config file");
 	}
 	//will read all file_content and delete already wrote part from file_content
 	for (it = file_content.begin(); file_content.length() && it != file_content.end();) {
@@ -61,8 +61,8 @@ ConfigParser::str_iter ConfigParser::skip_comments_and_spaces(std::string& file_
 }
 
 std::string& ConfigParser::find_unexpected_token(std::string s, const char* token) {
-	std::stringstream sstm;
-	sstm >> _line_number;
+	std::stringstream sstm; //FIXME maybe only this?
+	sstm << _line_number;
 	_error_msg = "Error, unexpected token. ";
 	_error_msg.append(token).append(" expected at line ");
 	_error_msg.append(sstm.str().append(":\n"));
@@ -96,6 +96,7 @@ std::vector<std::string> ConfigParser::parse_parameter_args(std::string& file_co
 void ConfigParser::parse_server_block(std::string &file_content, str_iter &it) {
 	//creates new server and saves it
 	Server* s = new Server;
+	Location tmp_loc;
 	std::vector<std::string> args;
 	std::vector<std::pair<int, std::string> > locations_blocks;
 	_servers.push_back(s);
@@ -111,13 +112,13 @@ void ConfigParser::parse_server_block(std::string &file_content, str_iter &it) {
 			case ::LISTEN: parse_listen_args(s, args); break;
 			case ::PORT: parse_port_args(s, args); break;
 			case ::SERVER_NAME: parse_servername_args(s, args); break;
-			case ::ERR_PAGE: parse_errorpages_args(s->getDefault(), args); break;
-			case ::CLIENT_BODY_SIZE: parse_bodysize_args(s->getDefault(), args); break;
-			case ::FILE_UPLOAD: parse_fileupload_args(s->getDefault(), args); break;
-			case ::METHODS: parse_methods_args(s->getDefault(), args); break;
-			case ::INDEX: parse_index_args(s->getDefault(), args); break;
-			case ::AUTOINDEX: parse_autoindex_args(s->getDefault(), args); break;
-			case ::ROOT: parse_root_args(s->getDefault(), args); break;
+			case ::ERR_PAGE: parse_errorpages_args(tmp_loc, args); break;
+			case ::CLIENT_BODY_SIZE: parse_bodysize_args(tmp_loc, args); break;
+			case ::FILE_UPLOAD: parse_fileupload_args(tmp_loc, args); break;
+			case ::METHODS: parse_methods_args(tmp_loc, args); break;
+			case ::INDEX: parse_index_args(tmp_loc, args); break;
+			case ::AUTOINDEX: parse_autoindex_args(tmp_loc, args); break;
+			case ::ROOT: parse_root_args(tmp_loc, args); break;
 			case ::LOCATION: locations_blocks.push_back(skip_location_block(file_content, it)); break;
 			default: {
 				std::string tmp = "Expected one of\n [";
@@ -134,9 +135,10 @@ void ConfigParser::parse_server_block(std::string &file_content, str_iter &it) {
 					file_content, "}").data());
 	}
 	it++;
-	if (s->getHost().empty() || s->getPorts().empty() || s->getDefault().getRoot().empty())
+	if (s->getHost().empty() || s->getPorts().empty() || tmp_loc.getRoot().empty())
 		throw ConfigNoRequiredKeywords();
-	parse_locations(s, s->getDefault(), locations_blocks);
+	s->setDefault(tmp_loc);
+	parse_locations(s, tmp_loc, locations_blocks);
 }
 
 std::pair<int, std::string> ConfigParser::skip_location_block(std::string &file_content, ConfigParser::str_iter &it) {
@@ -253,8 +255,8 @@ void ConfigParser::parse_port_args(Server *s, std::vector<std::string> &args) {
 		int port = atoi((*it).data());
 		if ((*it).find_first_not_of("0123456789") != std::string::npos ||
 		((port < 1024 || port > 65535) && port != 80))
-			throw ConfigUnexpectedToken(find_unexpected_token(
-					*it, "decimal value of port from 1024 to 65535 or 80").data());
+			throw ConfigUnexpectedToken(find_unexpected_token(ft_strjoin(args.begin(), args.end(),
+					" "), "decimal value of port from 1024 to 65535 or 80").data());
 		s->setPorts(port);
 	}
 }
@@ -308,7 +310,7 @@ ConfigParser::parse_errorpages_args(Location& loc, std::vector<std::string> &arg
 void ConfigParser::parse_bodysize_args(Location& loc, std::vector<std::string> &args) {
 	long body_size = atol((*args.begin()).data());
 	if (args.size() != 1 || (*args.begin()).find_first_not_of("0123456789") != std::string::npos || body_size < 0)
-		throw ConfigUnexpectedToken(find_unexpected_token(*args.begin(), "positive number").data());
+		throw ConfigUnexpectedToken(find_unexpected_token(ft_strjoin(args.begin(), args.end(), " "), "positive number").data());
 	loc.setMaxBodySize(static_cast<unsigned long>(body_size));
 }
 
@@ -317,7 +319,7 @@ ConfigParser::parse_fileupload_args(Location& loc, std::vector<std::string> &arg
 	std::string str = *args.begin();
 	if (args.size() != 1 || (str != "on" && str != "off"))
 		throw ConfigUnexpectedToken(find_unexpected_token(
-				str, "on or off").data());
+				ft_strjoin(args.begin(), args.end(), " "), "on or off").data());
 	loc.setFileUpload(str == "on");
 }
 
@@ -343,7 +345,7 @@ void ConfigParser::parse_autoindex_args(Location &loc, std::vector<std::string> 
 	std::string str = *args.begin();
 	if (args.size() != 1 || (str != "on" && str != "off"))
 		throw ConfigUnexpectedToken(find_unexpected_token(
-				str, "on or off").data());
+				ft_strjoin(args.begin(), args.end(), " "), "on or off").data());
 	loc.setAutoindex(str == "on");
 }
 

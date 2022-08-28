@@ -38,10 +38,6 @@ const std::map<std::string, Location> &Server::getLocations() const {
 	return _locations;
 }
 
-Location &Server::getDefault() {
-	return _default;
-}
-
 const Location &Server::getConstDefault() const{
 	return _default;
 }

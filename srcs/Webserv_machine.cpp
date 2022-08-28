@@ -17,6 +17,7 @@ void Webserv_machine::up() {
 		return ;
 	int max_fd_number = (--_machine_sockets.end())->first;
 	
+	Logger::println("Waiting for connections...");
 	while (42) {
 		std::map<int, Socket *>::iterator it;
 		fd_set read_set;
@@ -29,12 +30,11 @@ void Webserv_machine::up() {
 			FD_ZERO(&write_set);
 			for (it = clients_to_write.begin(); it != clients_to_write.end(); it++)
 				FD_SET(it->first, &write_set);
-			std::cout << "Waiting for connections" << std::endl;
 		} while (!got_shutdown_signal && (select_status = select(max_fd_number + 1, &read_set, &write_set, NULL, NULL)) == 0);
 
-		//FIXME dont need exit
-		if (got_shutdown_signal) {
-			for (it = clients_to_write.begin(); it != clients_to_write.end(); it++) {
+		//FIXME dont need exit, need clean up
+		if (got_shutdown_signal || select_status <= 0) {
+			for (it = clients_to_write.begin(); it != clients_to_write.end(); it++) { //FIXME test with .clear()
 				it->second->close();
 				delete it->second;
 			}
@@ -42,11 +42,18 @@ void Webserv_machine::up() {
 				it->second->close();
 				delete it->second;
 			}
-			break;
-		}
-		if (select_status == -1) {
-			std::cout << "Select error" << std::endl;
-			exit(1);
+			clients_to_write.clear();
+			clients_to_read.clear();
+			if (got_shutdown_signal) {
+				Logger::println(Logger::TXT_BLACK, Logger::BG_RED, "Got shutdown signal");
+				break;
+			}
+			FD_ZERO(&_server_fd_set);
+			for (it = _machine_sockets.begin(); it != _machine_sockets.end(); it++)
+				FD_SET(it->first, &_server_fd_set);
+			Logger::println(Logger::TXT_BLACK, Logger::BG_RED, "Select returned 0"); //FIXME msg
+			Logger::println("Waiting for connections...");
+			continue;
 		}
 
 		//trying to send answer
@@ -58,7 +65,7 @@ void Webserv_machine::up() {
 						it = clients_to_write.end();
 					}
 				} catch (std::exception& e){
-					std::cout << e.what() << std::endl;
+					Logger::println(Logger::TXT_BLACK,Logger::BG_RED, e.what());
 					it->second->close();
 					FD_CLR(it->first, &_server_fd_set);
 					FD_CLR(it->first, &read_set);
@@ -80,7 +87,7 @@ void Webserv_machine::up() {
 						//FIXME need to delete from to_read?
 					}
 				} catch (std::exception& e) {
-					std::cout << e.what() << std::endl;
+					Logger::println(Logger::TXT_BLACK,Logger::BG_RED, e.what());
 					FD_CLR(it->first, &_server_fd_set);
 					FD_CLR(it->first, &read_set);
 					it->second->close();
@@ -95,14 +102,17 @@ void Webserv_machine::up() {
 		//checking is it new connection or not
 		for (it = _machine_sockets.begin(); select_status && it != _machine_sockets.end(); it++) {
 			if (FD_ISSET(it->first, &read_set)) {
-				std::cout << "new connection on " << it->second->getPort() << std::endl;
-				Socket *client = it->second->accept_connection(); //FIXME TRY CATCH
+				Socket *client;
+				try {
+					client = it->second->accept_connection();
+				} catch (std::exception& e) {
+					Logger::println(Logger::TXT_BLACK,Logger::BG_RED, e.what());
+					break;
+				}
 				clients_to_read.insert(std::make_pair(client->getSocketFd(), client));
 				FD_SET(client->getSocketFd(), &_server_fd_set);
 				if (client->getSocketFd() > max_fd_number)
 					max_fd_number = client->getSocketFd();
-				std::cout << client->getSocketFd() << " is connected" << std::endl;
-				select_status = 0;
 				break;
 			}
 		}
@@ -125,7 +135,7 @@ bool Webserv_machine::run_listening_sockets() {
 				try {
 					sock->open();
 				} catch (std::exception& e) {
-					std::cout << e.what() << std::endl;
+					Logger::println(Logger::BG_RED, e.what());
 					delete sock;
 					return false;
 				}
@@ -146,15 +156,32 @@ bool Webserv_machine::run_listening_sockets() {
 
 Webserv_machine::Webserv_machine(const char *path): got_shutdown_signal(false) {
 	ConfigParser config(path);
+	std::string error_msg;
 	try {
 		_servers = config.getParsedServers();
+		return;
+	} catch (ConfigParser::ConfigNoRequiredKeywords& e) {
+		error_msg = e.what();
+		size_t delim_pos = error_msg.find(':');
+		Logger::println(Logger::TXT_YELLOW, Logger::BG_RED, error_msg.substr(0, delim_pos + 1));
+		Logger::println(error_msg.substr(delim_pos + 2));
 	} catch (std::exception& e) {
-		_error_msg = e.what();
-		std::vector<Server *>& s = config.getServers();
-		for (std::vector<Server *>::iterator it = s.begin(); it != s.end(); it++)
-			delete *it;
-	}
-
+			error_msg = e.what();
+			size_t delim_pos = error_msg.find(':');
+			if (delim_pos == std::string::npos)
+				Logger::println(Logger::TXT_YELLOW, Logger::BG_RED, error_msg);
+			else {
+				Logger::println(Logger::TXT_YELLOW, Logger::BG_RED, error_msg.substr(0, delim_pos + 1));
+				if (error_msg.substr(delim_pos + 2).empty())
+					Logger::println(Logger::BG_YELLOW, "\t\t\t\t\t\t\t");
+				else
+					Logger::println(Logger::BG_YELLOW, error_msg.substr(delim_pos + 2));
+			}
+			
+		}
+	std::vector<Server *>& s = config.getServers();
+	for (std::vector<Server *>::iterator it = s.begin(); it != s.end(); it++)
+		delete *it;
 }
 
 /******************************************************************************************************************
@@ -167,10 +194,6 @@ const std::map<int, Socket *> &Webserv_machine::getMachineSockets() const {
 
 const std::vector<Server *> &Webserv_machine::getServers() const {
 	return _servers;
-}
-
-const std::string &Webserv_machine::getErrorMsg() const {
-	return _error_msg;
 }
 
 /******************************************************************************************************************

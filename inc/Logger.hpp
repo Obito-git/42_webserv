@@ -173,12 +173,12 @@ public:
 	template<typename T, typename X, typename U>
 	static void print(TXT_COLORS txt_color, BG_COLORS bg_color, const T &t, const X &x, const U &u) {
 		std::cout << COLOR_START << get_txt_value(txt_color) << ";"
-				  << get_bg_value(bg_color) << "m" << t << " " << x << " " << u << RESET << std::endl;
+				  << get_bg_value(bg_color) << "m" << t << " " << x << " " << u << RESET;
 	}
 
 	template<typename T, typename X, typename U>
 	static void print(BG_COLORS bg_color, const T &t, const X &x, const U &u) {
-		std::cout << COLOR_START << get_bg_value(bg_color) << "m" << t << " " << x << " " << u << RESET << std::endl;
+		std::cout << COLOR_START << get_bg_value(bg_color) << "m" << t << " " << x << " " << u << RESET;
 	}
 	
 private:

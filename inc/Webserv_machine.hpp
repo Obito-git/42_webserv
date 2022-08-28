@@ -16,7 +16,6 @@ class Webserv_machine {
 private:
 	std::map<int, Socket *>     _machine_sockets; // <socket_fd, socket>
 	std::vector<Server *>	    _servers;
-	std::string 				_error_msg;
 	fd_set				    	_server_fd_set;
 	bool 						got_shutdown_signal;
 

@@ -21,18 +21,17 @@ private:
 public:
 	Server();
 	static const std::string    _server_keywords[];
-	static const std::string    _all_keywords[];
+	static const std::string    _all_keywords[]; //FIXME unused
 
 /******************************************************************************************************************
  ************************************************** GETTERS *******************************************************
  *****************************************************************************************************************/
 
 	const std::string &getHost() const;
-	const std::vector<Socket *> &getSockets() const;
+	const std::vector<Socket *> &getSockets() const; //FIXME unused
 	const std::set<int> &getPorts() const;
 	const std::vector<std::string> &getServerName() const;
 	const std::map<std::string, Location> &getLocations() const;
-	Location &getDefault();
 	const Location &getConstDefault() const;
 
 /******************************************************************************************************************
@@ -41,7 +40,7 @@ public:
  
 	void setLocations(const std::string& path, const Location &location);
 	void setHost(const std::string &ip);
-	void setSockets(const std::vector<Socket *> &sockets);
+	void setSockets(const std::vector<Socket *> &sockets); //FIXME unused
 	void setPorts(const int& port);
 	void setServerName(const std::string &serverName);
 	void setDefault(const Location &location);

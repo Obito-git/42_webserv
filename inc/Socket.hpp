@@ -20,6 +20,7 @@ private:
 	int						_port;
 	std::string 			_host;
 	std::string 			_client_msg;
+	std::string				_log_msg;
 	std::vector<const Server *>	_servers;
 public:
 
@@ -29,6 +30,8 @@ public:
  
 	Socket(const std::string& host, int port);
 	Socket(const Socket *parent, int socket_fd);
+
+	virtual ~Socket();
 	//FIXME NORMALLY NEED DESTRUCTOR WITH CLOSE INSIDE
 	
 /******************************************************************************************************************
@@ -37,7 +40,7 @@ public:
  
 	void open();
 	void close();
-	Socket *accept_connection() const;
+	Socket *accept_connection();
 	bool process_msg();
 	bool answer();
 

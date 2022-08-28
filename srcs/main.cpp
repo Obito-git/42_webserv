@@ -5,18 +5,21 @@
 
 void test_configs(int ac, char** av) {
 	std::cout << "--------------------------------" << std::endl;
+	std::vector<Server *> servers;
 	for (int i = 1; i < ac; i++) {
 		std::string path = av[i];
 		path.insert(0, "config_files_tests/");
+		ConfigParser config(path);
 		std::string msg;
-		Webserv_machine *test;
 		try {
-			test = new Webserv_machine(path.data());
-			msg = test->getErrorMsg();
+			servers = config.getParsedServers();
+			msg = "";
 		} catch (std::exception& e) {
 			msg = e.what();
 		}
-		delete test;
+		std::vector<Server *>& s = config.getServers();
+		for (std::vector<Server *>::iterator it = s.begin(); it != s.end(); it++)
+			delete *it;
 		std::cout << "test=\"";
 		Logger::print(Logger::TXT_MAGENTA, av[i]);
 		std::cout << "\" ";
@@ -46,8 +49,8 @@ int main(int ac, char** av) {
 		signal(SIGINT, handle_exit);
 		ws = new Webserv_machine(av[1]);
 		ws->up();
-		std::cout << ws->getErrorMsg() << std::endl;
 		delete ws;
 	} else
 		test_configs(ac, av);
+	return 0;
 }

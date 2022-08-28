@@ -45,8 +45,11 @@ std::string ft_read_file(const std::string& path);
 template <class InputIterator>
 std::string ft_strjoin(InputIterator begin, InputIterator end, const std::string& delim) {
 	std::string tmp;
-	while (begin != end)
-		tmp.append(std::string(*begin++)).append(delim);
+	while (begin != end) {
+		tmp.append(std::string(*begin));
+		if (++begin != end)
+			tmp.append(delim);
+	}
 	return tmp;
 }
 

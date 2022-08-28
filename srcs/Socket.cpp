@@ -8,7 +8,7 @@
  ************************************** CONSTRUCTORS/DESTRUCTORS **************************************************
  *****************************************************************************************************************/
  
-Socket::Socket(const std::string& host, int port) : _socket_fd(-1), _port(port), _host(host) {
+Socket::Socket(const std::string& host, int port) : _socket_fd(-1), _parent_socket(NULL), _port(port), _host(host) {
 	_address.sin_family = AF_INET;
 	_address.sin_addr.s_addr = inet_addr(host.data());
 	_address.sin_port = htons(port);
@@ -16,40 +16,62 @@ Socket::Socket(const std::string& host, int port) : _socket_fd(-1), _port(port),
 }
 
 Socket::Socket(const Socket *parent, int socket_fd): _socket_fd(socket_fd), _parent_socket(parent),
-													_address(parent->getAddress()), _port(parent->getPort()){
+													_address(parent->getAddress()), _port(parent->getPort()),
+													_host(parent->getHost()) {
+	std::stringstream ss;
+	ss << "Client " << _socket_fd << " has been connected to " << _host << ":" << _port;
+	Logger::println(Logger::TXT_MAGENTA, Logger::BG_WHITE, ss.str());
 }
 
+Socket::~Socket() {
+	close();
+}
 /******************************************************************************************************************
  ******************************************* SOCKET METHODS *******************************************************
  *****************************************************************************************************************/
  
 void Socket::open() {
 	int opt = 1;
+	std::stringstream ss;
+	ss << _host << ":" << _port;
 	if (_socket_fd == -1) {
 		if ((_socket_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-			throw CannotCreateSocketException("Can't create socket");
+			throw CannotCreateSocketException((_log_msg = "Can't create socket for ").append(ss.str()).data());
 		if (((setsockopt(_socket_fd, SOL_SOCKET, SO_REUSEADDR,(char *)&opt, sizeof(opt))) < 0) ||
 			(setsockopt(_socket_fd, SOL_SOCKET, SO_REUSEPORT, (char *)&opt, sizeof(opt)) < 0))
-			throw CannotCreateSocketException("Can't set up socket");
+			throw CannotCreateSocketException((_log_msg = "Can't setup ").append(ss.str()).data());
 		if (bind(_socket_fd, (struct sockaddr *) &_address, sizeof(_address)) < 0)
-			throw CannotCreateSocketException("Can't bind socket");
+			throw CannotCreateSocketException((_log_msg = "Can't bind socket on ").append(ss.str()).data());
 		if (listen(_socket_fd, 32) < 0)
-			throw CannotCreateSocketException("Can't listen socket");
+			throw CannotCreateSocketException((_log_msg = "Can't listen ").append(ss.str()).data());
+		Logger::println(Logger::TXT_BLACK, Logger::BG_GREEN,
+						"New server socket has been created for", _host, _port);
 	} else
-		throw CannotCreateSocketException("Can't open already opened socket");
+		throw CannotCreateSocketException((_log_msg = ss.str()).append(" is already exists").data());
 }
 
 void Socket::close() {
 	if (_socket_fd != -1) {
+		if (_parent_socket) {
+			Logger::print(Logger::TXT_RED, Logger::BG_WHITE, "Client", _socket_fd, "has been disconnected from ");
+			Logger::println(Logger::TXT_RED, Logger::BG_WHITE, _host ,_port);
+		} else {
+			Logger::print(Logger::TXT_RED, Logger::BG_YELLOW, "Socket", _host, _port);
+			Logger::println(Logger::TXT_RED, Logger::BG_YELLOW, " was closed by server");
+		}
 		::close(_socket_fd);
 		_socket_fd = -1;
 	}
 }
 
-Socket *Socket::accept_connection() const {
+Socket *Socket::accept_connection() {
+	Logger::println(Logger::TXT_BLACK, Logger::BG_WHITE, "New connection on", _host, _port);
 	int accepted_fd = accept(_socket_fd, NULL, NULL);
-	if (accepted_fd == -1)
-		throw CannotCreateSocketException("Accept error");
+	if (accepted_fd == -1) {
+		std::stringstream ss;
+		ss << "Can't accept new client to " << _host << ":" << _port;
+		throw CannotCreateSocketException((_log_msg = ss.str()).data());
+	}
 	fcntl(accepted_fd, F_SETFL, O_NONBLOCK);
 	return new Socket(this, accepted_fd);
 }
@@ -59,19 +81,18 @@ bool Socket::process_msg() {
 	size_t not_space_pos;
 	
 	ssize_t read_status = read(_socket_fd, data, BUF_SIZE);
-	if (read_status == 0)
-		throw CannotAccessDataException("Client closed connection");
-	if (read_status == -1)
-		throw CannotAccessDataException("Error of read. Connection closed");
+	if (read_status <= 0)
+		throw CannotAccessDataException("Connection is closed");
 	_client_msg.append(reinterpret_cast<const char *>(data), read_status);
 	not_space_pos = _client_msg.find_first_not_of(" \f\n\r\t\v");
 	if (not_space_pos != std::string::npos && not_space_pos != 0)
-		_client_msg.erase(not_space_pos);
+		_client_msg.erase(0, not_space_pos);
 	/* FIXME POTENTIAL BUF IF MSG SIZE IS GREATER THAN 65535 BITES */
 	if (not_space_pos != std::string::npos && (_client_msg.find("\r\n\r\n") != std::string::npos
 		|| _client_msg.find("\n\n") != std::string::npos)) {
+		Logger::print("Got request from client ", _socket_fd, ":\t");
+		Logger::println(Logger::TXT_BLACK, Logger::BG_WHITE,_client_msg.substr(0, _client_msg.find('\n')));
 		Request r(_client_msg.data(), _parent_socket->getServers());
-		std::cout << std::endl << std::endl << "Message from " << _socket_fd << ":" << std::endl << _client_msg << std::endl;
 		_client_msg = r._rep; //FIXME GETTER
 		return true;
 	} else if (not_space_pos == std::string::npos) {
@@ -85,11 +106,13 @@ bool Socket::answer() {
 	if (write_status == -1)
 		throw CannotAccessDataException("Can't write data in socket");
 	if (write_status == static_cast<ssize_t>(_client_msg.size())) {
-		std::cout << "Message to " << _socket_fd << ":" << std::endl << _client_msg << std::endl << std::endl;
+		Logger::print("Message to", _socket_fd, ":\t");
+		Logger::println(Logger::TXT_BLACK, Logger::BG_WHITE,_client_msg.substr(0, _client_msg.find('\n')));
 		return true;
 	}
 	_client_msg.erase(0, static_cast<size_t>(write_status));
-	std::cout << "Not all bites were sent. Message is erased and will sent another part again" << std::endl;
+	Logger::println(Logger::TXT_BLACK, Logger::BG_YELLOW, "Not all bites were sent to", _socket_fd, 
+					"Message is erased and will sent another part again");
 	return false;
 }
 
@@ -124,6 +147,8 @@ const std::string &Socket::getHost() const {
 void Socket::setServers(const Server *serv) {
 	_servers.push_back(serv);
 }
+
+
 
 /******************************************************************************************************************
  *********************************************** EXCEPTIONS *******************************************************
