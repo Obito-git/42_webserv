@@ -23,6 +23,7 @@ _server(NULL), _location(NULL), _index(std::set <std::string>()), _ws(webserv)
 		_make_map_of_headers();
 		_fill_up_request();
 		_create_response();
+		std::cout << "";
 	}
 }
 
@@ -56,29 +57,23 @@ Request::~Request() {};
 
 int	Request::_check_server_name()
 {
-	if (!_host.empty())
+	std::vector<std::string> servers_name;
+	std::vector<const Server *>::const_iterator it_serv = _ws.begin();
+	std::vector<std::string>::iterator it_serv_nm;
+	for (; it_serv != _ws.end(); ++it_serv)
 	{
-		// std::vector<Server *> servers = _ws->getServers();
-		std::vector<std::string> servers_name;
-		std::vector<const Server *>::const_iterator it_serv = _ws.begin();
-		std::vector<std::string>::iterator it_serv_nm;
-		for (; it_serv != _ws.end(); ++it_serv)
+		servers_name = (*it_serv)->getServerName();
+		for (it_serv_nm = servers_name.begin(); it_serv_nm < servers_name.end(); ++it_serv_nm)
 		{
-			servers_name = (*it_serv)->getServerName();
-			for (it_serv_nm = servers_name.begin(); it_serv_nm < servers_name.end(); ++it_serv_nm)
-			{
-				if ((*it_serv_nm).compare(_host) == 0)
-				{
-					_server = *it_serv;
-					return (1);
-				}
-			}
+			if (!_host.empty() && ((*it_serv_nm).compare(_host) == 0))
+				_server = *it_serv;
+			else if (_host.empty() && ((*it_serv_nm).compare(_host) == 0))
+				_server = *it_serv;
 		}
-		_rep = _generate_reponse_error(404, "Not Found");
-		return (0);
 	}
-	else
-		return (1);
+	if (_server == NULL)
+		_server = _ws.front();
+	return (1);
 }
 
 int	Request::_check_location()
@@ -114,7 +109,7 @@ int	Request::_check_location()
 int	Request::_check_methods()
 {
 	const std::set<HTTP_METHOD> methods = _location->getAllowedMethods();
-	if (methods.find(_method) != methods.end())
+	if (methods.empty() || methods.find(_method) != methods.end())
 		return (1);
 	_rep = _generate_reponse_error(405, "Method Not Allowed"); // header : alowd_metods
 	return (0);
@@ -193,8 +188,12 @@ std::string	Request::_generate_reponse_headers(int code, std::string code_page, 
 	buf << "HTTP/1.1 " << code << " " << code_page << std::endl;
 	buf << "Date: " << date;
 	buf << "Server:" << "Webserver" << std::endl;
+	/*
 	if (_content_type != "")
 		buf << "Content-Type: " << _content_type << std::endl;
+	 */
+	buf << "Content-Type: " << "text/html" << std::endl;
+
 	buf << "Content-Length: " << size << std::endl << std::endl;
 
 
@@ -416,7 +415,8 @@ int	Request::_fill_up_request()
 		_fill_up_host(it);
 	it = _header.find("Accept");
 	if (it != _header.end())
-		this->_content_type = (*it).second;//FIXME à faire une new fonction
+		_content_type = "text/html";
+		//this->_content_type = (*it).second;//FIXME à faire une new fonction
 	if (_method == POST)
 	{
 		_fill_up_content_length();
