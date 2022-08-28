@@ -20,7 +20,7 @@ Socket::Socket(const Socket *parent, int socket_fd): _socket_fd(socket_fd), _par
 													_host(parent->getHost()) {
 	std::stringstream ss;
 	ss << "Client " << _socket_fd << " has been connected to " << _host << ":" << _port;
-	Logger::println(Logger::TXT_MAGENTA, Logger::BG_WHITE, ss.str());
+	Logger::println(Logger::TXT_BLACK, Logger::BG_WHITE, ss.str());
 }
 
 Socket::~Socket() {
@@ -53,8 +53,8 @@ void Socket::open() {
 void Socket::close() {
 	if (_socket_fd != -1) {
 		if (_parent_socket) {
-			Logger::print(Logger::TXT_RED, Logger::BG_WHITE, "Client", _socket_fd, "has been disconnected from ");
-			Logger::println(Logger::TXT_RED, Logger::BG_WHITE, _host ,_port);
+			Logger::print(Logger::TXT_BLACK, Logger::BG_WHITE, "Client", _socket_fd, "has been disconnected from ");
+			Logger::println(Logger::TXT_BLACK, Logger::BG_WHITE, _host ,_port);
 		} else {
 			Logger::print(Logger::TXT_RED, Logger::BG_YELLOW, "Socket", _host, _port);
 			Logger::println(Logger::TXT_RED, Logger::BG_YELLOW, " was closed by server");
@@ -90,8 +90,8 @@ bool Socket::process_msg() {
 	/* FIXME POTENTIAL BUF IF MSG SIZE IS GREATER THAN 65535 BITES */
 	if (not_space_pos != std::string::npos && (_client_msg.find("\r\n\r\n") != std::string::npos
 		|| _client_msg.find("\n\n") != std::string::npos)) {
-		Logger::print("Got request from client ", _socket_fd, ":\t");
-		Logger::println(Logger::TXT_BLACK, Logger::BG_WHITE,_client_msg.substr(0, _client_msg.find('\n')));
+		Logger::print("\nGot request from client ", _socket_fd, ":\t");
+		Logger::println(Logger::TXT_BLACK, Logger::BG_CYAN,_client_msg.substr(0, _client_msg.find('\n')));
 		Request r(_client_msg.data(), _parent_socket->getServers());
 		_client_msg = r._rep; //FIXME GETTER
 		return true;
@@ -106,8 +106,9 @@ bool Socket::answer() {
 	if (write_status == -1)
 		throw CannotAccessDataException("Can't write data in socket");
 	if (write_status == static_cast<ssize_t>(_client_msg.size())) {
-		Logger::print("Message to", _socket_fd, ":\t");
-		Logger::println(Logger::TXT_BLACK, Logger::BG_WHITE,_client_msg.substr(0, _client_msg.find('\n')));
+		Logger::print("\nMessage to", _socket_fd, ":\t");
+		Logger::println(Logger::TXT_BLACK, Logger::BG_CYAN,_client_msg.substr(0, _client_msg.find('\n')));
+		Logger::println("");
 		return true;
 	}
 	_client_msg.erase(0, static_cast<size_t>(write_status));

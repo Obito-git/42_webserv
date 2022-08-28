@@ -87,10 +87,10 @@ void Webserv_machine::up() {
 						//FIXME need to delete from to_read?
 					}
 				} catch (std::exception& e) {
-					Logger::println(Logger::TXT_BLACK,Logger::BG_RED, e.what());
 					FD_CLR(it->first, &_server_fd_set);
 					FD_CLR(it->first, &read_set);
 					it->second->close();
+					delete it->second;
 					it = clients_to_read.begin();
 					clients_to_read.erase(it->first);
 				}
