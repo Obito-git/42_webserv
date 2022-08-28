@@ -56,29 +56,23 @@ Request::~Request() {};
 
 int	Request::_check_server_name()
 {
-	if (!_host.empty())
+	std::vector<std::string> servers_name;
+	std::vector<const Server *>::const_iterator it_serv = _ws.begin();
+	std::vector<std::string>::iterator it_serv_nm;
+	for (; it_serv != _ws.end(); ++it_serv)
 	{
-		// std::vector<Server *> servers = _ws->getServers();
-		std::vector<std::string> servers_name;
-		std::vector<const Server *>::const_iterator it_serv = _ws.begin();
-		std::vector<std::string>::iterator it_serv_nm;
-		for (; it_serv != _ws.end(); ++it_serv)
+		servers_name = (*it_serv)->getServerName();
+		for (it_serv_nm = servers_name.begin(); it_serv_nm < servers_name.end(); ++it_serv_nm)
 		{
-			servers_name = (*it_serv)->getServerName();
-			for (it_serv_nm = servers_name.begin(); it_serv_nm < servers_name.end(); ++it_serv_nm)
-			{
-				if ((*it_serv_nm).compare(_host) == 0)
-				{
-					_server = *it_serv;
-					return (1);
-				}
-			}
+			if (!_host.empty() && ((*it_serv_nm).compare(_host) == 0))
+				_server = *it_serv;
+			else if (_host.empty() && ((*it_serv_nm).compare(_host) == 0))
+				_server = *it_serv;
 		}
-		_rep = _generate_reponse_error(404, "Not Found");
-		return (0);
 	}
-	else
-		return (1);
+	if (_server == NULL)
+		_server = _ws.front();
+	return (1);
 }
 
 int	Request::_check_location()
@@ -298,6 +292,7 @@ int	Request::_check_second_line()
 
 void	Request::_check_line(std::string line)
 {
+	std::cout << "(!line.empty()) : " <<(!line.empty()) << std::endl;
 	if (!line.empty())
 	{
 		line.pop_back();
