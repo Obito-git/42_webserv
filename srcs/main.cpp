@@ -17,16 +17,17 @@ void test_configs(int ac, char** av) {
 			msg = e.what();
 		}
 		delete test;
-		std::cout << "test=\"" << YELLOW << av[i] << RESET"\" ";
+		std::cout << "test=\"";
+		Logger::print(Logger::TXT_MAGENTA, av[i]);
+		std::cout << "\" ";
 		if ((path.find("_ok") != std::string::npos && !msg.empty())
 			|| (path.find("_ok") == std::string::npos && msg.empty()))
-			std::cout << RED << "KO" << RESET;
+			Logger::println(Logger::TXT_RED, "KO");
 		else if ((path.find("_ok") != std::string::npos && msg.empty())
 			|| (path.find("_ok") == std::string::npos && !msg.empty()))
-			std::cout << GREEN << "OK" << RESET;
+			Logger::println(Logger::TXT_GREEN, "OK");
 		else
-			std::cout << RED << "TEST FAILED" << RESET;
-		std::cout << std::endl;
+			Logger::print(Logger::TXT_YELLOW, Logger::BG_RED, "TEST ERROR");
 	}
 	std::cout << std::endl << "--------------------------------" << std::endl;
 }
@@ -40,7 +41,7 @@ void handle_exit(int signal) {
 
 int main(int ac, char** av) {
 	if (ac == 1)
-		std::cout << "No args detected" << std::endl;
+		Logger::println(Logger::TXT_YELLOW, Logger::BG_RED, "No args detected");
 	else if (ac == 2) {
 		signal(SIGINT, handle_exit);
 		ws = new Webserv_machine(av[1]);

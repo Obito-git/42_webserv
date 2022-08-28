@@ -20,9 +20,6 @@ std::vector<std::string>* ft_split(std::string s, char delim) {
 	return tmp_res;
 }
 
-
-
-
 std::string ft_read_file(const std::string& path) {
 	std::ifstream in;
 	std::string file_content;
@@ -48,5 +45,4 @@ std::string ft_read_file(const std::string& path) {
 	in.close();
 	return file_content;
 }
-
 
