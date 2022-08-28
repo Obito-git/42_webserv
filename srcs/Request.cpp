@@ -23,6 +23,7 @@ _server(NULL), _location(NULL), _index(std::set <std::string>()), _ws(webserv)
 		_make_map_of_headers();
 		_fill_up_request();
 		_create_response();
+		std::cout << "";
 	}
 }
 
@@ -187,8 +188,12 @@ std::string	Request::_generate_reponse_headers(int code, std::string code_page, 
 	buf << "HTTP/1.1 " << code << " " << code_page << std::endl;
 	buf << "Date: " << date;
 	buf << "Server:" << "Webserver" << std::endl;
+	/*
 	if (_content_type != "")
 		buf << "Content-Type: " << _content_type << std::endl;
+	 */
+	buf << "Content-Type: " << "text/html" << std::endl;
+
 	buf << "Content-Length: " << size << std::endl << std::endl;
 
 
@@ -292,7 +297,6 @@ int	Request::_check_second_line()
 
 void	Request::_check_line(std::string line)
 {
-	std::cout << "(!line.empty()) : " <<(!line.empty()) << std::endl;
 	if (!line.empty())
 	{
 		line.pop_back();
@@ -411,7 +415,8 @@ int	Request::_fill_up_request()
 		_fill_up_host(it);
 	it = _header.find("Accept");
 	if (it != _header.end())
-		this->_content_type = (*it).second;//FIXME à faire une new fonction
+		_content_type = "text/html";
+		//this->_content_type = (*it).second;//FIXME à faire une new fonction
 	if (_method == POST)
 	{
 		_fill_up_content_length();

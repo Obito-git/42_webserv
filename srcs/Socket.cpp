@@ -86,6 +86,7 @@ bool Socket::answer() {
 		throw CannotAccessDataException("Can't write data in socket");
 	if (write_status == static_cast<ssize_t>(_client_msg.size())) {
 		std::cout << "Message to " << _socket_fd << ":" << std::endl << _client_msg << std::endl << std::endl;
+		_client_msg.clear();
 		return true;
 	}
 	_client_msg.erase(0, static_cast<size_t>(write_status));
