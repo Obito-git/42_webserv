@@ -8,15 +8,20 @@
 Request::Request(): _method(INIT), _url(""), _http_version(""),
 _message(std::vector<std::string>()),
 _header(std::map<std::string, std::string>()), _host(""), _content_type(""), _content_length(""),
-_server(NULL), _location(NULL), _index(std::set <std::string>()), _ws(std::vector<const Server*>()) {};
+_server(NULL), _location(NULL), _index(std::set <std::string>()), _ws(std::vector<const Server*>()),
+_mime(std::map<std::string, std::string>())	{};
 
 
 Request::Request(const char *message, const std::vector<const Server*> &webserv):
 _method(INIT), _url(""), _http_version(""),
 _message(std::vector<std::string>()),
 _header(std::map<std::string, std::string>()), _host(""), _content_type(""), _content_length(""),
-_server(NULL), _location(NULL), _index(std::set <std::string>()), _ws(webserv)														   
+_server(NULL), _location(NULL), _index(std::set <std::string>()), _ws(webserv),
+_mime(std::map<std::string, std::string>())										   
 {
+	(void)message;
+	// if (mime.empty())
+	_make_mime_map();
 	if (message)
 	{
 		_read_message(message);
@@ -54,6 +59,44 @@ Request::~Request() {};
 /******************************************************************************************************************
  ******************************************** CHECK CONFIG ********************************************************
  *****************************************************************************************************************/
+
+
+void	Request::_make_mime_map()
+{
+	std::string		text;
+	std::vector<std::string>	*my_vector;
+
+	try
+	{
+		text = ft_read_file("../mime"); //si ca ne marche pas, utiliser path absolu
+	}
+	catch (std::exception& e)
+	{
+		std::cout << e.what() << std::endl;
+	}
+	my_vector= ft_split(text, '\n');
+	_make_map_of_mime(*my_vector);
+	// _print_mime(_mime);
+}
+
+
+void	Request::_make_map_of_mime(std::vector<std::string> my_vector)
+{
+	std::string key;
+	std::string value;
+	size_t pos = 0;
+
+	std::vector<std::string>::iterator it = my_vector.begin();
+	for(; it < my_vector.end(); ++it)
+	{
+		pos = (*it).find(":");
+		key = (*it).substr(0,pos);
+		pos = (*it).find(" "); // attention, pas toujours
+		value = (*it).substr(pos + 1);
+		_mime.insert(std::make_pair(key, value));
+	}
+}
+
 
 int	Request::_check_server_name()
 {
@@ -129,6 +172,14 @@ std::string	Request::_concatenate_path()
  ******************************************** REPONSE *************************************************************
  *****************************************************************************************************************/
 
+
+void	Request::_find_content_type(std::string filename)
+{
+	std::string extention;
+	size_t pos = filename.find_last_of(".");
+	extention = (filename.substr(pos + 1));
+	_content_type = (*_mime.find(extention)).second;
+}
 void	Request::_path_is_to_folder(std::string path)
 {
 	std::set <std::string>::iterator it_index = _index.begin();
@@ -138,6 +189,7 @@ void	Request::_path_is_to_folder(std::string path)
 		try
 		{
 			std::string code_page = ft_read_file(path);
+			_find_content_type(*it_index);
 			_rep = _generate_reponse_ok(200, code_page);
 			break ;
 		}
@@ -154,6 +206,7 @@ void	Request::_path_is_to_file(std::string path)
 	try
 	{
 		std::string code_page = ft_read_file(path);
+		_find_content_type(path);
 		_rep = _generate_reponse_ok(200, code_page);
 	}
 	catch (std::exception& e)
@@ -188,15 +241,8 @@ std::string	Request::_generate_reponse_headers(int code, std::string code_page, 
 	buf << "HTTP/1.1 " << code << " " << code_page << std::endl;
 	buf << "Date: " << date;
 	buf << "Server:" << "Webserver" << std::endl;
-	/*
-	if (_content_type != "")
-		buf << "Content-Type: " << _content_type << std::endl;
-	 */
-	buf << "Content-Type: " << "text/html" << std::endl;
-
+	buf << "Content-Type: " << _content_type << std::endl;
 	buf << "Content-Length: " << size << std::endl << std::endl;
-
-
 	return (buf.str());
 }
 
@@ -444,5 +490,14 @@ void Request::_print_dictionary()
 	{
 		std::cout << "key : " <<
 		(*first).first << " value : " << (*first).second << std::endl;
+	}
+}
+
+void Request::_print_mime(std::map<std::string, std::string> mimes)
+{
+	std::map<std::string, std::string>::iterator first = mimes.begin();
+	for (; first != mimes.end(); first++)
+	{
+		std::cout << "key : " <<(*first).first << " value : " << (*first).second << std::endl;
 	}
 }

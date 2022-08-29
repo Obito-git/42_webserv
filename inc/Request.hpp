@@ -26,6 +26,7 @@ class Request
 		const Location						*_location;
 		std::set <std::string>				_index;
 		const std::vector<const Server*>	_ws;
+		std::map<std::string, std::string> 	_mime;
 
 	public:
 		Request();
@@ -33,6 +34,10 @@ class Request
 		Request(const Request &other);
 		// Request& operator=(const Request &other) const;
 		~Request();
+
+		// mime
+		void	_make_mime_map();
+		void	_make_map_of_mime(std::vector<std::string> my_vector);
 
 
 		// parsing
@@ -59,6 +64,7 @@ class Request
 		int			_check_methods();
 
 		// reponse
+		void		_find_content_type(std::string filename);
 		void		_create_response();
 		std::string	_concatenate_path();
 		void		_path_is_to_folder(std::string path);
@@ -72,6 +78,7 @@ class Request
 
 		void		_print_message();
 		void		_print_dictionary();
+		void 		_print_mime(std::map<std::string, std::string> mimes);
 
 };
 
