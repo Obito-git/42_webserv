@@ -109,6 +109,7 @@ bool Socket::answer() {
 		Logger::print("\nMessage to", _socket_fd, ":\t");
 		Logger::println(_client_msg);
 		Logger::println("");
+		_client_msg.clear();
 		return true;
 	}
 	_client_msg.erase(0, static_cast<size_t>(write_status));

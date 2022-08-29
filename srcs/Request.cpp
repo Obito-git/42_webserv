@@ -68,7 +68,7 @@ void	Request::_make_mime_map()
 
 	try
 	{
-		text = ft_read_file("../mime"); //si ca ne marche pas, utiliser path absolu
+		text = ft_read_file("mime"); //si ca ne marche pas, utiliser path absolu
 	}
 	catch (std::exception& e)
 	{
