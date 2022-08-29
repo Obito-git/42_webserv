@@ -290,9 +290,9 @@ int	Request::_check_first_line()
 
 int	Request::_check_second_line()
 {
-	if (_message[1][0] == '\t' || _message[1][0] == 0
+	if (_message.size() > 1 && (_message[1][0] == '\t' || _message[1][0] == 0 //FIXME condition
 		|| _message[1][0] == '\v' || _message[1][0] == '\f'
-		|| _message[1][0] == '\r' || _message[1][0] == ' ')
+		|| _message[1][0] == '\r' || _message[1][0] == ' '))
 	{
 		_rep = _generate_reponse_error(400, "Bad Request");
 		return (1);
