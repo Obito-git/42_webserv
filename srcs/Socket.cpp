@@ -91,6 +91,7 @@ bool Socket::process_msg(const std::map<std::string, std::string> *mime) {
 	if (not_space_pos != std::string::npos && (_client_msg.find("\r\n\r\n") != std::string::npos
 		|| _client_msg.find("\n\n") != std::string::npos)) {
 		Logger::print("\nGot request from client ", _socket_fd, ":\t");
+		//Logger::println(Logger::TXT_BLACK, Logger::BG_CYAN,_client_msg.substr(0, _client_msg.find('\n')));
 		Logger::println(_client_msg);
 		Request r(_client_msg.data(), _parent_socket->getServers(), mime);
 		_client_msg = r._rep; //FIXME GETTER
@@ -107,6 +108,7 @@ bool Socket::answer() {
 		throw CannotAccessDataException("Can't write data in socket");
 	if (write_status == static_cast<ssize_t>(_client_msg.size())) {
 		Logger::print("\nMessage to", _socket_fd, ":\t");
+		//Logger::println(Logger::TXT_BLACK, Logger::BG_CYAN,_client_msg.substr(0, _client_msg.find('\n')));
 		Logger::println(_client_msg);
 		Logger::println("");
 		_client_msg.clear();

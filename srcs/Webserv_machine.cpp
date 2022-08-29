@@ -26,6 +26,7 @@ void Webserv_machine::up() {
 		
 		
 		do {
+			FD_ZERO(&read_set);
 			memcpy(&read_set, &_server_fd_set, sizeof(_server_fd_set));
 			FD_ZERO(&write_set);
 			for (it = clients_to_write.begin(); it != clients_to_write.end(); it++)
@@ -65,10 +66,8 @@ void Webserv_machine::up() {
 					}
 				} catch (std::exception& e){
 					Logger::println(Logger::TXT_BLACK,Logger::BG_RED, e.what());
-					it->second->close();
-					FD_CLR(it->first, &_server_fd_set);
 					FD_CLR(it->first, &read_set);
-					FD_CLR(it->first, &write_set);
+					FD_CLR(it->first, &_server_fd_set);
 					clients_to_read.erase(it);
 					clients_to_write.erase(it);
 				}
@@ -87,8 +86,7 @@ void Webserv_machine::up() {
 					}
 				} catch (std::exception& e) {
 					FD_CLR(it->first, &_server_fd_set);
-					FD_CLR(it->first, &read_set);
-					it->second->close();
+					FD_CLR(it->first, &read_set); //FIXME dont need?
 					delete it->second;
 					clients_to_read.erase(it->first);
 				}
