@@ -17,6 +17,7 @@ private:
 	std::map<int, Socket *>     _machine_sockets; // <socket_fd, socket>
 	std::vector<Server *>	    _servers;
 	fd_set				    	_server_fd_set;
+	std::map<std::string, std::string> *_mime;
 	bool 						got_shutdown_signal;
 
 	bool run_listening_sockets();

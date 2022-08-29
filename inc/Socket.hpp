@@ -41,7 +41,7 @@ public:
 	void open();
 	void close();
 	Socket *accept_connection();
-	bool process_msg();
+	bool process_msg(const std::map<std::string, std::string> *mime);
 	bool answer();
 
 /******************************************************************************************************************

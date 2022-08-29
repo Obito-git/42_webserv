@@ -76,7 +76,7 @@ Socket *Socket::accept_connection() {
 	return new Socket(this, accepted_fd);
 }
 
-bool Socket::process_msg() {
+bool Socket::process_msg(const std::map<std::string, std::string> *mime) {
 	char *data[BUF_SIZE];
 	size_t not_space_pos;
 	
@@ -92,7 +92,7 @@ bool Socket::process_msg() {
 		|| _client_msg.find("\n\n") != std::string::npos)) {
 		Logger::print("\nGot request from client ", _socket_fd, ":\t");
 		Logger::println(_client_msg);
-		Request r(_client_msg.data(), _parent_socket->getServers());
+		Request r(_client_msg.data(), _parent_socket->getServers(), mime);
 		_client_msg = r._rep; //FIXME GETTER
 		return true;
 	} else if (not_space_pos == std::string::npos) {

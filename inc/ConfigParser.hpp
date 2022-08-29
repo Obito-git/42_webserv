@@ -13,16 +13,19 @@ struct Location;
 class ConfigParser {
 private:
 	typedef std::string::iterator str_iter;
-	int							_line_number;
-	std::string			    	_error_msg;
-	std::string 				_path;
-	std::vector<Server *>	    _servers;
+	
+	int									_line_number;
+	std::string					    	_error_msg;
+	std::string 						_path;
+	std::vector<Server *>	    		_servers;
 public:
 	//constructor
 	ConfigParser(const std::string &path);
 	//getter
 	const std::vector<Server *> &getParsedServers();
 	std::vector<Server *> &getServers();
+
+	std::map<std::string, std::string> *getMime() const;
 
 private:
 	/******************************************************************************************************************
@@ -77,6 +80,7 @@ public:
 	public:
 		virtual const char *what() const throw();
 	};
+
 
 	
 };

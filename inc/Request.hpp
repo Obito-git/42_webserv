@@ -13,32 +13,27 @@ class Request
 {
 	public:
 
-		HTTP_METHOD 						_method;
-		std::string							_url;
-		std::string							_http_version;
-		std::vector<std::string>			_message;
-		std::map<std::string, std::string> 	_header;
-		std::string							_host;
-		std::string							_content_type;
-		std::string							_content_length;
-		std::string							_rep;
-		const Server						*_server;
-		const Location						*_location;
-		std::set <std::string>				_index;
-		const std::vector<const Server*>	_ws;
-		std::map<std::string, std::string> 	_mime;
+		HTTP_METHOD 								_method;
+		std::string									_url;
+		std::string									_http_version;
+		std::vector<std::string>					_message;
+		std::map<std::string, std::string> 			_header;
+		std::string									_host;
+		std::string									_content_type;
+		std::string									_content_length;
+		std::string									_rep;
+		const Server								*_server;
+		const Location								*_location;
+		std::set <std::string>						_index;
+		const std::vector<const Server*>			_ws;
+		const std::map<std::string, std::string> 	*_mime;
 
 	public:
 		Request();
-		Request(const char *message, const std::vector<const Server*> &webserv);
+		Request(const char *message, const std::vector<const Server*> &webserv, const std::map<std::string, std::string> *mime);
 		Request(const Request &other);
 		// Request& operator=(const Request &other) const;
 		~Request();
-
-		// mime
-		void	_make_mime_map();
-		void	_make_map_of_mime(std::vector<std::string> my_vector);
-
 
 		// parsing
 

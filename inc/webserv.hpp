@@ -38,6 +38,7 @@
 #define MAX_LOC_KEYWORDS	9
 #define MAX_KEYWORDS 13
 #define BUF_SIZE 65535
+#define MIME_FILE "dependencies/mime"
 
 std::vector<std::string>* ft_split(std::string s, char delim);
 std::string ft_read_file(const std::string& path);

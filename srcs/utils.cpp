@@ -37,7 +37,7 @@ std::string ft_read_file(const std::string& path) {
 	if (!error)
 		in.open(path.data(), std::ios::in);
 	if (!in.is_open())
-		throw std::runtime_error("Cannot open file\n");
+		throw std::runtime_error(std::string("Cannot open ") + path);
 
 	std::string tmp;
 	while (getline(in, tmp))

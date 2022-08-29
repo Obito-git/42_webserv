@@ -81,7 +81,7 @@ void Webserv_machine::up() {
 		for (it = clients_to_read.begin(); select_status && it != clients_to_read.end(); it++) {
 			if (FD_ISSET(it->first, &read_set)) {
 				try {
-					if (it->second->process_msg()) {
+					if (it->second->process_msg(_mime)) {
 						clients_to_write.insert(*it);		
 						//FIXME need to delete from to_read?
 					}
@@ -157,6 +157,7 @@ Webserv_machine::Webserv_machine(const char *path): got_shutdown_signal(false) {
 	std::string error_msg;
 	try {
 		_servers = config.getParsedServers();
+		_mime = config.getMime();
 		return;
 	} catch (ConfigParser::ConfigNoRequiredKeywords& e) {
 		error_msg = e.what();
@@ -175,11 +176,11 @@ Webserv_machine::Webserv_machine(const char *path): got_shutdown_signal(false) {
 				else
 					Logger::println(Logger::BG_YELLOW, error_msg.substr(delim_pos + 2));
 			}
-			
 		}
 	std::vector<Server *>& s = config.getServers();
 	for (std::vector<Server *>::iterator it = s.begin(); it != s.end(); it++)
 		delete *it;
+	_servers.clear();
 }
 
 /******************************************************************************************************************
