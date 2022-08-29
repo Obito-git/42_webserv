@@ -183,6 +183,16 @@ Webserv_machine::Webserv_machine(const char *path): got_shutdown_signal(false) {
 	_servers.clear();
 }
 
+Webserv_machine::~Webserv_machine() {
+	for (std::map<int, Socket *>::iterator it = _machine_sockets.begin(); it != _machine_sockets.end(); it++) {
+		it->second->close();
+		delete it->second;
+	}
+	for (std::vector<Server *>::iterator it = _servers.begin(); it != _servers.end(); it++)
+		delete *it;
+	delete _mime;
+}
+
 /******************************************************************************************************************
  ************************************************** GETTERS *******************************************************
  *****************************************************************************************************************/
@@ -208,14 +218,6 @@ void Webserv_machine::setServers(Server *server) {
 	_servers.push_back(server);
 }
 
-Webserv_machine::~Webserv_machine() {
-	for (std::map<int, Socket *>::iterator it = _machine_sockets.begin(); it != _machine_sockets.end(); it++) {
-		it->second->close();
-		delete it->second;
-	}
-	for (std::vector<Server *>::iterator it = _servers.begin(); it != _servers.end(); it++)
-		delete *it;
-}
 
 void Webserv_machine::setSignal(bool gotSignal) {
 	got_shutdown_signal = gotSignal;
