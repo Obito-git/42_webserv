@@ -16,11 +16,6 @@ Server::Server() {
  ************************************************** GETTERS *******************************************************
  *****************************************************************************************************************/
 
-
-const std::vector<Socket *> &Server::getSockets() const {
-	return _sockets;
-}
-
 const std::set<int> &Server::getPorts() const {
 	return _ports;
 }
@@ -49,10 +44,6 @@ const Location &Server::getConstDefault() const{
 
 void Server::setHost(const std::string &ip) {
 	_host = ip;
-}
-
-void Server::setSockets(const std::vector<Socket *> &sockets) {
-	_sockets = sockets;
 }
 
 void Server::setPorts(const int& port) {

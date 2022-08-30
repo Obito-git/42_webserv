@@ -11,15 +11,15 @@ void Webserv_machine::up() {
 	if (_servers.empty()) {
 		return;
 	}
-	std::map<int, Socket *>     clients_to_read;
-	std::map<int, Socket *>     clients_to_write;
+	std::map<int, ClientSocket *>     clients_to_read;
+	std::map<int, ClientSocket *>     clients_to_write;
 	if (!run_listening_sockets())
 		return ;
 	int max_fd_number = (--_machine_sockets.end())->first;
 	
 	Logger::println("Waiting for connections...");
 	while (42) {
-		std::map<int, Socket *>::iterator it;
+		std::map<int, ClientSocket *>::iterator it;
 		fd_set read_set;
 		fd_set write_set;
 		int select_status = 0;
@@ -50,8 +50,8 @@ void Webserv_machine::up() {
 				break;
 			}
 			FD_ZERO(&_server_fd_set);
-			for (it = _machine_sockets.begin(); it != _machine_sockets.end(); it++)
-				FD_SET(it->first, &_server_fd_set);
+			for (std::map<int, ListeningSocket *>::iterator y = _machine_sockets.begin(); y != _machine_sockets.end(); y++)
+				FD_SET(y->first, &_server_fd_set);
 			Logger::println(Logger::TXT_BLACK, Logger::BG_RED, "Select returned 0"); //FIXME msg
 			Logger::println("Waiting for connections...");
 			continue;
@@ -80,7 +80,7 @@ void Webserv_machine::up() {
 		for (it = clients_to_read.begin(); select_status && it != clients_to_read.end(); it++) {
 			if (FD_ISSET(it->first, &read_set)) {
 				try {
-					if (it->second->process_msg(_mime)) {
+					if (it->second->recv_msg(_mime)) {
 						clients_to_write.insert(*it);		
 						//FIXME need to delete from to_read?
 					}
@@ -96,11 +96,12 @@ void Webserv_machine::up() {
 		}
 		
 		//checking is it new connection or not
-		for (it = _machine_sockets.begin(); select_status && it != _machine_sockets.end(); it++) {
-			if (FD_ISSET(it->first, &read_set)) {
-				Socket *client;
+		for (std::map<int, ListeningSocket *>::iterator y = _machine_sockets.begin();
+				select_status && y != _machine_sockets.end(); y++) {
+			if (FD_ISSET(y->first, &read_set)) {
+				ClientSocket *client;
 				try {
-					client = it->second->accept_connection();
+					client = y->second->accept_connection();
 				} catch (std::exception& e) {
 					Logger::println(Logger::TXT_BLACK,Logger::BG_RED, e.what());
 					break;
@@ -119,7 +120,7 @@ bool Webserv_machine::run_listening_sockets() {
 	FD_ZERO(&_server_fd_set);
 	for (std::vector<Server *>::iterator serv = _servers.begin(); serv != _servers.end(); serv++) {
 		for (std::set<int>::iterator port = (*serv)->getPorts().begin(); port != (*serv)->getPorts().end(); port++) {
-			std::map<int, Socket *>::iterator existing_socket = _machine_sockets.begin();
+			std::map<int, ListeningSocket *>::iterator existing_socket = _machine_sockets.begin();
 			while (existing_socket != _machine_sockets.end()) {
 				if ((*existing_socket).second->getPort() == *port && 
 				(*serv)->getHost() == (*existing_socket).second->getHost())
@@ -127,7 +128,7 @@ bool Webserv_machine::run_listening_sockets() {
 				existing_socket++;
 			}
 			if (existing_socket == _machine_sockets.end()) {
-				Socket *sock = new Socket((*serv)->getHost(), *port);
+				ListeningSocket *sock = new ListeningSocket(*port, (*serv)->getHost());
 				try {
 					sock->open();
 				} catch (std::exception& e) {
@@ -182,9 +183,9 @@ Webserv_machine::Webserv_machine(const char *path): got_shutdown_signal(false) {
 }
 
 Webserv_machine::~Webserv_machine() {
-	for (std::map<int, Socket *>::iterator it = _machine_sockets.begin(); it != _machine_sockets.end(); it++) {
+	for (std::map<int, ListeningSocket *>::iterator it = _machine_sockets.begin(); it != _machine_sockets.end(); it++) {
 		it->second->close();
-		delete it->second;
+		delete it->second; //FIXME clear test
 	}
 	for (std::vector<Server *>::iterator it = _servers.begin(); it != _servers.end(); it++)
 		delete *it;
@@ -195,22 +196,10 @@ Webserv_machine::~Webserv_machine() {
  ************************************************** GETTERS *******************************************************
  *****************************************************************************************************************/
 
-const std::map<int, Socket *> &Webserv_machine::getMachineSockets() const {
-	return _machine_sockets;
-}
-
-const std::vector<Server *> &Webserv_machine::getServers() const {
-	return _servers;
-}
 
 /******************************************************************************************************************
  ************************************************** SETTERS *******************************************************
  *****************************************************************************************************************/
-
-void Webserv_machine::setMachineSockets(int port, Socket *socket) {
-	_machine_sockets.insert(std::make_pair(port, socket));
-	
-}
 
 void Webserv_machine::setServers(Server *server) {
 	_servers.push_back(server);

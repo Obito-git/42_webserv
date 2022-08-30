@@ -4,15 +4,11 @@
 
 #ifndef WEBSERV_SERVER_HPP
 #define WEBSERV_SERVER_HPP
-#include "Socket.hpp"
 #include "webserv.hpp"
 #include "Location.hpp"
 
-class Socket;
-
 class Server {
 private:
-	std::vector<Socket*>				_sockets; //FIXME always empty. maybe dont need
 	std::set <int>						_ports;
 	std::string							_host;
 	std::vector<std::string>			_server_name;
@@ -28,7 +24,6 @@ public:
  *****************************************************************************************************************/
 
 	const std::string &getHost() const;
-	const std::vector<Socket *> &getSockets() const; //FIXME unused
 	const std::set<int> &getPorts() const;
 	const std::vector<std::string> &getServerName() const;
 	const std::map<std::string, Location> &getLocations() const;
@@ -40,7 +35,6 @@ public:
  
 	void setLocations(const std::string& path, const Location &location);
 	void setHost(const std::string &ip);
-	void setSockets(const std::vector<Socket *> &sockets); //FIXME unused
 	void setPorts(const int& port);
 	void setServerName(const std::string &serverName);
 	void setDefault(const Location &location);

@@ -5,16 +5,15 @@
 #ifndef WEBSERV_WEBSERV_MACHINE_HPP
 #define WEBSERV_WEBSERV_MACHINE_HPP
 #include "webserv.hpp"
-#include "Server.hpp"
 #include "ConfigParser.hpp"
-#include "Socket.hpp"
+#include "ClientSocket.hpp"
 
-class Socket;
-class Server;
+class ListeningSocket;
+class ClientSocket;
 
 class Webserv_machine {
 private:
-	std::map<int, Socket *>     _machine_sockets; // <socket_fd, socket>
+	std::map<int, ListeningSocket *>     _machine_sockets; // <socket_fd, socket>
 	std::vector<Server *>	    _servers;
 	fd_set				    	_server_fd_set;
 	std::map<std::string, std::string> *_mime;
@@ -35,15 +34,11 @@ public:
  ************************************************** GETTERS *******************************************************
  *****************************************************************************************************************/
 
-	const std::map<int, Socket *> &getMachineSockets() const;
-	const std::vector<Server *> &getServers() const;
-	const std::string &getErrorMsg() const;
 	
 /******************************************************************************************************************
  ************************************************** SETTERS *******************************************************
  *****************************************************************************************************************/
 
-	void setMachineSockets(int port, Socket *socket);
 	void setServers(Server *server);
 
 };
