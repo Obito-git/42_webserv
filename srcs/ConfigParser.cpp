@@ -384,8 +384,8 @@ void ConfigParser::parse_root_args(Location &loc, std::vector<std::string> &args
 		throw ConfigUnexpectedToken(find_unexpected_token(ft_strjoin(args.begin(), args.end(),
 														 " "), "only root directory path").data());
 	std::string root = *args.begin();
-	if (*(root.end() - 1) != '/')
-		root.append("/");
+	if (*(root.end() - 1) == '/')
+		root.erase(root.end() - 1);
 	loc.setRoot(root);
 }
 

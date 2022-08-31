@@ -69,6 +69,8 @@ void Location::setRoot(const std::string &root) {
 }
 void Location::setLocation(const std::string &location) {
 	_location = location;
+	if (*(_location.end() - 1) == '/')
+		_location.erase(_location.end() - 1);
 }
 
 void Location::setAutoindex(bool autoindex) {
