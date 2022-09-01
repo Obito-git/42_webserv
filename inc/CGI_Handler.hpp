@@ -4,13 +4,29 @@
 
 #ifndef WEBSERV_CGIHANDLER_HPP
 #define WEBSERV_CGIHANDLER_HPP
-#include "webserv.hpp"
+#include "Webserv_machine.hpp"
 
 
 class CGI_Handler {
-private:
 	
+private:
+	Request			*_req;
+	char 			**_env;
+	int				_env_len;
+	std::string 	_cgi_type;
+	std::string		_cgi_path;
+	int 			_status;
+	std::string 	_result;
 
+	void set_environment();
+	void launch_cgi();
+	bool is_good_type();	
+public:
+	CGI_Handler(Request *req);
+	int getStatus() const;
+	const std::string &getResult() const;
+
+	virtual ~CGI_Handler();
 };
 
 

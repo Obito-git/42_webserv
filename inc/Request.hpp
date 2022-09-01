@@ -13,6 +13,15 @@ class Request
 {
 	public:
 
+	//FIXME anton CGI variables
+		std::string _query;
+		std::string _request_body;
+		std::string _path_to_requested_file;
+		std::string _path_info;
+		const ClientSocket* _client_socket;
+		
+	
+	//FIXME CGI variables end
 		HTTP_METHOD 								_method;
 		std::string									_url;
 		std::string									_http_version;
@@ -30,7 +39,7 @@ class Request
 
 	public:
 		Request();
-		Request(const char *message, const std::vector<const Server*> &webserv, const std::map<std::string, std::string> *mime);
+		Request(const char *message, const ClientSocket *sock, const std::map<std::string, std::string> *mime);
 		Request(const Request &other);
 		// Request& operator=(const Request &other) const;
 		~Request();

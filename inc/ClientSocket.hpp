@@ -10,12 +10,15 @@
 
 class ClientSocket: public ASocket {
 public:
-	ClientSocket(const ListeningSocket *parentSocket, int socket_fd);
+	ClientSocket(const ListeningSocket *parentSocket, int socket_fd, const sockaddr_in &addr, socklen_t addrLen);
+
 private:
 	const ListeningSocket	*_parent_socket; //defined for client socket, pointed on listening socket for get _server
 	bool 					_close_immediately;	
 	std::string 			_request;
 	std::string				_response;
+	struct sockaddr_in		_addr;
+	socklen_t				_addr_len;
 public:
 	virtual void close();
 
@@ -25,7 +28,12 @@ public:
 
 	bool check_headers(const std::map<std::string, std::string> &headers);
 
+	std::string getClientIp() const;
+	const std::vector<const Server *> &getServers() const;
+
 	virtual ~ClientSocket();
+
+	std::string getClientPort() const;
 };
 
 

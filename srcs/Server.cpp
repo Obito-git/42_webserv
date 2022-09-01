@@ -9,6 +9,8 @@ const std::string Server::_server_keywords[MAX_KEYWORDS] = {"listen", "port","se
 																 "autoindex", "root", "location",
 																 "return", "cgi_path"};
 
+const std::string Server::_cgi_types[MAX_CGI_TYPES] = {"php", "py"};
+
 Server::Server() {
 }
 
@@ -35,6 +37,10 @@ const std::map<std::string, Location> &Server::getLocations() const {
 
 const Location &Server::getConstDefault() const{
 	return _default;
+}
+
+const std::map<std::string, std::string> &Server::getCgiPaths() const {
+	return _cgi_paths;
 }
 
 /******************************************************************************************************************
@@ -65,3 +71,7 @@ void Server::setDefault(const Location &location) {
 	_default = location;
 }
 
+void Server::setCgiPaths(const std::string& type, const std::string& path) {
+	_cgi_paths.erase(type);
+	_cgi_paths.insert(std::make_pair(type, path));
+}

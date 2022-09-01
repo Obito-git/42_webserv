@@ -12,12 +12,12 @@ _server(NULL), _location(NULL), _index(std::set <std::string>()), _ws(std::vecto
 _mime(NULL)	{};
 
 
-Request::Request(const char *message, const std::vector<const Server*> &webserv,  const std::map<std::string, std::string> *mime):
-_method(INIT), _url(""), _http_version(""),
-_message(std::vector<std::string>()),
-_header(std::map<std::string, std::string>()), _host(""), _content_type(""), _content_length(""),
-_server(NULL), _location(NULL), _index(std::set <std::string>()), _ws(webserv),
-_mime(mime)										   
+Request::Request(const char *message,  const ClientSocket *sock,  const std::map<std::string, std::string> *mime):
+_client_socket(sock), _method(INIT), _url(""),
+_http_version(""),
+_message(std::vector<std::string>()), _header(std::map<std::string, std::string>()), _host(""), _content_type(""),
+_content_length(""), _server(NULL), _location(NULL), _index(std::set <std::string>()),
+_ws(sock->getServers()), _mime(mime)
 {
 	if (message)
 	{

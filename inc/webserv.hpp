@@ -37,22 +37,9 @@
 #define MAX_SERV_KEYWORDS	11
 #define MAX_LOC_KEYWORDS	9
 #define MAX_KEYWORDS 13
+#define MAX_CGI_TYPES 2
 #define BUF_SIZE 65535
 #define MIME_FILE "dependencies/mime"
-
-std::vector<std::string>* ft_split(std::string s, char delim);
-std::string ft_read_file(const std::string& path);
-
-template <class InputIterator>
-std::string ft_strjoin(InputIterator begin, InputIterator end, const std::string& delim) {
-	std::string tmp;
-	while (begin != end) {
-		tmp.append(std::string(*begin));
-		if (++begin != end)
-			tmp.append(delim);
-	}
-	return tmp;
-}
 
 enum HTTP_METHOD {
 	GET,
@@ -79,7 +66,19 @@ enum KEYWORDS {
 };
 
 
+std::vector<std::string>* ft_split(std::string s, char delim);
+std::string ft_read_file(const std::string& path);
+std::string get_method_name(HTTP_METHOD m);
 
-
+template <class InputIterator>
+std::string ft_strjoin(InputIterator begin, InputIterator end, const std::string& delim) {
+	std::string tmp;
+	while (begin != end) {
+		tmp.append(std::string(*begin));
+		if (++begin != end)
+			tmp.append(delim);
+	}
+	return tmp;
+}
 
 #endif //WEBSERV_WEBSERV_HPP

@@ -46,3 +46,13 @@ std::string ft_read_file(const std::string& path) {
 	return file_content;
 }
 
+std::string get_method_name(HTTP_METHOD m) {
+	switch (m) {
+		case GET: return "GET";
+		case POST: return "POST";
+		case DELETE: return "DELETE";
+		case INIT: return "INIT";
+		default: return "OTHER";
+	}
+}
+

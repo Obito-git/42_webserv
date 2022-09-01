@@ -7,7 +7,7 @@
 
 
 
-void Webserv_machine::up() {
+void Webserv_machine::up() { //FIXME add Connection: close verif
 	if (_servers.empty()) {
 		return;
 	}

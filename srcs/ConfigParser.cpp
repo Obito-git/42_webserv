@@ -150,6 +150,7 @@ void ConfigParser::parse_server_block(std::string &file_content, str_iter &it) {
 			case ::AUTOINDEX: parse_autoindex_args(tmp_loc, args); break;
 			case ::ROOT: parse_root_args(tmp_loc, args); break;
 			case ::LOCATION: locations_blocks.push_back(skip_location_block(file_content, it)); break;
+			case ::CGI_PATH: parse_cgi_path(s, args); break;
 			default: {
 				std::string tmp = "Expected one of\n [";
 				for (int x = 0; x < MAX_KEYWORDS; x++) {
@@ -387,6 +388,33 @@ void ConfigParser::parse_root_args(Location &loc, std::vector<std::string> &args
 	if (*(root.end() - 1) == '/')
 		root.erase(root.end() - 1);
 	loc.setRoot(root);
+}
+
+void ConfigParser::parse_cgi_path(Server *s, std::vector<std::string> &args) {
+	std::stringstream ss;
+	ss << "supported cgi types are ";
+	for (int i = 0; i < MAX_CGI_TYPES; i++) {
+		ss << Server::_cgi_types[i];
+		if (i != MAX_CGI_TYPES - 1)
+			ss << ", ";
+	}
+	if (args.size() != 2) {
+		throw ConfigUnexpectedToken(find_unexpected_token((ft_strjoin(args.begin(), args.end(), " ")), 
+				"cgi_path [TYPE] [ABSOLUTE PATH TO CGI BIN]").data());
+	}
+	int i;
+	for (i = 0; i < MAX_CGI_TYPES && Server::_cgi_types[i] != *args.begin(); i++);
+	if (i == MAX_CGI_TYPES)
+		throw ConfigUnexpectedToken(find_unexpected_token((ft_strjoin(args.begin(), args.end(), " ")),
+														  (ss.str()).data()).data());
+	if (access((args.begin() + 1)->data(), X_OK) == -1) {
+		ss.str("");
+		ss << "Can't execute " << _error_msg.append(*(args.begin() + 1));
+		ss << _error_msg.append(", absolute path to bin");
+		throw ConfigUnexpectedToken(find_unexpected_token((ft_strjoin(args.begin(), args.end(), " ")),
+														  ss.str().data()).data());
+	}
+	s->setCgiPaths(*args.begin(), *(args.begin() + 1));
 }
 
 /******************************************************************************************************************

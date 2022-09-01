@@ -35,14 +35,16 @@ void ListeningSocket::open() {
 
 ClientSocket *ListeningSocket::accept_connection() {
 	Logger::println(Logger::TXT_BLACK, Logger::BG_WHITE, "New connection on", _host, _port);
-	int accepted_fd = accept(_socket_fd, NULL, NULL);
+	struct sockaddr_in		addr;
+	socklen_t				addr_len = sizeof(addr);
+	int accepted_fd = accept(_socket_fd, (struct sockaddr *) &addr, &addr_len);
 	if (accepted_fd == -1) {
 		std::stringstream ss;
 		ss << "Can't accept new client to " << _host << ":" << _port;
 		throw CannotCreateSocketException((_log_msg = ss.str()).data());
 	}
 	fcntl(accepted_fd, F_SETFL, O_NONBLOCK);
-	return new ClientSocket(this, accepted_fd);
+	return new ClientSocket(this, accepted_fd, addr, addr_len);
 }
 
 int ListeningSocket::getPort() const {

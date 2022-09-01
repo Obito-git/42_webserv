@@ -4,8 +4,12 @@
 
 #include "ClientSocket.hpp"
 
-ClientSocket::ClientSocket(const ListeningSocket *parentSocket, int socket_fd) : ASocket(socket_fd),
-					_parent_socket(parentSocket), _close_immediately(false) {
+
+ClientSocket::ClientSocket(const ListeningSocket *parentSocket, int socket_fd,
+						   const sockaddr_in &addr, socklen_t addrLen) : ASocket(socket_fd),
+																	_parent_socket(parentSocket),
+																	_close_immediately(false), _addr(addr),
+																	_addr_len(addrLen) {
 	std::stringstream ss;
 	ss << "Client " << _socket_fd << " has been connected to ";
 	ss << _parent_socket->getHost() << ":" << _parent_socket->getPort();
@@ -35,11 +39,12 @@ bool ClientSocket::recv_msg(const std::map<std::string, std::string> *mime){
 	//	_request.erase(0, not_space_pos);
 	if (not_space_pos != std::string::npos &&
 		(_request.find("\r\n\r\n") != std::string::npos || _request.find("\n\n") != std::string::npos)) {
-		Request req(_request.data(), _parent_socket->getServers(), mime);
+		Request req(_request.data(), this, mime);
 		if (check_headers(req._header)) {
 			_response = req._rep;
 			Logger::print("\nGot request from client ", _socket_fd, ":\t");
-			Logger::println(Logger::TXT_BLACK, Logger::BG_CYAN, _request.substr(0, _request.find('\n')));
+			//Logger::println(Logger::TXT_BLACK, Logger::BG_CYAN, _request.substr(0, _request.find('\n')));
+			Logger::println(Logger::TXT_BLACK, Logger::BG_CYAN, _request);
 			_request.clear();
 			return true;
 		}
@@ -80,4 +85,19 @@ void ClientSocket::close() {
 
 ClientSocket::~ClientSocket() {
 	close();
+}
+
+std::string ClientSocket::getClientIp() const {
+	(void) _addr_len;
+	return std::string(inet_ntoa(_addr.sin_addr));
+}
+
+std::string ClientSocket::getClientPort() const {
+	std::stringstream ss;
+	ss << ntohs(_addr.sin_port);
+	return std::string(ss.str());
+};
+
+const std::vector<const Server *> &ClientSocket::getServers() const {
+	return _parent_socket->getServers();
 }

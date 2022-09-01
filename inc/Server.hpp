@@ -9,14 +9,16 @@
 
 class Server {
 private:
-	std::set <int>						_ports;
-	std::string							_host;
-	std::vector<std::string>			_server_name;
-	std::map<std::string, Location>		_locations;
-	Location							_default;
+	std::set <int>							_ports;
+	std::string								_host;
+	std::vector<std::string>				_server_name;
+	std::map<std::string, Location>			_locations;
+	std::map<std::string, std::string>		_cgi_paths;
+	Location								_default;
 public:
 	Server();
 	static const std::string    _server_keywords[];
+	static const std::string    _cgi_types[];
 	static const std::string    _all_keywords[]; //FIXME unused
 
 /******************************************************************************************************************
@@ -28,6 +30,7 @@ public:
 	const std::vector<std::string> &getServerName() const;
 	const std::map<std::string, Location> &getLocations() const;
 	const Location &getConstDefault() const;
+	const std::map<std::string, std::string> &getCgiPaths() const;
 
 /******************************************************************************************************************
  ************************************************** SETTERS *******************************************************
@@ -38,6 +41,7 @@ public:
 	void setPorts(const int& port);
 	void setServerName(const std::string &serverName);
 	void setDefault(const Location &location);
+	void setCgiPaths(const std::string& type, const std::string& path);
 
 	};
 
