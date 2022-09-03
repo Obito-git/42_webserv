@@ -121,10 +121,10 @@ std::string	Request::_concatenate_path()
 {
 
 	std::string path = _location->getRoot();
-	if (_url.compare("/"))
+	// if (_url.compare("/"))
 		return path.append(_url);
-	else
-		return (path);
+	// else
+	// 	return (path);
 }
 
 /******************************************************************************************************************
