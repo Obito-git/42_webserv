@@ -28,12 +28,10 @@ class Request
 		std::vector<std::string>					_message;
 		std::map<std::string, std::string> 			_header;
 		std::string									_host;
-		std::string									_content_type;
 		std::string									_content_length;
 		std::string									_rep;
 		const Server								*_server;
 		const Location								*_location;
-		std::set <std::string>						_index;
 		const std::vector<const Server*>			_ws;
 		const std::map<std::string, std::string> 	*_mime;
 
@@ -43,6 +41,12 @@ class Request
 		Request(const Request &other);
 		// Request& operator=(const Request &other) const;
 		~Request();
+
+
+		// GETTERS
+
+		const Location*	getLocation() const;
+		const std::string getUrl() const;
 
 		// parsing
 
@@ -68,15 +72,7 @@ class Request
 		int			_check_methods();
 
 		// reponse
-		void		_find_content_type(std::string filename);
 		void		_create_response();
-		std::string	_concatenate_path();
-		void		_path_is_to_folder(std::string path);
-		void		_path_is_to_file(std::string path);
-		std::string	_generate_reponse_headers(int code, std::string code_page, size_t size);
-		std::string	_generate_reponse_ok(int code, std::string code_page);
-		std::string	_generate_reponse_error(int code, std::string msg);
-		std::string _generate_error_body(const Location *location, short status_code);
 
 		// printing
 
