@@ -132,34 +132,37 @@ void	Request::_create_response()
 
 int	Request::_check_first_line()
 {
-	std::string elem;
+	std::vector<std::string> line = *(ft_split(_message[0], ' '));
+
+	_rep = Response::_generate_reponse_error(this, 400, "Bad Request");
+
 	size_t pos = (_message[0]).find(" ");
-	if (pos == 0 || pos == std::string::npos)
+	if (pos == 0 || pos == std::string::npos || line.size() != 3)
 	{
 		_rep = Response::_generate_reponse_error(this, 400, "Bad Request");
 		return (1);
 	}
-	elem = (_message[0]).substr(0,pos);
-	if (elem.compare("GET") && elem.compare("POST") && elem.compare("DELETE"))
+	if ((line.front()).compare("GET") && (line.front()).compare("POST")
+		&& (line.front()).compare("DELETE"))
 	{
 		_rep = Response::_generate_reponse_error(this, 405, "Method Not Allowed");
 		return (1);
 	}
-	pos = (_message[0]).find_last_of(" ");
-	elem = (_message[0]).substr(pos + 1);
-	if (elem.compare("HTTP/1.0") && elem.compare("HTTP/1.1") &&
-			elem.compare("HTTP/2") && elem.compare("HTTP/3"))
+	
+	if ((line.back()).compare("HTTP/1.0") && (line.back()).compare("HTTP/1.1") &&
+			(line.back()).compare("HTTP/2") && (line.back()).compare("HTTP/3"))
 	{
 		_rep = Response::_generate_reponse_error(this, 400, "Bad Request");
 		return (1);
 	}
-	pos = (_message[0]).find(" ");
-	size_t pos1 = (_message[0]).find_last_of(" ");
-	if (pos >= pos1 || _message[0][pos + 1] != '/')
-	{
-		_rep = Response::_generate_reponse_error(this, 404, "Not Found");
-		return (1);
-	}
+	return (_check_url());
+	// pos = (_message[0]).find(" ");
+	// size_t pos1 = (_message[0]).find_last_of(" ");
+	// if (pos >= pos1 || _message[0][pos + 1] != '/')
+	// {
+	// 	_rep = Response::_generate_reponse_error(this, 404, "Not Found");
+	// 	return (1);
+	// }
 	return (0);
 }
 
