@@ -130,6 +130,14 @@ void	Request::_create_response()
  ******************************************** CHECK REQUEST *******************************************************
  *****************************************************************************************************************/
 
+int	Request::_check_url(std::vector<std::string> line)
+{
+	std::string element = line[1];
+
+	if (element[0] != '/')
+
+}
+
 int	Request::_check_first_line()
 {
 	std::vector<std::string> line = *(ft_split(_message[0], ' '));
@@ -155,7 +163,7 @@ int	Request::_check_first_line()
 		_rep = Response::_generate_reponse_error(this, 400, "Bad Request");
 		return (1);
 	}
-	return (_check_url());
+	return (_check_url(line));
 	// pos = (_message[0]).find(" ");
 	// size_t pos1 = (_message[0]).find_last_of(" ");
 	// if (pos >= pos1 || _message[0][pos + 1] != '/')
