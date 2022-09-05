@@ -8,6 +8,7 @@
 class Webserv_machine;
 class Server;
 struct Location;
+class ClientSocket;
 
 class Request
 {
