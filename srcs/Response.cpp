@@ -37,18 +37,16 @@ void	Response::_path_is_to_folder(std::string path)
 	std::set <std::string>::iterator it_index = _index.begin();
 	for (; it_index != _index.end(); ++it_index)
 	{
-		path = path + (*it_index);
+		std::string tmp_path = path;
+		tmp_path += (*it_index);
 		try
 		{
-			std::string code_page = ft_read_file(path);
+			std::string code_page = ft_read_file(tmp_path);
 			_find_content_type(*it_index);
 			_response = _generate_reponse_ok(200, code_page);
 			break ;
 		}
-		catch (std::exception& e)
-		{
-			std::cout << e.what() << std::endl;
-		}
+		catch (std::exception& e) {}
 		_response = _generate_reponse_error(_request, 404);
 	}
 }//FIXMI s'il n'y a pas de index
