@@ -17,7 +17,7 @@ class Response
 		Response();
 
 
-		Request								*_request;
+		Request										*_request;
 		const Location								*_location;
 		std::string 								_response;
 		std::set<std::string>						_index;

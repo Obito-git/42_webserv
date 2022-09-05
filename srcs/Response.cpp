@@ -42,6 +42,7 @@ void	Response::_path_is_to_folder(std::string path)
 		try
 		{
 			std::string code_page = ft_read_file(tmp_path);
+			_request->_path_to_requested_file = tmp_path;
 			_find_content_type(*it_index);
 			_response = _generate_reponse_ok(200, code_page);
 			break ;
@@ -56,6 +57,7 @@ int	Response::_find_content_type(std::string filename)
 	std::string extention;
 	size_t pos = filename.find_last_of(".");
 	extention = (filename.substr(pos + 1));
+	_request->_extention = extention;
 	std::map<std::string, std::string>::const_iterator it = _request->_mime->find(extention);
 	if (it != _request->_mime->end())
 	{
