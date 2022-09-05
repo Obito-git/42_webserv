@@ -4,7 +4,7 @@ server {
 	server_name localhost:8080
 	client_max_body_size 2048
 	file_upload on
-	root /Users/Olga/Desktop/P22_webserv/test_pages/site2/
+	root /Users/Olga/Desktop/P22_webserv/test_pages/site2
 	#usr/site/www
     autoindex        on     
 	methods POST GET DELETE

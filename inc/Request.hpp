@@ -14,16 +14,17 @@ class Request
 	public:
 
 	//FIXME anton CGI variables
-		std::string _query;
-		std::string _request_body;
-		std::string _path_to_requested_file;
-		std::string _path_info;
-		const ClientSocket* _client_socket;
+		std::string									_query;
+		std::string									_request_body;
+		std::string									_path_to_requested_file;
+		std::string									_path_info;
+		const ClientSocket*							_client_socket;
 		
 	
 	//FIXME CGI variables end
 		HTTP_METHOD 								_method;
 		std::string									_url;
+		std::string									_extention;
 		std::string									_http_version;
 		std::vector<std::string>					_message;
 		std::map<std::string, std::string> 			_header;
@@ -50,10 +51,11 @@ class Request
 
 		// parsing
 
-		void		_read_message(const char *message);
+		int			_read_message(const char *message);
 		void		_make_map_of_headers();
 
 		// check request
+		int			_check_url(std::vector<std::string> line);
 		void		_check_line(std::string line);
 		int			_check_first_line();
 		int			_check_second_line();

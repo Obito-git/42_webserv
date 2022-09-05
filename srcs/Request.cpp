@@ -21,10 +21,12 @@ _ws(sock->getServers()), _mime(mime)
 {
 	if (message)
 	{
-		_read_message(message);
-		_make_map_of_headers();
-		_fill_up_request();
-		_create_response();
+		if (_read_message(message))
+		{
+			_make_map_of_headers();
+			if (_fill_up_request())
+				_create_response();
+		}
 	}
 }
 
@@ -130,37 +132,49 @@ void	Request::_create_response()
  ******************************************** CHECK REQUEST *******************************************************
  *****************************************************************************************************************/
 
+int	Request::_check_url(std::vector<std::string> line)
+{
+	std::string element = line[1];
+
+	if (element[0] != '/')
+	{
+		_rep = Response::_generate_reponse_error(this, 400, "Bad Request3");
+		return (1);
+	}
+	size_t pos = element.find(".");
+	size_t pos1 = element.find_last_of(".");
+	if (pos != pos1)
+	{
+		_rep = Response::_generate_reponse_error(this, 400, "Bad Request4");
+		return (1);
+	}
+	return (0);
+}
+
 int	Request::_check_first_line()
 {
-	std::string elem;
+	std::vector<std::string> line = *(ft_split(_message[0], ' '));
+
 	size_t pos = (_message[0]).find(" ");
-	if (pos == 0 || pos == std::string::npos)
+	if (pos == 0 || pos == std::string::npos || line.size() != 3)
 	{
 		_rep = Response::_generate_reponse_error(this, 400, "Bad Request");
 		return (1);
 	}
-	elem = (_message[0]).substr(0,pos);
-	if (elem.compare("GET") && elem.compare("POST") && elem.compare("DELETE"))
+	if ((line.front()).compare("GET") && (line.front()).compare("POST")
+		&& (line.front()).compare("DELETE"))
 	{
 		_rep = Response::_generate_reponse_error(this, 405, "Method Not Allowed");
 		return (1);
 	}
-	pos = (_message[0]).find_last_of(" ");
-	elem = (_message[0]).substr(pos + 1);
-	if (elem.compare("HTTP/1.0") && elem.compare("HTTP/1.1") &&
-			elem.compare("HTTP/2") && elem.compare("HTTP/3"))
+	
+	if ((line.back()).compare("HTTP/1.0") && (line.back()).compare("HTTP/1.1") &&
+			(line.back()).compare("HTTP/2") && (line.back()).compare("HTTP/3"))
 	{
 		_rep = Response::_generate_reponse_error(this, 400, "Bad Request");
 		return (1);
 	}
-	pos = (_message[0]).find(" ");
-	size_t pos1 = (_message[0]).find_last_of(" ");
-	if (pos >= pos1 || _message[0][pos + 1] != '/')
-	{
-		_rep = Response::_generate_reponse_error(this, 404, "Not Found");
-		return (1);
-	}
-	return (0);
+	return (_check_url(line));
 }
 
 int	Request::_check_second_line()
@@ -189,7 +203,7 @@ void	Request::_check_line(std::string line)
  ******************************************** PARSING *************************************************************
  *****************************************************************************************************************/
 
-void	Request::_read_message(const char * message)
+int	Request::_read_message(const char * message)
 {
 	std::istringstream text(message);
 	std::string		line;
@@ -207,8 +221,10 @@ void	Request::_read_message(const char * message)
 				std::getline(text, line);
 				_check_line(line);
 			}
+			return (1);
 		}
 	}
+	return (0);
 }
 
 // MAKE MAP OF HEADERS
@@ -247,13 +263,32 @@ void	Request::_fill_up_method(std::string elem)
 		this->_method = OTHER;
 }
 
-void	Request::_fill_up_url(std::string line)
+void	Request::_fill_up_url(std::string element)
 {
-	size_t pos = (line).find(" ");
-	size_t pos1 = (line).find_last_of(" ");
-
-	std::string elem = (line).substr(pos + 1, pos1 - pos - 1);
-	this->_url = elem;
+	_url = element;
+	size_t	pos = _url.find("?");
+	if (pos != std::string::npos)
+	{
+		_query = _url.substr(pos);
+		_url = _url.substr(0,pos);
+		// std::cout << "_query: " << _query << std::endl;
+		// std::cout << "_url after _query: " << _url << std::endl;
+	}
+	size_t pos_point = _url.find(".");
+	size_t pos_slesh = std::string::npos;
+	if (pos_point != std::string::npos)
+	{
+		pos_slesh = _url.find('/', pos_point);
+		_extention = _url.substr(pos_point + 1, pos_slesh - pos_point - 1);
+		// std::cout << "_extention: " << _extention << std::endl;
+		if (pos_slesh != std::string::npos)
+		{
+			_path_info = _url.substr(pos_slesh);
+			// std::cout << "_path_info: " << _path_info << std::endl;
+			_url = _url.substr(0,pos_slesh);
+			// std::cout << "_url after _path_info: " << _url << std::endl;
+		}
+	}
 }
 
 void	Request::_fill_up_protocol(std::string line)
@@ -277,19 +312,17 @@ int	Request::_fill_up_content_length()
 	else
 	{
 		_rep = Response::_generate_reponse_error(this, 411, "Length Required");
-		return (1);
+		return (0);
 	}
-	return (0);
+	return (1);
 }
 
 int	Request::_fill_up_request()
 {
-	std::string elem;
-	size_t pos = (_message[0]).find(" ");
-	elem = (_message[0]).substr(0,pos);
-	_fill_up_method(elem);
-	_fill_up_url(_message[0]);
-	_fill_up_protocol(_message[0]);
+	std::vector<std::string> line = *(ft_split(_message[0], ' '));
+	_fill_up_method(line[0]);
+	_fill_up_url(line[1]);
+	_fill_up_protocol(line[2]);
 	std::map<std::string, std::string>::iterator it;
 	it = _header.find("Host");
 	if (it != _header.end())
@@ -300,9 +333,9 @@ int	Request::_fill_up_request()
 		//this->_content_type = (*it).second;//FIXME à faire une new fonction
 	if (_method == POST)
 	{
-		_fill_up_content_length();
+		return (_fill_up_content_length());
 	}
-	return (0);
+	return (1);
 }
 
 /******************************************************************************************************************
