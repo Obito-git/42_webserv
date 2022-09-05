@@ -4,7 +4,7 @@
 Response::Response() : _request(NULL), _location(NULL),
 _response(""), _index(std::set<std::string>()), _path(""), _content_type("") {};
 
-Response::Response(const Request *request): _request(request), _location(request->getLocation()),
+Response::Response(Request *request): _request(request), _location(request->getLocation()),
 _response(""), _index(_location->getIndex()), _path(""), _content_type("")
 {
     _path = _concatenate_path();
@@ -110,7 +110,7 @@ std::string	Response::_generate_reponse_ok(int code, std::string code_page)
 	return (buf.str());
 }
 
-std::string	Response::_generate_reponse_error(const Request *request, int code)
+std::string	Response::_generate_reponse_error(Request *request, int code)
 {
 	std::stringstream buf;
 	std::string code_status = HttpStatus::reasonPhrase(code);

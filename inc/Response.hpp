@@ -17,7 +17,7 @@ class Response
 		Response();
 
 
-		const Request								*_request;
+		Request								*_request;
 		const Location								*_location;
 		std::string 								_response;
 		std::set<std::string>						_index;
@@ -28,7 +28,7 @@ class Response
 
 		//CONSTRUCTORS/DESTRUCTORS
 
-		Response(const Request *request);
+		Response(Request *request);
 		~Response();
 
 		// GETTERS
@@ -37,7 +37,7 @@ class Response
 
 		// STATIC FONCTIONS
 
-		static	std::string	_generate_reponse_error(const Request *request, int code);
+		static	std::string	_generate_reponse_error(Request *request, int code);
 		static	std::string _generate_error_body(const Location *location, short status_code);
 		static	std::string	_generate_reponse_headers(int code, size_t size);
 
