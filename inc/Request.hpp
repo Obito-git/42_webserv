@@ -48,6 +48,8 @@ class Request
 
 		const Location*	getLocation() const;
 		const std::string getUrl() const;
+		const std::string getExtention() const;
+
 
 		// parsing
 

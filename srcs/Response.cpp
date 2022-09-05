@@ -22,13 +22,13 @@ void	Response::_path_is_to_file(std::string path)
 	try
 	{
 		std::string code_page = ft_read_file(path);
-		_find_content_type(path);
-		_response = _generate_reponse_ok(200, code_page);
+		if (_find_content_type(path))
+			_response = _generate_reponse_ok(200, code_page);
 	}
 	catch (std::exception& e)
 	{
 		std::cout << e.what() << std::endl;
-		_response = _generate_reponse_error(_request, 404, "Not Found");
+		_response = _generate_reponse_error(_request, 404);
 	}
 }
 
@@ -49,16 +49,49 @@ void	Response::_path_is_to_folder(std::string path)
 		{
 			std::cout << e.what() << std::endl;
 		}
-		_response = _generate_reponse_error(_request, 404, "Not Found");
+		_response = _generate_reponse_error(_request, 404);
 	}
-}
+}//FIXMI s'il n'y a pas de index
 
-void	Response::_find_content_type(std::string filename)
+int	Response::_find_content_type(std::string filename)
 {
 	std::string extention;
 	size_t pos = filename.find_last_of(".");
 	extention = (filename.substr(pos + 1));
-	_content_type = (_request->_mime->find(extention))->second;
+	std::map<std::string, std::string>::const_iterator it = _request->_mime->find(extention);
+	if (it != _request->_mime->end())
+	{
+		_content_type = it->second;
+		return (1);
+	}
+	else
+	{
+		CGI_Handler cgi(_request);
+		int status = cgi.getStatus();
+		if (status == 200)
+			_response = _generate_reponse_cgi(cgi, status);
+		else
+			_generate_reponse_error(_request, status);
+		return (0);
+	}
+}
+
+std::string	Response::_generate_reponse_cgi(CGI_Handler cgi, int status)
+{
+	std::stringstream buf;
+	std::string code_page = cgi.getResult();
+
+	// size_t size = code_page.length();
+
+	std::time_t now = time(0);
+	tm *gmtm = gmtime(&now);
+	char* date = asctime(gmtm);
+
+	buf << "HTTP/1.1 " << status << " " << HttpStatus::reasonPhrase(status) << std::endl;
+	buf << "Date: " << date;
+	buf << "Server:" << "Webserver" << std::endl;
+	buf << code_page << std::endl << std::endl;
+	return (buf.str());
 }
 
 
@@ -72,20 +105,21 @@ std::string	Response::_concatenate_path()
 std::string	Response::_generate_reponse_ok(int code, std::string code_page)
 {
 	std::stringstream buf;
-
+	
 	size_t size = code_page.length();
-	buf << _generate_reponse_headers(code, "OK", size); //FIXME
+	buf << _generate_reponse_headers(code, size); //FIXME
 	buf << code_page << std::endl << std::endl;
 	return (buf.str());
 }
 
-std::string	Response::_generate_reponse_error(const Request *request, int code, std::string msg)
+std::string	Response::_generate_reponse_error(const Request *request, int code)
 {
 	std::stringstream buf;
+	std::string code_status = HttpStatus::reasonPhrase(code);
 
 	std::string body = _generate_error_body(request->getLocation(), code);
 
-	buf << _generate_reponse_headers(code, msg, body.length());
+	buf << _generate_reponse_headers(code, body.length());
 	buf << body;
 	return (buf.str());
 }
@@ -115,15 +149,16 @@ std::string Response::_generate_error_body(const Location *location, short statu
 	return s;
 }
 
-std::string	Response::_generate_reponse_headers(int code, std::string code_page, size_t size)
+std::string	Response::_generate_reponse_headers(int code, size_t size)
 {
 	std::stringstream buf;
+	std::string code_status = HttpStatus::reasonPhrase(code);
 
 	std::time_t now = time(0);
 	tm *gmtm = gmtime(&now);
 	char* date = asctime(gmtm);
 
-	buf << "HTTP/1.1 " << code << " " << code_page << std::endl;
+	buf << "HTTP/1.1 " << code << " " << code_status << std::endl;
 	buf << "Date: " << date;
 	buf << "Server:" << "Webserver" << std::endl;
     // if (_content_type != "")

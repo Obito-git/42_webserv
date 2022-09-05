@@ -6,7 +6,7 @@
 // http://www.wijata.com/cgi/cgispec.html#4.0
 // https://www.ibm.com/docs/fr/netcoolomnibus/8.1?topic=scripts-environment-variables-in-cgi-script
 
-CGI_Handler::CGI_Handler(Request *req) : _req(req), _env(NULL), _env_len(), _cgi_path(), _status() {
+CGI_Handler::CGI_Handler(const Request *req) : _req(req), _env(NULL), _env_len(), _cgi_path(), _status() {
 	if (!is_good_type())
 		return;
 	set_environment();

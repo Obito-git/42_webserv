@@ -115,7 +115,7 @@ int	Request::_check_methods()
 	const std::set<HTTP_METHOD> methods = _location->getAllowedMethods();
 	if (methods.empty() || methods.find(_method) != methods.end())
 		return (1);
-	_rep = Response::_generate_reponse_error(this, 405, "Method Not Allowed"); // header : alowd_metods
+	_rep = Response::_generate_reponse_error(this, 405); // header : alowd_metods
 	return (0);
 }
 
@@ -138,14 +138,14 @@ int	Request::_check_url(std::vector<std::string> line)
 
 	if (element[0] != '/')
 	{
-		_rep = Response::_generate_reponse_error(this, 400, "Bad Request");
+		_rep = Response::_generate_reponse_error(this, 400);
 		return (1);
 	}
 	size_t pos = element.find(".");
 	size_t pos1 = element.find_last_of(".");
 	if (pos != pos1)
 	{
-		_rep = Response::_generate_reponse_error(this, 400, "Bad Request");
+		_rep = Response::_generate_reponse_error(this, 400);
 		return (1);
 	}
 	return (0);
@@ -153,25 +153,25 @@ int	Request::_check_url(std::vector<std::string> line)
 
 int	Request::_check_first_line()
 {
-	std::vector<std::string> line = *(ft_split(_message[0], ' '));
+	std::vector<std::string> line = *(ft_split(_message[0], ' '));//FIXME ft_split avec str
 
 	size_t pos = (_message[0]).find(" ");
 	if (pos == 0 || pos == std::string::npos || line.size() != 3)
 	{
-		_rep = Response::_generate_reponse_error(this, 400, "Bad Request");
+		_rep = Response::_generate_reponse_error(this, 400);
 		return (1);
 	}
 	if ((line.front()).compare("GET") && (line.front()).compare("POST")
 		&& (line.front()).compare("DELETE"))
 	{
-		_rep = Response::_generate_reponse_error(this, 405, "Method Not Allowed");
+		_rep = Response::_generate_reponse_error(this, 405);
 		return (1);
 	}
 	
 	if ((line.back()).compare("HTTP/1.0") && (line.back()).compare("HTTP/1.1") &&
 			(line.back()).compare("HTTP/2") && (line.back()).compare("HTTP/3"))
 	{
-		_rep = Response::_generate_reponse_error(this, 400, "Bad Request");
+		_rep = Response::_generate_reponse_error(this, 400);
 		return (1);
 	}
 	return (_check_url(line));
@@ -183,7 +183,7 @@ int	Request::_check_second_line()
 		|| _message[1][0] == '\v' || _message[1][0] == '\f'
 		|| _message[1][0] == '\r' || _message[1][0] == ' '))
 	{
-		_rep = Response::_generate_reponse_error(this, 400, "Bad Request");
+		_rep = Response::_generate_reponse_error(this, 400);
 		return (1);
 	}
 	return (0);
@@ -311,7 +311,7 @@ int	Request::_fill_up_content_length()
 		this->_content_length = (*it).second;
 	else
 	{
-		_rep = Response::_generate_reponse_error(this, 411, "Length Required");
+		_rep = Response::_generate_reponse_error(this, 411);
 		return (0);
 	}
 	return (1);
@@ -378,4 +378,9 @@ const Location*	Request::getLocation() const
 const std::string	Request::getUrl() const
 {
 	return (_url);
+}
+
+const std::string Request::getExtention() const
+{
+	return (_extention);
 }

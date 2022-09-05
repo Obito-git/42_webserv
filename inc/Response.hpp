@@ -3,10 +3,12 @@
 
 #include "webserv.hpp"
 #include "Request.hpp"
+#include "CGI_Handler.hpp"
 
 class Request;
 class Server;
 struct Location;
+class CGI_Handler;
 
 class Response
 {
@@ -35,9 +37,9 @@ class Response
 
 		// STATIC FONCTIONS
 
-		static	std::string	_generate_reponse_error(const Request *request, int code, std::string msg);
+		static	std::string	_generate_reponse_error(const Request *request, int code);
 		static	std::string _generate_error_body(const Location *location, short status_code);
-		static	std::string	_generate_reponse_headers(int code, std::string code_page, size_t size);
+		static	std::string	_generate_reponse_headers(int code, size_t size);
 
 
 	private:
@@ -45,8 +47,10 @@ class Response
 		std::string	_concatenate_path();
 		void		_path_is_to_folder(std::string path);
 		void		_path_is_to_file(std::string path);
-		void		_find_content_type(std::string filename);
+		int			_find_content_type(std::string filename);
 		std::string	_generate_reponse_ok(int code, std::string code_page);
+		std::string	_generate_reponse_cgi(CGI_Handler cgi, int status);
+
 
 };
 
