@@ -5,13 +5,16 @@
 #ifndef WEBSERV_CGIHANDLER_HPP
 #define WEBSERV_CGIHANDLER_HPP
 #include "Webserv_machine.hpp"
+#include "Request.hpp"
+
+class Request;
 
 
 class Request;
 class CGI_Handler {
 	
 private:
-	Request			*_req;
+	const Request	*_req;
 	char 			**_env;
 	int				_env_len;
 	std::string 	_cgi_type;
@@ -23,7 +26,7 @@ private:
 	
 	bool is_good_type();	
 public:
-	CGI_Handler(Request *req);
+	CGI_Handler(const Request *req);
 	int getStatus() const;
 	const std::string &getResult() const;
 	void update_status_and_headers();
