@@ -67,13 +67,12 @@ void CGI_Handler::set_environment() {
 }
 
 bool CGI_Handler::is_good_type() {
-	std::string tmp = _req->_url.substr(_req->_url.find_last_of('.'));
-	std::map<std::string, std::string>::const_iterator it = _req->_server->getCgiPaths().find(tmp);
-	if (it != _req->_server->getCgiPaths().end()) {
+	_cgi_type = _req->_extention;
+	std::map<std::string, std::string>::const_iterator it = _req->_server->getCgiPaths().find(_cgi_type);
+	if (it == _req->_server->getCgiPaths().end()) {
 		_status = 501;
 		return false;
 	}
-	_cgi_type = it->first;
 	_cgi_path = it->second;
 	return true;
 }
@@ -116,11 +115,13 @@ std::string CGI_Handler::launch_cgi(std::string file_path, std::string cgi_path,
 }
 
 CGI_Handler::~CGI_Handler() {
+	/*
 	if (!_env)
 		return;
 	for (int i = 0; i < _env_len; i++)
 		free(_env[i]);
 	free(_env);
+	  FIXME */
 }
 
 int CGI_Handler::getStatus() const {
