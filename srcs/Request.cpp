@@ -138,14 +138,14 @@ int	Request::_check_url(std::vector<std::string> line)
 
 	if (element[0] != '/')
 	{
-		_rep = Response::_generate_reponse_error(this, 400, "Bad Request3");
+		_rep = Response::_generate_reponse_error(this, 400, "Bad Request");
 		return (1);
 	}
 	size_t pos = element.find(".");
 	size_t pos1 = element.find_last_of(".");
 	if (pos != pos1)
 	{
-		_rep = Response::_generate_reponse_error(this, 400, "Bad Request4");
+		_rep = Response::_generate_reponse_error(this, 400, "Bad Request");
 		return (1);
 	}
 	return (0);
