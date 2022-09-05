@@ -75,3 +75,7 @@ void Server::setCgiPaths(const std::string& type, const std::string& path) {
 	_cgi_paths.erase(type);
 	_cgi_paths.insert(std::make_pair(type, path));
 }
+
+void Server::setAllLocations(const std::map<std::string, Location> &locations) {
+	_locations = locations;
+}

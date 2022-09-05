@@ -17,7 +17,7 @@ std::vector<Server *> &ConfigParser::getServers() {
 	return _servers;
 }
 
-std::map<std::string, std::string> *ConfigParser::getMime() const {
+std::map<std::string, std::string> *ConfigParser::getMime() {
 	std::vector<std::string>	*my_vector;
 	std::map<std::string, std::string> mimes;
 	std::string key;
@@ -170,6 +170,7 @@ void ConfigParser::parse_server_block(std::string &file_content, str_iter &it) {
 		throw ConfigNoRequiredKeywords();
 	s->setDefault(tmp_loc);
 	parse_locations(s, tmp_loc, locations_blocks);
+	check_server_pages(s);
 }
 
 std::pair<int, std::string> ConfigParser::skip_location_block(std::string &file_content, ConfigParser::str_iter &it) {
@@ -316,26 +317,19 @@ ConfigParser::parse_servername_args(Server *s, std::vector<std::string> &args) {
 void
 ConfigParser::parse_errorpages_args(Location& loc, std::vector<std::string> &args) {
 	int err_code;
-	std::string err_page;
+	std::string err_page_path;
 
 	if (args.size() == 2) {
 		err_code = atoi((*args.begin()).data());
 		if (args.begin()->find_first_not_of("0123456789") != std::string::npos ||
-			((err_code < 400 || err_code > 417) && (err_code < 500 || err_code > 505)))
+			(err_code < 400 || err_code > 599))
 			throw ConfigUnexpectedToken(find_unexpected_token(
-					*args.begin(), "error code from 400 to 417 or from 500 to 505").data());
-		try {
-			err_page = ft_read_file(*(args.begin() + 1));
-		} catch (std::exception& e) {
-			_error_msg = "Cannot open error page ";
-			_error_msg.append(*(args.begin() + 1));
-			throw ConfigCriticalError(_error_msg.data());
-		}
+					*args.begin(), "error code from 400 to 599").data());
+		err_page_path = *(args.begin() + 1);
 	} else
 		throw ConfigUnexpectedToken(find_unexpected_token(ft_strjoin(args.begin(), args.end(),
-																	 " "),
-														  "error_page [STATUS CODE] [PATH] pattern").data());
-	loc.setErrorPages(static_cast<short>(err_code), err_page);
+									 " "),"error_page [STATUS CODE] [PATH] pattern").data());
+	loc.setErrorPages(static_cast<short>(err_code), err_page_path);
 }
 
 void ConfigParser::parse_bodysize_args(Location& loc, std::vector<std::string> &args) {
@@ -385,7 +379,7 @@ void ConfigParser::parse_root_args(Location &loc, std::vector<std::string> &args
 		throw ConfigUnexpectedToken(find_unexpected_token(ft_strjoin(args.begin(), args.end(),
 														 " "), "only root directory path").data());
 	std::string root = *args.begin();
-	if (*(root.end() - 1) == '/')
+	if (root.size() > 1 && *(root.end() - 1) == '/')
 		root.erase(root.end() - 1);
 	loc.setRoot(root);
 }
@@ -415,6 +409,49 @@ void ConfigParser::parse_cgi_path(Server *s, std::vector<std::string> &args) {
 														  ss.str().data()).data());
 	}
 	s->setCgiPaths(*args.begin(), *(args.begin() + 1));
+}
+
+void ConfigParser::check_server_pages(Server *s) {
+	std::map<std::string, Location>::const_iterator	loc_it;
+	std::map<short, std::string>::iterator			page_it;
+	Location										new_loc = s->getConstDefault();
+	std::map<short, std::string>					pages = new_loc.getErrorPages();
+	std::map<std::string, Location>					array_loc;
+	//is_good_error_page(s, s->getConstDefault(), )	
+	
+	for (page_it = pages.begin(); page_it != pages.end(); page_it++)
+		is_good_error_page(s, new_loc, page_it->first, page_it->second);
+	s->setDefault(new_loc);
+	for (loc_it = s->getLocations().begin(); loc_it != s->getLocations().end(); loc_it++) {
+		new_loc = loc_it->second;
+		pages = new_loc.getErrorPages();
+		for (page_it = pages.begin(); page_it != pages.end(); page_it++)
+			is_good_error_page(s, new_loc, page_it->first, page_it->second);
+		array_loc.insert(std::make_pair(loc_it->first, new_loc));
+	}
+	s->setAllLocations(array_loc);
+}	
+
+void ConfigParser::is_good_error_page(Server* s, Location& loc, short code, const std::string& path) {
+	size_t dot_pos = path.find('.');
+	if (dot_pos == std::string::npos)
+		throw std::runtime_error(std::string("Error, bad extension for error file ") + path);
+	std::string extension = path.substr(++dot_pos);
+	if (extension == "html" || extension == "htm" || extension == "shtml" || extension == "xml") {
+		loc.setErrorPages(code, ft_read_file(path));
+		return;
+	}
+	if (s->getCgiPaths().find(extension) == s->getCgiPaths().end())
+		throw std::runtime_error(std::string("Can't use ") + path + std::string(" like error page. "
+																				"Bad extension of file is used. .php and .py are implimented like cgi."
+																				" Or you can use html or similar"));
+	std::string res = CGI_Handler::launch_cgi(path, s->getCgiPaths().find(extension)->second, NULL);
+	if (res.find("Status: ") != std::string::npos)
+		throw std::runtime_error(std::string("Error, unexpected error. Can't open ") + path +
+								 std::string(" with ") + s->getCgiPaths().find(extension)->second);
+	if (extension == "php")
+		res = res.substr(res.find("\r\n\r\n") + 4);
+	loc.setErrorPages(code, res);
 }
 
 /******************************************************************************************************************

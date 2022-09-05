@@ -7,6 +7,7 @@
 #include "Webserv_machine.hpp"
 
 
+class Request;
 class CGI_Handler {
 	
 private:
@@ -19,13 +20,14 @@ private:
 	std::string 	_result;
 
 	void set_environment();
-	void launch_cgi();
+	
 	bool is_good_type();	
 public:
 	CGI_Handler(Request *req);
 	int getStatus() const;
 	const std::string &getResult() const;
-
+	void update_status_and_headers();
+	static std::string launch_cgi(std::string file_path,std::string cgi_path, char **env);
 	virtual ~CGI_Handler();
 };
 

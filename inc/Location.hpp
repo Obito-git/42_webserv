@@ -21,6 +21,8 @@ private:
 public:
 	//constructor
 	Location();
+	Location(const Location& other);
+	Location& operator=(const Location& other);
 	static const std::string    _location_keywords[];
 
 /******************************************************************************************************************

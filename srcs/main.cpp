@@ -2,6 +2,7 @@
 // Created by amyroshn on 8/16/22.
 //
 #include "../inc/Webserv_machine.hpp"
+#include "CGI_Handler.hpp"
 
 void test_configs(int ac, char** av) {
 	std::cout << "--------------------------------" << std::endl;
@@ -43,6 +44,10 @@ void handle_exit(int signal) {
 }
 
 int main(int ac, char** av) {
+	/*
+	std::cout << CGI_Handler::launch_cgi(av[1], "dependencies/py", NULL) << std::endl;
+	(void) ac;
+	*/
 	if (ac == 1)
 		Logger::println(Logger::TXT_YELLOW, Logger::BG_RED, "No args detected");
 	else if (ac == 2) {

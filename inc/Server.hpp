@@ -37,6 +37,7 @@ public:
  *****************************************************************************************************************/
  
 	void setLocations(const std::string& path, const Location &location);
+	void setAllLocations(const std::map<std::string, Location> &locations);
 	void setHost(const std::string &ip);
 	void setPorts(const int& port);
 	void setServerName(const std::string &serverName);

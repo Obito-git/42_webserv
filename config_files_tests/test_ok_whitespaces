@@ -29,7 +29,6 @@ server_name         test
             
             
             
-              	error_page        404       Makefile
               	     
               	         
               	            

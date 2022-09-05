@@ -151,7 +151,7 @@ bool Webserv_machine::run_listening_sockets() {
  *****************************************************************************************************************/
 
 
-Webserv_machine::Webserv_machine(const char *path): got_shutdown_signal(false) {
+Webserv_machine::Webserv_machine(const char *path): _mime(NULL), got_shutdown_signal(false) {
 	ConfigParser config(path);
 	std::string error_msg;
 	try {

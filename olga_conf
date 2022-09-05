@@ -1,12 +1,18 @@
 server {
 	listen localhost
 	port 8080 8081 12000
+	error_page 404 /Users/amyroshn/Downloads/index.php
 	server_name localhost:8080
 	client_max_body_size 2048
 	file_upload on
-	root /Users/olgakusnirova/Desktop/P22_webserv/site/
+	cgi_path php /Users/amyroshn/Documents/webserv/dependencies/php-cgi
+	root /Users/amyroshn/Documents/webserv/tests/upload//
 	#usr/site/www
     autoindex        on     
 	methods POST GET DELETE
 	index index.html index.php
+	location / {
+	    root /t
+	#    error_page 404 /Users/amyroshn/Downloads/index2.php 
+	}
 }

@@ -7,12 +7,14 @@
 // https://www.ibm.com/docs/fr/netcoolomnibus/8.1?topic=scripts-environment-variables-in-cgi-script
 
 CGI_Handler::CGI_Handler(Request *req) : _req(req), _env(NULL), _env_len(), _cgi_path(), _status() {
+	_status = 500;
 	if (!is_good_type())
 		return;
 	set_environment();
 	if (!_env)
 		return;
-	launch_cgi();
+	_result = launch_cgi(_req->_path_to_requested_file, _cgi_path, _env);
+	update_status_and_headers();
 }
 
 void CGI_Handler::set_environment() {
@@ -49,7 +51,6 @@ void CGI_Handler::set_environment() {
 		if (!it->first.empty())
 			tmp_env.insert(std::make_pair("HTTP_" + it->first, it->second));
 
-	_status = 500;
 	char **res = static_cast<char **>(calloc(sizeof(char *), (tmp_env.size() + 1)));
 	if (!res)
 		return;
@@ -77,21 +78,21 @@ bool CGI_Handler::is_good_type() {
 	return true;
 }
 
-void CGI_Handler::launch_cgi() {
-	int		tube[2];
-	pid_t	pid;
-	char	buf[BUF_SIZE];
-	//char 	args[2][_req->_path_to_requested_file.size()];
-	//args[0] = _req->_path_to_requested_file.data();
-	char *args[2];
-	args[0] = strdup(_req->_path_to_requested_file.data());
-	args[1] = NULL;
-	memset(buf, 0, BUF_SIZE);
+std::string CGI_Handler::launch_cgi(std::string file_path, std::string cgi_path, char **env) {
+	int				tube[2];
+	pid_t			pid;
+	char			buf[BUF_SIZE];
+	std::string		res;
+	char			*args[3];
 
+	args[0] = const_cast<char *>(cgi_path.data());
+	args[1] = const_cast<char *>(file_path.data());
+	args[2] = NULL;
+	memset(buf, 0, BUF_SIZE);
 	if (pipe(tube) < 0)
-		return ;
+		return "Status: 500 Internal Server Error";
 	if ((pid = fork()) < 0)
-		return ;
+		return "Status: 500 Internal Server Error";
 	if (pid == 0) {
 		int dup_res;
 		dup_res = dup2 (tube[1], STDOUT_FILENO);
@@ -99,20 +100,19 @@ void CGI_Handler::launch_cgi() {
 		close(tube[1]);
 		if (dup_res < 0)
 			exit(2);
-		if (execve(_cgi_path.data(), args, _env) < 0)
+		if (execve(cgi_path.data(), args, env) < 0)
 			exit(2);
 	} else {
 		close(tube[1]);
 		while (0 != read(tube[0], buf, sizeof(buf))) {
-			_result = _result + buf;
+			res.append(buf);
 			memset(buf, 0, BUF_SIZE);
 		}
-		//FIXME close tube[0] ?
 		waitpid(pid, NULL, 0);
 	}
-	if (!_result.empty())
-		_status = 200;
-	free(args[0]);
+	if (res.empty())
+		return "Status: 500 Internal Server Error";
+	return res;
 }
 
 CGI_Handler::~CGI_Handler() {
@@ -129,4 +129,30 @@ int CGI_Handler::getStatus() const {
 
 const std::string &CGI_Handler::getResult() const {
 	return _result;
+}
+
+void CGI_Handler::update_status_and_headers() {
+	if (_result.find("Status: ") == 0) {
+		_status = atoi(_result.data() + 8);
+		return ;
+	}
+	_status = 200;
+	if (_cgi_type == "py") {
+		std::string tmp = "X-Powered-By: python3\r\n";
+		tmp.append("Content-type: text/html; charset=UTF-8\r\n\r\n");
+		_result = tmp.append(_result);
+	}
+	std::stringstream ss;
+	ss << "Content-Length: ";
+	size_t position = _result.find("\r\n\r\n");
+	if (position == std::string::npos)
+		position = _result.find("\n\n");
+	if (position == std::string::npos) {
+		_status = 500;
+		return;
+	}
+	while (isspace(_result[position]))
+		position++;
+	ss << _result.substr(position).size() << "\r\n";
+	_result = ss.str().append(_result);
 }

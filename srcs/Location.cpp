@@ -12,10 +12,8 @@ const std::string Location::_location_keywords[MAX_SERV_KEYWORDS] = {"error_page
  ************************************** CONSTRUCTORS/DESTRUCTORS **************************************************
  *****************************************************************************************************************/
  
-Location::Location() {
-	_autoindex = false;
-	_file_upload = false;
-	_max_body_size = 1024;
+Location::Location(): _location(), _root(), _autoindex(false), _index(), _file_upload(false),
+						_max_body_size(1024), _redirect_to(), _error_pages(), _cgi_path(), _allowed_methods() {
 }
 
 /******************************************************************************************************************
@@ -69,7 +67,7 @@ void Location::setRoot(const std::string &root) {
 }
 void Location::setLocation(const std::string &location) {
 	_location = location;
-	if (*(_location.end() - 1) == '/')
+	if (location.size() > 1 && *(_location.end() - 1) == '/')
 		_location.erase(_location.end() - 1);
 }
 
@@ -94,6 +92,7 @@ void Location::setAllowedMethods(const HTTP_METHOD allowedMethods) {
 }
 
 void Location::setErrorPages(short status_code, const std::string &errorPage) {
+	_error_pages.erase(status_code);
 	_error_pages.insert(std::make_pair(status_code, errorPage));
 }
 
@@ -103,6 +102,37 @@ void Location::setRedirectTo(const std::pair<std::string, std::string> &redirect
 
 void Location::setCgiPath(const std::vector<std::string> &cgiPath) {
 	_cgi_path = cgiPath;
+}
+
+//--------------------------------------------------------------
+
+Location::Location(const Location& other) {
+	_location = other._location;
+	_root = other._root;
+	_autoindex = other._autoindex;
+	_index = other._index;
+	_file_upload = other._file_upload;
+	_max_body_size = other._max_body_size;
+	_redirect_to = other._redirect_to;
+	_error_pages = other._error_pages;
+	_cgi_path = other._cgi_path;
+	_allowed_methods = other._allowed_methods;
+}
+
+Location &Location::operator=(const Location& other){
+	if (&other == this)
+		return *this;
+	_location = other._location;
+	_root = other._root;
+	_autoindex = other._autoindex;
+	_index = other._index;
+	_file_upload = other._file_upload;
+	_max_body_size = other._max_body_size;
+	_redirect_to = other._redirect_to;
+	_error_pages = other._error_pages;
+	_cgi_path = other._cgi_path;
+	_allowed_methods = other._allowed_methods;	
+	return *this;
 }
 
 

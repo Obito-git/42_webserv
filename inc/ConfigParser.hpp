@@ -6,6 +6,7 @@
 #define WEBSERV_CONFIGPARSER_HPP
 #include "webserv.hpp"
 #include "Server.hpp"
+#include "CGI_Handler.hpp"
 
 class Server;
 struct Location;
@@ -25,7 +26,8 @@ public:
 	const std::vector<Server *> &getParsedServers();
 	std::vector<Server *> &getServers();
 
-	std::map<std::string, std::string> *getMime() const;
+	static std::map<std::string, std::string> *getMime() ;
+
 
 private:
 	/******************************************************************************************************************
@@ -54,6 +56,9 @@ private:
 	void parse_index_args(Location& loc, std::vector<std::string>& args);
 	void parse_autoindex_args(Location& loc, std::vector<std::string>& args);
 	void parse_root_args(Location& loc, std::vector<std::string>& args);
+	
+	void check_server_pages(Server *s);
+	void is_good_error_page(Server* s, Location& loc, short code, const std::string& path);
 	
 	//void parse_return_args(Server* s, std::vector<std::string>& args, std::string& file_content);
 	

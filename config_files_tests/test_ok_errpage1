@@ -2,10 +2,6 @@ server {
 	listen localhost
 	port 8080 1234 8081
 	server_name test
-	error_page 404 Makefile
-	error_page 400 config_files_tests/test_errpage3
-	error_page 401 config_files_tests/test_errpage1
-	error_page 505 config_files_tests/test_errpage2
 	client_max_body_size 2048
 	file_upload on
 	root usr/site/www
