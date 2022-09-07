@@ -40,7 +40,7 @@ bool ClientSocket::recv_msg(const std::map<std::string, std::string> *mime){
 	if (not_space_pos != std::string::npos &&
 		(_request.find("\r\n\r\n") != std::string::npos || _request.find("\n\n") != std::string::npos)) {
 		Request req(_request.data(), this, mime);
-		if (check_headers(req._header)) {
+		if (check_headers(req._header)) { //FIXME if rep is empty - do something
 			_response = req._rep;
 			Logger::print("\nGot request from client ", _socket_fd, ":\t");
 			//Logger::println(Logger::TXT_BLACK, Logger::BG_CYAN, _request.substr(0, _request.find('\n')));
