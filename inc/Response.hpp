@@ -49,7 +49,7 @@ class Response
 		void		_path_is_to_file(std::string path);
 		int			_find_content_type(std::string filename);
 		std::string	_generate_reponse_ok(int code, std::string code_page);
-		std::string	_generate_reponse_cgi(CGI_Handler cgi, int status);
+		std::string	_generate_reponse_cgi(const CGI_Handler &cgi, int status);
 
 
 };

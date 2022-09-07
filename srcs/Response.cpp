@@ -45,8 +45,8 @@ void	Response::_path_is_to_folder(std::string path)
 			std::string code_page = ft_read_file(tmp_path);
 			_request->setPathToFile(tmp_path);
 			// _request->_path_to_requested_file = tmp_path;
-			_find_content_type(*it_index);
-			_response = _generate_reponse_ok(200, code_page);
+			if (_find_content_type(*it_index))
+				_response = _generate_reponse_ok(200, code_page);
 			break ;
 		}
 		catch (std::exception& e) {}
@@ -79,7 +79,7 @@ int	Response::_find_content_type(std::string filename)
 	}
 }
 
-std::string	Response::_generate_reponse_cgi(CGI_Handler cgi, int status)
+std::string	Response::_generate_reponse_cgi(const CGI_Handler &cgi, int status)
 {
 	std::stringstream buf;
 	std::string code_page = cgi.getResult();
