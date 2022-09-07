@@ -24,6 +24,8 @@ public:
 	int getPort() const;
 
 	const std::string &getHost() const;
+	
+	std::string getAddr() const;
 
 	const std::vector<const Server *> &getServers() const;
 

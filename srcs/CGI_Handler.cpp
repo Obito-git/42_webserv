@@ -21,43 +21,47 @@ void CGI_Handler::set_environment() {
 	const std::map<std::string, std::string> &h = _req->_header;
 	std::map<std::string, std::string>::const_iterator it;
 	std::map<std::string, std::string> tmp_env;
-	
-	size_t delim_pos;
-	std::string autoris = (it = h.find("Authorization")) == h.end() ? "" : it->second;;
-	std::string remote_user;
-	if ((delim_pos = autoris.find(' ')) != std::string::npos && delim_pos != autoris.length() - 1) {
-		remote_user = autoris.substr(delim_pos + 1);
-		autoris = autoris.substr(0, delim_pos);
-	}
-	tmp_env["AUTH_TYPE"] = autoris;
+
+	if (_cgi_type == "php")
+		tmp_env["REDIRECT_STATUS"] = "200";
+	//size_t delim_pos;
+	///std::string autoris = (it = h.find("Authorization")) == h.end() ? "" : it->second;;
+	//std::string remote_user;
+	//if ((delim_pos = autoris.find(' ')) != std::string::npos && delim_pos != autoris.length() - 1) {
+	//	remote_user = autoris.substr(delim_pos + 1);
+	//	autoris = autoris.substr(0, delim_pos);
+	//}
+	//tmp_env["AUTH_TYPE"] = autoris;
 	tmp_env["CONTENT_LENGTH"] = (it = h.find("Content-Length")) == h.end() ? "" : it->second;;; //FIXME
 	tmp_env["CONTENT_TYPE"] = (it = h.find("Content-Type")) == h.end() ? "" : it->second;;
 	tmp_env["GATEWAY_INTERFACE"] = "CGI/1.1";
 	tmp_env["PATH_INFO"] = _req->_path_info;
-	tmp_env["PATH_TRANSLATED"] = _req->_location->getRoot() + _req->_path_info;
-	tmp_env["QUERY_STRING"] = _req->_query;
-	tmp_env["REMOTE_ADDR"] = _req->_client_socket->getClientIp();
-	tmp_env["REMOTE_IDENT"] = remote_user;
-	tmp_env["REMOTE_USER"] = remote_user;
+	///tmp_env["PATH_TRANSLATED"] = _req->_location->getRoot() + _req->_path_info;
+	tmp_env["QUERY_STRING"] = _req->_query.find('?') != std::string::npos ? _req->_query.substr(1) : _req->_query;
+	tmp_env["REMOTE_ADDR"] = _req->_client_socket->getClientAddr();
 	tmp_env["REQUEST_METHOD"] = get_method_name(_req->_method);
+	tmp_env["REQUEST_URI"] = _req->_url;
 	tmp_env["SCRIPT_NAME"] = _req->_url;
-	delim_pos = _req->_host.find(':');
-	tmp_env["SERVER_NAME"] = delim_pos == std::string::npos ? _req->_host : _req->_host.substr(0, delim_pos);
-	tmp_env["SERVER_PORT"] = _req->_client_socket->getClientPort();
+	tmp_env["SCRIPT_FILENAME"] = _req->_path_to_requested_file;
+	tmp_env["DOCUMENT_URI"] = _req->_url;
+	tmp_env["DOCUMENT_ROOT"] = _req->_path_to_requested_file.substr(0, _req->_path_to_requested_file.find(_req->_url));
+	tmp_env["REMOTE_PORT"] = _req->_client_socket->getClientPort();
+	tmp_env["REMOTE_ADDR"] = _req->_client_socket->getClientAddr();
+	tmp_env["SERVER_NAME"] = _req->_host.find(':') == std::string::npos ?
+			_req->_host : _req->_host.substr(0, _req->_host.find(':'));
+	tmp_env["SERVER_PORT"] = _req->_client_socket->getPort();
+	tmp_env["SERVER_ADDR"] = _req->_client_socket->getAddr();
 	tmp_env["SERVER_PROTOCOL"] = "HTTP/1.1";
-	tmp_env["SERVER_SOFTWARE"] = tmp_env.find("SERVER_NAME")->second.append("/HTTP/1.1");
-	if (_cgi_type == "php")
-		tmp_env["REDIRECT_STATUS"] = "200";
+	tmp_env["SERVER_SOFTWARE"] = "webserv_amyroshn_okushnir/0.0.1";
+	
 	
 	for (it = _req->_header.cbegin(); it != _req->_header.cend(); it++)
 		if (!it->first.empty() && !it->second.empty())
-			tmp_env.insert(std::make_pair("HTTP_" + it->first, it->second));
-
+			tmp_env.insert(std::make_pair("HTTP_" + ft_to_upper_case(it->first), it->second));
 	char **res = static_cast<char **>(calloc(sizeof(char *), (tmp_env.size() + 1)));
 	if (!res)
 		return;
 	for (it = tmp_env.cbegin(); it != tmp_env.cend(); it++, _env_len++) {
-		if (!it->second.empty()) {
 			res[_env_len] = strdup((it->first + "=" + it->second).data());
 			if (!res[_env_len]) {
 				while (_env_len >= 0)
@@ -65,7 +69,6 @@ void CGI_Handler::set_environment() {
 				free(res);
 				return;
 			}
-		}
 	}
 	_env = res;
 }
@@ -81,7 +84,7 @@ bool CGI_Handler::is_good_type() {
 	return true;
 }
 
-std::string CGI_Handler::launch_cgi(std::string file_path, std::string cgi_path, char **env) {
+std::string CGI_Handler::launch_cgi(const std::string &file_path, const std::string &cgi_path, char **env) {
 	int				tube[2];
 	pid_t			pid;
 	char			buf[BUF_SIZE];
@@ -98,7 +101,7 @@ std::string CGI_Handler::launch_cgi(std::string file_path, std::string cgi_path,
 		return "Status: 500 Internal Server Error";
 	if (pid == 0) {
 		int dup_res;
-		dup_res = dup2 (tube[1], STDOUT_FILENO);
+		dup_res = dup2(tube[1], STDOUT_FILENO);
 		close(tube[0]);
 		close(tube[1]);
 		if (dup_res < 0)
@@ -107,7 +110,7 @@ std::string CGI_Handler::launch_cgi(std::string file_path, std::string cgi_path,
 			exit(2);
 	} else {
 		close(tube[1]);
-		while (0 != read(tube[0], buf, sizeof(buf))) {
+		while (read(tube[0], buf, BUF_SIZE - 1) > 0) {
 			res.append(buf);
 			memset(buf, 0, BUF_SIZE);
 		}
@@ -119,13 +122,11 @@ std::string CGI_Handler::launch_cgi(std::string file_path, std::string cgi_path,
 }
 
 CGI_Handler::~CGI_Handler() {
-	/*
 	if (!_env)
 		return;
 	for (int i = 0; i < _env_len; i++)
 		free(_env[i]);
 	free(_env);
-	  FIXME */
 }
 
 int CGI_Handler::getStatus() const {

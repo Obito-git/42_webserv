@@ -75,3 +75,7 @@ void ListeningSocket::setServers(const Server *serv) {
 ListeningSocket::~ListeningSocket() {
 	close();
 }
+
+std::string ListeningSocket::getAddr() const {
+	return std::string(inet_ntoa(_address.sin_addr));
+}

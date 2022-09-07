@@ -87,7 +87,7 @@ ClientSocket::~ClientSocket() {
 	close();
 }
 
-std::string ClientSocket::getClientIp() const {
+std::string ClientSocket::getClientAddr() const {
 	(void) _addr_len;
 	return std::string(inet_ntoa(_addr.sin_addr));
 }
@@ -96,8 +96,18 @@ std::string ClientSocket::getClientPort() const {
 	std::stringstream ss;
 	ss << ntohs(_addr.sin_port);
 	return std::string(ss.str());
-};
+}
+
+std::string ClientSocket::getPort() const {
+	std::stringstream ss;
+	ss << _parent_socket->getPort();
+	return std::string(ss.str());
+}
 
 const std::vector<const Server *> &ClientSocket::getServers() const {
 	return _parent_socket->getServers();
+}
+
+std::string ClientSocket::getAddr() const {
+	return _parent_socket->getAddr();
 }

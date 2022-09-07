@@ -56,3 +56,11 @@ std::string get_method_name(HTTP_METHOD m) {
 	}
 }
 
+std::string ft_to_upper_case(const std::string &s) {
+	std::string res(s);
+	for (size_t i = 0; i < res.length(); i++)
+		if (islower(res[i]))
+			res[i] = toupper(res[i]);
+	return res;
+}
+

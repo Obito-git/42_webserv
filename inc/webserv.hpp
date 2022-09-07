@@ -69,6 +69,7 @@ enum KEYWORDS {
 std::vector<std::string>* ft_split(std::string s, char delim);
 std::string ft_read_file(const std::string& path);
 std::string get_method_name(HTTP_METHOD m);
+std::string ft_to_upper_case(const std::string &s);
 
 template <class InputIterator>
 std::string ft_strjoin(InputIterator begin, InputIterator end, const std::string& delim) {

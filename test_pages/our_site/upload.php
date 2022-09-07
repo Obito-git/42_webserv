@@ -54,4 +54,4 @@ if (isset($_FILES["fileToUpload"]["name"])) {
 else
     echo "File was not set";
 
-include('dependencies/footer.php');
+include('dependencies/footer.html');

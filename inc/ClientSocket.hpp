@@ -27,13 +27,14 @@ public:
 	bool recv_msg(const std::map<std::string, std::string> *mime);
 
 	bool check_headers(const std::map<std::string, std::string> &headers);
-
-	std::string getClientIp() const;
 	const std::vector<const Server *> &getServers() const;
 
 	virtual ~ClientSocket();
 
+	std::string getClientAddr() const;
 	std::string getClientPort() const;
+	std::string getPort() const;
+	std::string getAddr() const;
 };
 
 

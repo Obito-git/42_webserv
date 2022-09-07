@@ -22,6 +22,7 @@ void	Response::_path_is_to_file(std::string path)
 	try
 	{
 		std::string code_page = ft_read_file(path);
+		_request->_path_to_requested_file = path;
 		if (_find_content_type(path))
 			_response = _generate_reponse_ok(200, code_page);
 	}
@@ -71,7 +72,7 @@ int	Response::_find_content_type(std::string filename)
 		if (status == 200)
 			_response = _generate_reponse_cgi(cgi.getResult(), status);
 		else
-			_generate_reponse_error(_request, status);
+			_response = _generate_reponse_error(_request, status);
 		return (0);
 	}
 }

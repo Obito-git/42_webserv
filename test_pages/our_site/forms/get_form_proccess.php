@@ -11,4 +11,4 @@ if (isset($_GET['lname']))
     echo $_GET['lname'];
 else
     echo "(surname is not set)";
-include('../dependencies/footer.php');
+include('../dependencies/footer.html');

@@ -11,4 +11,4 @@ if (isset($_POST['lname']))
     echo $_POST['lname'];
 else
     echo "(surname is not set)";
-include('../dependencies/footer.php');
+include('../dependencies/footer.html');
