@@ -1,0 +1,1015 @@
+[30;42mNew server socket has been created for 127.0.0.1 8080[0m
+[30;42mNew server socket has been created for 127.0.0.1 8081[0m
+[30;42mNew server socket has been created for 127.0.0.1 12000[0m
+Waiting for connections...
+[30;47mNew connection on 127.0.0.1 8080[0m
+[30;47mClient 6 has been connected to 127.0.0.1:8080[0m
+[30;47mNew connection on 127.0.0.1 8080[0m
+[30;47mClient 7 has been connected to 127.0.0.1:8080[0m
+_url: /
+_location: 
+
+Got request from client  6 :	[30;46mGET / HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+Cache-Control: max-age=0
+sec-ch-ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "macOS"
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,fr;q=0.7
+
+[0m
+
+Message to 6 :	[30;46mHTTP/1.1 200 OK[0m
+
+[30;47mClient 6 has been disconnected from [0m[30;47m127.0.0.1 8080[0m
+_url: /css/templatemo_style.css
+location2: /css
+location1: /css
+
+Got request from client  7 :	[30;46mGET /css/templatemo_style.css HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36
+sec-ch-ua-platform: "macOS"
+Accept: text/css,*/*;q=0.1
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: style
+Referer: http://localhost:8080/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,fr;q=0.7
+
+[0m
+
+Message to 7 :	[30;46mHTTP/1.1 200 OK[0m
+
+[30;47mNew connection on 127.0.0.1 8080[0m
+[30;47mClient 6 has been connected to 127.0.0.1:8080[0m
+[30;47mNew connection on 127.0.0.1 8080[0m
+[30;47mClient 8 has been connected to 127.0.0.1:8080[0m
+_url: /css/nivo-slider.css
+location2: /css
+location1: /css
+
+Got request from client  6 :	[30;46mGET /css/nivo-slider.css HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36
+sec-ch-ua-platform: "macOS"
+Accept: text/css,*/*;q=0.1
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: style
+Referer: http://localhost:8080/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,fr;q=0.7
+
+[0m
+
+Message to 6 :	[30;46mHTTP/1.1 200 OK[0m
+
+_url: /css/ddsmoothmenu.css
+location2: /css
+location1: /css
+
+Got request from client  8 :	[30;46mGET /css/ddsmoothmenu.css HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36
+sec-ch-ua-platform: "macOS"
+Accept: text/css,*/*;q=0.1
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: style
+Referer: http://localhost:8080/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,fr;q=0.7
+
+[0m
+
+Message to 8 :	[30;46mHTTP/1.1 200 OK[0m
+
+[30;47mClient 6 has been disconnected from [0m[30;47m127.0.0.1 8080[0m
+[30;47mNew connection on 127.0.0.1 8080[0m
+[30;47mClient 6 has been connected to 127.0.0.1:8080[0m
+
+Got request from client  6 :	[30;46mGET /js/jquery.min.js HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36
+sec-ch-ua-platform: "macOS"
+Accept: */*
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: script
+Referer: http://localhost:8080/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,fr;q=0.7
+
+[0m
+
+Message to 6 :	[30;46mHTTP/1.1 400 Bad Request[0m
+
+[30;47mNew connection on 127.0.0.1 8080[0m
+[30;47mClient 9 has been connected to 127.0.0.1:8080[0m
+_url: /js/ddsmoothmenu.js
+location2: /js
+location2: 
+_location: 
+
+Got request from client  9 :	[30;46mGET /js/ddsmoothmenu.js HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36
+sec-ch-ua-platform: "macOS"
+Accept: */*
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: script
+Referer: http://localhost:8080/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,fr;q=0.7
+
+[0m
+
+Message to 9 :	[30;46mHTTP/1.1 200 OK[0m
+
+[30;47mClient 7 has been disconnected from [0m[30;47m127.0.0.1 8080[0m
+[30;47mClient 8 has been disconnected from [0m[30;47m127.0.0.1 8080[0m
+[30;47mNew connection on 127.0.0.1 8080[0m
+[30;47mClient 7 has been connected to 127.0.0.1:8080[0m
+_url: /css/slimbox2.css
+location2: /css
+location1: /css
+
+Got request from client  7 :	[30;46mGET /css/slimbox2.css HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36
+sec-ch-ua-platform: "macOS"
+Accept: text/css,*/*;q=0.1
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: style
+Referer: http://localhost:8080/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,fr;q=0.7
+
+[0m
+
+Message to 7 :	[30;46mHTTP/1.1 200 OK[0m
+
+[30;47mNew connection on 127.0.0.1 8080[0m
+[30;47mClient 8 has been connected to 127.0.0.1:8080[0m
+
+Got request from client  8 :	[30;46mGET /js/jquery-1-4-2.min.js HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36
+sec-ch-ua-platform: "macOS"
+Accept: */*
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: script
+Referer: http://localhost:8080/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,fr;q=0.7
+
+[0m
+
+Message to 8 :	[30;46mHTTP/1.1 400 Bad Request[0m
+
+[30;47mClient 7 has been disconnected from [0m[30;47m127.0.0.1 8080[0m
+[30;47mNew connection on 127.0.0.1 8080[0m
+[30;47mClient 7 has been connected to 127.0.0.1:8080[0m
+_url: /js/slimbox2.js
+location2: /js
+location2: 
+_location: 
+
+Got request from client  7 :	[30;46mGET /js/slimbox2.js HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36
+sec-ch-ua-platform: "macOS"
+Accept: */*
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: script
+Referer: http://localhost:8080/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,fr;q=0.7
+
+[0m
+
+Message to 7 :	[30;46mHTTP/1.1 200 OK[0m
+
+[30;47mClient 9 has been disconnected from [0m[30;47m127.0.0.1 8080[0m
+[30;47mClient 7 has been disconnected from [0m[30;47m127.0.0.1 8080[0m
+
+Got request from client  6 :	[30;46mGET /js/jquery.nivo.slider.pack.js HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36
+sec-ch-ua-platform: "macOS"
+Accept: */*
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: script
+Referer: http://localhost:8080/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,fr;q=0.7
+
+[0m
+
+Message to 6 :	[30;46mHTTP/1.1 400 Bad Request[0m
+
+
+Got request from client  8 :	[30;46mGET /js/jquery-1.4.3.min.js HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36
+sec-ch-ua-platform: "macOS"
+Accept: */*
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: script
+Referer: http://localhost:8080/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,fr;q=0.7
+
+[0m
+
+Message to 8 :	[30;46mHTTP/1.1 400 Bad Request[0m
+
+[30;47mNew connection on 127.0.0.1 8080[0m
+[30;47mClient 7 has been connected to 127.0.0.1:8080[0m
+_url: /images/slider/01.jpg
+location2: /images/slider
+location2: /images
+location2: 
+_location: 
+
+Got request from client  7 :	[30;46mGET /images/slider/01.jpg HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36
+sec-ch-ua-platform: "macOS"
+Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: image
+Referer: http://localhost:8080/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,fr;q=0.7
+
+[0m
+
+Message to 7 :	[30;46mHTTP/1.1 200 OK[0m
+
+_url: /images/slider/05.jpg
+location2: /images/slider
+location2: /images
+location2: 
+_location: 
+
+Got request from client  6 :	[30;46mGET /images/slider/05.jpg HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36
+sec-ch-ua-platform: "macOS"
+Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: image
+Referer: http://localhost:8080/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,fr;q=0.7
+
+[0m
+
+Message to 6 :	[30;46mHTTP/1.1 200 OK[0m
+
+_url: /images/templatemo_image_01.jpg
+location2: /images
+location2: 
+_location: 
+
+Got request from client  8 :	[30;46mGET /images/templatemo_image_01.jpg HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36
+sec-ch-ua-platform: "macOS"
+Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: image
+Referer: http://localhost:8080/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,fr;q=0.7
+
+[0m
+
+Message to 8 :	[30;46mHTTP/1.1 200 OK[0m
+
+[30;47mClient 6 has been disconnected from [0m[30;47m127.0.0.1 8080[0m
+[30;47mClient 7 has been disconnected from [0m[30;47m127.0.0.1 8080[0m
+[30;47mNew connection on 127.0.0.1 8080[0m
+[30;47mClient 6 has been connected to 127.0.0.1:8080[0m
+_url: /images/slider/02.jpg
+location2: /images/slider
+location2: /images
+location2: 
+_location: 
+
+Got request from client  6 :	[30;46mGET /images/slider/02.jpg HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36
+sec-ch-ua-platform: "macOS"
+Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: image
+Referer: http://localhost:8080/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,fr;q=0.7
+
+[0m
+
+Message to 6 :	[30;46mHTTP/1.1 200 OK[0m
+
+[30;47mClient 8 has been disconnected from [0m[30;47m127.0.0.1 8080[0m
+[30;47mNew connection on 127.0.0.1 8080[0m
+[30;47mClient 7 has been connected to 127.0.0.1:8080[0m
+_url: /images/slider/03.jpg
+location2: /images/slider
+location2: /images
+location2: 
+_location: 
+
+Got request from client  7 :	[30;46mGET /images/slider/03.jpg HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36
+sec-ch-ua-platform: "macOS"
+Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: image
+Referer: http://localhost:8080/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,fr;q=0.7
+
+[0m
+
+Message to 7 :	[30;46mHTTP/1.1 200 OK[0m
+
+[30;47mClient 6 has been disconnected from [0m[30;47m127.0.0.1 8080[0m
+[30;47mClient 7 has been disconnected from [0m[30;47m127.0.0.1 8080[0m
+[30;47mNew connection on 127.0.0.1 8080[0m
+[30;47mClient 6 has been connected to 127.0.0.1:8080[0m
+_url: /images/slider/04.jpg
+location2: /images/slider
+location2: /images
+location2: 
+_location: 
+
+Got request from client  6 :	[30;46mGET /images/slider/04.jpg HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36
+sec-ch-ua-platform: "macOS"
+Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: image
+Referer: http://localhost:8080/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,fr;q=0.7
+
+[0m
+
+Message to 6 :	[30;46mHTTP/1.1 200 OK[0m
+
+[30;47mNew connection on 127.0.0.1 8080[0m
+[30;47mClient 7 has been connected to 127.0.0.1:8080[0m
+_url: /images/templatemo_image_02.jpg
+location2: /images
+location2: 
+_location: 
+
+Got request from client  7 :	[30;46mGET /images/templatemo_image_02.jpg HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36
+sec-ch-ua-platform: "macOS"
+Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: image
+Referer: http://localhost:8080/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,fr;q=0.7
+
+[0m
+
+Message to 7 :	[30;46mHTTP/1.1 200 OK[0m
+
+[30;47mClient 6 has been disconnected from [0m[30;47m127.0.0.1 8080[0m
+[30;47mNew connection on 127.0.0.1 8080[0m
+[30;47mClient 6 has been connected to 127.0.0.1:8080[0m
+_url: /images/templatemo_image_03.jpg
+location2: /images
+location2: 
+_location: 
+
+Got request from client  6 :	[30;46mGET /images/templatemo_image_03.jpg HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36
+sec-ch-ua-platform: "macOS"
+Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: image
+Referer: http://localhost:8080/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,fr;q=0.7
+
+[0m
+
+Message to 6 :	[30;46mHTTP/1.1 200 OK[0m
+
+[30;47mClient 7 has been disconnected from [0m[30;47m127.0.0.1 8080[0m
+[30;47mNew connection on 127.0.0.1 8080[0m
+[30;47mClient 7 has been connected to 127.0.0.1:8080[0m
+_url: /images/templatemo_main_bgr.jpg
+location2: /images
+location2: 
+_location: 
+
+Got request from client  7 :	[30;46mGET /images/templatemo_main_bgr.jpg HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36
+sec-ch-ua-platform: "macOS"
+Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: image
+Referer: http://localhost:8080/css/templatemo_style.css
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,fr;q=0.7
+
+[0m
+
+Message to 7 :	[30;46mHTTP/1.1 200 OK[0m
+
+[30;47mClient 6 has been disconnected from [0m[30;47m127.0.0.1 8080[0m
+[30;47mNew connection on 127.0.0.1 8080[0m
+[30;47mClient 6 has been connected to 127.0.0.1:8080[0m
+_url: /images/templatemo_main_bg.jpg
+location2: /images
+location2: 
+_location: 
+
+Got request from client  6 :	[30;46mGET /images/templatemo_main_bg.jpg HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36
+sec-ch-ua-platform: "macOS"
+Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: image
+Referer: http://localhost:8080/css/templatemo_style.css
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,fr;q=0.7
+
+[0m
+
+Message to 6 :	[30;46mHTTP/1.1 200 OK[0m
+
+[30;47mClient 7 has been disconnected from [0m[30;47m127.0.0.1 8080[0m
+[30;47mNew connection on 127.0.0.1 8080[0m
+[30;47mClient 7 has been connected to 127.0.0.1:8080[0m
+_url: /images/templatemo_wrapper_m.png
+location2: /images
+location2: 
+_location: 
+
+Got request from client  7 :	[30;46mGET /images/templatemo_wrapper_m.png HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36
+sec-ch-ua-platform: "macOS"
+Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: image
+Referer: http://localhost:8080/css/templatemo_style.css
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,fr;q=0.7
+
+[0m
+
+Message to 7 :	[30;46mHTTP/1.1 200 OK[0m
+
+[30;47mNew connection on 127.0.0.1 8080[0m
+[30;47mClient 8 has been connected to 127.0.0.1:8080[0m
+_url: /images/templatemo_wrapper_t.png
+location2: /images
+location2: 
+_location: 
+
+Got request from client  8 :	[30;46mGET /images/templatemo_wrapper_t.png HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36
+sec-ch-ua-platform: "macOS"
+Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: image
+Referer: http://localhost:8080/css/templatemo_style.css
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,fr;q=0.7
+
+[0m
+
+Message to 8 :	[30;46mHTTP/1.1 200 OK[0m
+
+[30;47mClient 6 has been disconnected from [0m[30;47m127.0.0.1 8080[0m
+[30;47mClient 7 has been disconnected from [0m[30;47m127.0.0.1 8080[0m
+[30;47mClient 8 has been disconnected from [0m[30;47m127.0.0.1 8080[0m
+[30;47mNew connection on 127.0.0.1 8080[0m
+[30;47mClient 6 has been connected to 127.0.0.1:8080[0m
+_url: /images/templatemo_header_bg.jpg
+location2: /images
+location2: 
+_location: 
+
+Got request from client  6 :	[30;46mGET /images/templatemo_header_bg.jpg HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36
+sec-ch-ua-platform: "macOS"
+Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: image
+Referer: http://localhost:8080/css/templatemo_style.css
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,fr;q=0.7
+
+[0m
+
+Message to 6 :	[30;46mHTTP/1.1 200 OK[0m
+
+[30;47mClient 6 has been disconnected from [0m[30;47m127.0.0.1 8080[0m
+[30;47mNew connection on 127.0.0.1 8080[0m
+[30;47mClient 6 has been connected to 127.0.0.1:8080[0m
+_url: /images/templatemo_logo.png
+location2: /images
+location2: 
+_location: 
+
+Got request from client  6 :	[30;46mGET /images/templatemo_logo.png HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36
+sec-ch-ua-platform: "macOS"
+Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: image
+Referer: http://localhost:8080/css/templatemo_style.css
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,fr;q=0.7
+
+[0m
+
+Message to 6 :	[30;46mHTTP/1.1 200 OK[0m
+
+[30;47mNew connection on 127.0.0.1 8080[0m
+[30;47mClient 7 has been connected to 127.0.0.1:8080[0m
+_url: /images/loading.gif
+location2: /images
+location2: 
+_location: 
+
+Got request from client  7 :	[30;46mGET /images/loading.gif HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36
+sec-ch-ua-platform: "macOS"
+Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: image
+Referer: http://localhost:8080/css/templatemo_style.css
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,fr;q=0.7
+
+[0m
+
+Message to 7 :	[30;46mHTTP/1.1 200 OK[0m
+
+[30;47mClient 6 has been disconnected from [0m[30;47m127.0.0.1 8080[0m
+[30;47mClient 7 has been disconnected from [0m[30;47m127.0.0.1 8080[0m
+[30;47mNew connection on 127.0.0.1 8080[0m
+[30;47mClient 6 has been connected to 127.0.0.1:8080[0m
+_url: /images/templatemo_menu_hover.png
+location2: /images
+location2: 
+_location: 
+
+Got request from client  6 :	[30;46mGET /images/templatemo_menu_hover.png HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36
+sec-ch-ua-platform: "macOS"
+Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: image
+Referer: http://localhost:8080/css/ddsmoothmenu.css
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,fr;q=0.7
+
+[0m
+
+Message to 6 :	[30;46mHTTP/1.1 200 OK[0m
+
+[30;47mNew connection on 127.0.0.1 8080[0m
+[30;47mClient 7 has been connected to 127.0.0.1:8080[0m
+_url: /images/templatemo_image_04.jpg
+location2: /images
+location2: 
+_location: 
+
+Got request from client  7 :	[30;46mGET /images/templatemo_image_04.jpg HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36
+sec-ch-ua-platform: "macOS"
+Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: image
+Referer: http://localhost:8080/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,fr;q=0.7
+
+[0m
+
+Message to 7 :	[30;46mHTTP/1.1 200 OK[0m
+
+[30;47mClient 6 has been disconnected from [0m[30;47m127.0.0.1 8080[0m
+[30;47mNew connection on 127.0.0.1 8080[0m
+[30;47mClient 6 has been connected to 127.0.0.1:8080[0m
+_url: /images/templatemo_image_05.jpg
+location2: /images
+location2: 
+_location: 
+
+Got request from client  6 :	[30;46mGET /images/templatemo_image_05.jpg HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36
+sec-ch-ua-platform: "macOS"
+Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: image
+Referer: http://localhost:8080/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,fr;q=0.7
+
+[0m
+
+Message to 6 :	[30;46mHTTP/1.1 200 OK[0m
+
+[30;47mClient 6 has been disconnected from [0m[30;47m127.0.0.1 8080[0m
+[30;47mClient 7 has been disconnected from [0m[30;47m127.0.0.1 8080[0m
+[30;47mNew connection on 127.0.0.1 8080[0m
+[30;47mClient 6 has been connected to 127.0.0.1:8080[0m
+_url: /images/templatemo_image_06.jpg
+location2: /images
+location2: 
+_location: 
+
+Got request from client  6 :	[30;46mGET /images/templatemo_image_06.jpg HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36
+sec-ch-ua-platform: "macOS"
+Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: image
+Referer: http://localhost:8080/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,fr;q=0.7
+
+[0m
+
+Message to 6 :	[30;46mHTTP/1.1 200 OK[0m
+
+[30;47mClient 6 has been disconnected from [0m[30;47m127.0.0.1 8080[0m
+[30;47mNew connection on 127.0.0.1 8080[0m
+[30;47mClient 6 has been connected to 127.0.0.1:8080[0m
+_url: /images/templatemo_image_07.jpg
+location2: /images
+location2: 
+_location: 
+
+Got request from client  6 :	[30;46mGET /images/templatemo_image_07.jpg HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36
+sec-ch-ua-platform: "macOS"
+Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: image
+Referer: http://localhost:8080/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,fr;q=0.7
+
+[0m
+
+Message to 6 :	[30;46mHTTP/1.1 200 OK[0m
+
+[30;47mNew connection on 127.0.0.1 8080[0m
+[30;47mClient 7 has been connected to 127.0.0.1:8080[0m
+_url: /images/templatemo_image_08.jpg
+location2: /images
+location2: 
+_location: 
+
+Got request from client  7 :	[30;46mGET /images/templatemo_image_08.jpg HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36
+sec-ch-ua-platform: "macOS"
+Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: image
+Referer: http://localhost:8080/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,fr;q=0.7
+
+[0m
+
+Message to 7 :	[30;46mHTTP/1.1 200 OK[0m
+
+[30;47mClient 6 has been disconnected from [0m[30;47m127.0.0.1 8080[0m
+[30;47mNew connection on 127.0.0.1 8080[0m
+[30;47mClient 6 has been connected to 127.0.0.1:8080[0m
+_url: /images/templatemo_image_09.jpg
+location2: /images
+location2: 
+_location: 
+
+Got request from client  6 :	[30;46mGET /images/templatemo_image_09.jpg HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36
+sec-ch-ua-platform: "macOS"
+Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: image
+Referer: http://localhost:8080/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,fr;q=0.7
+
+[0m
+
+Message to 6 :	[30;46mHTTP/1.1 200 OK[0m
+
+[30;47mClient 7 has been disconnected from [0m[30;47m127.0.0.1 8080[0m
+[30;47mNew connection on 127.0.0.1 8080[0m
+[30;47mClient 7 has been connected to 127.0.0.1:8080[0m
+[30;47mClient 6 has been disconnected from [0m[30;47m127.0.0.1 8080[0m
+_url: /images/templatemo_image_10.jpg
+location2: /images
+location2: 
+_location: 
+
+Got request from client  7 :	[30;46mGET /images/templatemo_image_10.jpg HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36
+sec-ch-ua-platform: "macOS"
+Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: image
+Referer: http://localhost:8080/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,fr;q=0.7
+
+[0m
+
+Message to 7 :	[30;46mHTTP/1.1 200 OK[0m
+
+[30;47mNew connection on 127.0.0.1 8080[0m
+[30;47mClient 6 has been connected to 127.0.0.1:8080[0m
+_url: /images/templatemo_image_11.jpg
+location2: /images
+location2: 
+_location: 
+
+Got request from client  6 :	[30;46mGET /images/templatemo_image_11.jpg HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36
+sec-ch-ua-platform: "macOS"
+Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: image
+Referer: http://localhost:8080/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,fr;q=0.7
+
+[0m
+
+Message to 6 :	[30;46mHTTP/1.1 200 OK[0m
+
+[30;47mClient 6 has been disconnected from [0m[30;47m127.0.0.1 8080[0m
+[30;47mClient 7 has been disconnected from [0m[30;47m127.0.0.1 8080[0m
+[30;47mNew connection on 127.0.0.1 8080[0m
+[30;47mClient 6 has been connected to 127.0.0.1:8080[0m
+_url: /images/templatemo_list.png
+location2: /images
+location2: 
+_location: 
+
+Got request from client  6 :	[30;46mGET /images/templatemo_list.png HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36
+sec-ch-ua-platform: "macOS"
+Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: image
+Referer: http://localhost:8080/css/templatemo_style.css
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,fr;q=0.7
+
+[0m
+
+Message to 6 :	[30;46mHTTP/1.1 200 OK[0m
+
+[30;47mClient 6 has been disconnected from [0m[30;47m127.0.0.1 8080[0m
+[30;47mNew connection on 127.0.0.1 8080[0m
+[30;47mClient 6 has been connected to 127.0.0.1:8080[0m
+_url: /images/templatemo_wrapper_b.png
+location2: /images
+location2: 
+_location: 
+
+Got request from client  6 :	[30;46mGET /images/templatemo_wrapper_b.png HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36
+sec-ch-ua-platform: "macOS"
+Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: image
+Referer: http://localhost:8080/css/templatemo_style.css
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,fr;q=0.7
+
+[0m
+
+Message to 6 :	[30;46mHTTP/1.1 200 OK[0m
+
+[30;47mClient 6 has been disconnected from [0m[30;47m127.0.0.1 8080[0m
+[30;47mNew connection on 127.0.0.1 8080[0m
+[30;47mClient 6 has been connected to 127.0.0.1:8080[0m
+_url: /images/templatemo_button01.png
+location2: /images
+location2: 
+_location: 
+
+Got request from client  6 :	[30;46mGET /images/templatemo_button01.png HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36
+sec-ch-ua-platform: "macOS"
+Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: image
+Referer: http://localhost:8080/css/templatemo_style.css
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,fr;q=0.7
+
+[0m
+
+Message to 6 :	[30;46mHTTP/1.1 200 OK[0m
+
+[30;47mClient 6 has been disconnected from [0m[30;47m127.0.0.1 8080[0m
+[30;41mGot shutdown signal[0m
+[31;43mASocket 127.0.0.1 8080[0m[31;43m was closed by server[0m
+[31;43mASocket 127.0.0.1 8081[0m[31;43m was closed by server[0m
+[31;43mASocket 127.0.0.1 12000[0m[31;43m was closed by server[0m
+[30;42mNew server socket has been created for 127.0.0.1 8080[0m
+[30;42mNew server socket has been created for 127.0.0.1 8081[0m
+[30;42mNew server socket has been created for 127.0.0.1 12000[0m
+Waiting for connections...
+[30;41mGot shutdown signal[0m
+[31;43mASocket 127.0.0.1 8080[0m[31;43m was closed by server[0m
+[31;43mASocket 127.0.0.1 8081[0m[31;43m was closed by server[0m
+[31;43mASocket 127.0.0.1 12000[0m[31;43m was closed by server[0m

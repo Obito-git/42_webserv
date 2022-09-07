@@ -71,6 +71,7 @@
 		"bit": "cpp",
 		"deque": "cpp",
 		"optional": "cpp",
-		"stack": "cpp"
+		"stack": "cpp",
+		"filesystem": "cpp"
 	}
 }
