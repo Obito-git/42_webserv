@@ -22,6 +22,7 @@ void	Response::_path_is_to_file(std::string path)
 	try
 	{
 		std::string code_page = ft_read_file(path);
+		_request->setPathToFile(path);
 		if (_find_content_type(path))
 			_response = _generate_reponse_ok(200, code_page);
 	}
