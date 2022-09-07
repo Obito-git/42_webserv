@@ -85,11 +85,12 @@ int	Request::_check_location()
 {
 
 	std::string location = _url;
+	std::cout << "_url: " << _url << std::endl;
 	size_t pos = 0;
-	if (*(_url.end() - 1) != '/')
+	if (*(location.end() - 1) == '/' && location.length() != 1)
 	{
-		pos = location.find_last_of('/');	
-		location = location.substr(0, pos + 1);
+		location = location.erase(location.size() - 1);
+		std::cout <<"location: " <<  location << std::endl;
 	}
 	while (location.length() != 1)
 	{
@@ -97,17 +98,20 @@ int	Request::_check_location()
 		std::map<std::string, Location>::iterator it_loc = map_loc.find(location);
 		if (it_loc != map_loc.end())
 		{
+			std::cout << "location1: " << location << std::endl;
 			_location = &(*it_loc).second;
 			return (_check_methods());
 		}
 		else
 		{
-			location.erase(location.end() - 1);
+			// location.erase(location.end() - 1);
 			pos = location.find_last_of('/');	
-			location = location.substr(0, pos + 1);
+			location = location.substr(0, pos);
+			std::cout << "location2: " << location << std::endl;
 		}
 	}
 	_location = &(_server->getConstDefault());
+	std::cout <<"_location: " <<  _location->getLocation() << std::endl;
 	return (_check_methods());
 }
 

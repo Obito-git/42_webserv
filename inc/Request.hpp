@@ -4,6 +4,8 @@
 #include "parsingRequest.hpp"
 #include "Response.hpp"
 #include "Webserv_machine.hpp"
+#include <cstdlib>
+
 
 class Webserv_machine;
 class Server;
@@ -52,20 +54,30 @@ class Request
 		const std::string getExtention() const;
 
 
+		void setExtention(std::string extention);
+		void setPathToFile(std::string path);
+
+
+
 		// parsing
 
 		int			_read_message(const char *message);
+		void		_read_body(const char * message);
 		void		_make_map_of_headers();
 
 		// check request
 		int			_check_url(std::vector<std::string> line);
-		void		_check_line(std::string line);
+		void		_check_line(int ind);
 		int			_check_first_line();
 		int			_check_second_line();
+		int			_check_body();
+
+
 
 		// fill_up_request
 		int			_fill_up_request();
 		int			_fill_up_content_length();
+		void		_fill_up_body();
 		void		_fill_up_method(std::string elem);
 		void		_fill_up_url(std::string line);
 		void		_fill_up_protocol(std::string line);

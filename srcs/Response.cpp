@@ -5,7 +5,9 @@ Response::Response() : _request(NULL), _location(NULL),
 _response(""), _index(std::set<std::string>()), _path(""), _content_type("") {};
 
 Response::Response(Request *request): _request(request), _location(request->getLocation()),
-_response(""), _index(_location->getIndex()), _path(""), _content_type("")
+_response(""),
+_index(_location->getIndex()),
+_path(""), _content_type("")
 {
     _path = _concatenate_path();
     if (_path[_path.length() - 1] == '/' && _index.size() != 0) // FIXME apres ajouter condition si index vide pour auto index
@@ -42,7 +44,8 @@ void	Response::_path_is_to_folder(std::string path)
 		try
 		{
 			std::string code_page = ft_read_file(tmp_path);
-			_request->_path_to_requested_file = tmp_path;
+			_request->setPathToFile(tmp_path);
+			// _request->_path_to_requested_file = tmp_path;
 			_find_content_type(*it_index);
 			_response = _generate_reponse_ok(200, code_page);
 			break ;
@@ -57,7 +60,8 @@ int	Response::_find_content_type(std::string filename)
 	std::string extention;
 	size_t pos = filename.find_last_of(".");
 	extention = (filename.substr(pos + 1));
-	_request->_extention = extention;
+	_request->setExtention(extention);
+	// _request->_extention = extention;
 	std::map<std::string, std::string>::const_iterator it = _request->_mime->find(extention);
 	if (it != _request->_mime->end())
 	{
@@ -71,7 +75,7 @@ int	Response::_find_content_type(std::string filename)
 		if (status == 200)
 			_response = _generate_reponse_cgi(cgi, status);
 		else
-			_generate_reponse_error(_request, status);
+			_response = _generate_reponse_error(_request, status);
 		return (0);
 	}
 }
