@@ -5,9 +5,7 @@ Response::Response() : _request(NULL), _location(NULL),
 _response(""), _index(std::set<std::string>()), _path(""), _content_type("") {};
 
 Response::Response(Request *request): _request(request), _location(request->getLocation()),
-_response(""),
-_index(_location->getIndex()),
-_path(""), _content_type("")
+_response(""), _index(_location->getIndex()), _path(""), _content_type("")
 {
     _path = _concatenate_path();
     if (_path[_path.length() - 1] == '/' && _index.size() != 0) // FIXME apres ajouter condition si index vide pour auto index
