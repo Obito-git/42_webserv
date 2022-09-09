@@ -13,7 +13,7 @@ CGI_Handler::CGI_Handler(const Request *req) : _req(req), _env(NULL), _env_len()
 	set_environment();
 	if (!_env)
 		return;
-	_result = launch_cgi(_req->_path_to_requested_file, _cgi_path, _env);
+	_result = launch_cgi(_req->_path_to_requested_file, _cgi_path, _req->_request_body, _env);
 	update_status_and_headers();
 }
 
@@ -63,6 +63,7 @@ void CGI_Handler::set_environment() {
 		return;
 	for (it = tmp_env.cbegin(); it != tmp_env.cend(); it++, _env_len++) {
 			res[_env_len] = strdup((it->first + "=" + it->second).data());
+			std::cout << res[_env_len];
 			if (!res[_env_len]) {
 				while (_env_len >= 0)
 					free(res[_env_len--]);
@@ -84,13 +85,21 @@ bool CGI_Handler::is_good_type() {
 	return true;
 }
 
-std::string CGI_Handler::launch_cgi(const std::string &file_path, const std::string &cgi_path, char **env) {
+std::string CGI_Handler::launch_cgi(const std::string &file_path, const std::string &cgi_path, const std::string &body, char **env) {
 	int				tube[2];
 	pid_t			pid;
 	char			buf[BUF_SIZE];
 	std::string		res;
 	char			*args[3];
-
+	FILE			*body_file;
+	int				bodyfile_fd;
+	
+	if (!(body_file = tmpfile()))
+		return "Status: 500 Internal Server Error";
+	if ((bodyfile_fd = fileno(body_file)) == -1) {
+		fclose(body_file);
+		return "Status: 500 Internal Server Error";
+	}
 	args[0] = const_cast<char *>(cgi_path.data());
 	args[1] = const_cast<char *>(file_path.data());
 	args[2] = NULL;
@@ -100,8 +109,13 @@ std::string CGI_Handler::launch_cgi(const std::string &file_path, const std::str
 	if ((pid = fork()) < 0)
 		return "Status: 500 Internal Server Error";
 	if (pid == 0) {
+		if (write(bodyfile_fd, body.data(), body.length()) == -1)
+			exit(2);
+		lseek(bodyfile_fd, 0, SEEK_SET);
 		int dup_res;
-		dup_res = dup2(tube[1], STDOUT_FILENO);
+		dup_res = dup2(bodyfile_fd, STDIN_FILENO);
+		if (dup_res != -1)
+			dup_res = dup2(tube[1], STDOUT_FILENO);
 		close(tube[0]);
 		close(tube[1]);
 		if (dup_res < 0)
@@ -116,6 +130,8 @@ std::string CGI_Handler::launch_cgi(const std::string &file_path, const std::str
 		}
 		waitpid(pid, NULL, 0);
 	}
+	fclose(body_file);
+	close(bodyfile_fd);
 	if (res.empty())
 		return "Status: 500 Internal Server Error";
 	return res;

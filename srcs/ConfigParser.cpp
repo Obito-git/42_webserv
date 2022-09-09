@@ -445,7 +445,7 @@ void ConfigParser::is_good_error_page(Server* s, Location& loc, short code, cons
 		throw std::runtime_error(std::string("Can't use ") + path + std::string(" like error page. "
 																				"Bad extension of file is used. .php and .py are implimented like cgi."
 																				" Or you can use html or similar"));
-	std::string res = CGI_Handler::launch_cgi(path, s->getCgiPaths().find(extension)->second, NULL);
+	std::string res = CGI_Handler::launch_cgi(path, s->getCgiPaths().find(extension)->second, "", NULL);
 	if (res.find("Status: ") != std::string::npos)
 		throw std::runtime_error(std::string("Error, unexpected error. Can't open ") + path +
 								 std::string(" with ") + s->getCgiPaths().find(extension)->second);

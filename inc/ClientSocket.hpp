@@ -8,6 +8,7 @@
 #include "Request.hpp"
 
 
+class Request;
 class ClientSocket: public ASocket {
 public:
 	ClientSocket(const ListeningSocket *parentSocket, int socket_fd, const sockaddr_in &addr, socklen_t addrLen);
@@ -26,7 +27,7 @@ public:
 
 	bool recv_msg(const std::map<std::string, std::string> *mime);
 
-	bool check_headers(const std::map<std::string, std::string> &headers);
+	bool check_headers(const Request &req, const std::map<std::string, std::string> *mime);
 	const std::vector<const Server *> &getServers() const;
 
 	virtual ~ClientSocket();

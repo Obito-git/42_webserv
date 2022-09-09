@@ -62,14 +62,14 @@ void Webserv_machine::up() { //FIXME add Connection: close verif
 			if (FD_ISSET(it->first, &write_set)) {
 				try {
 					if (it->second->answer()) {
-						clients_to_write.erase(it);
+						clients_to_write.erase(it->first);
 					}
 				} catch (std::exception& e){
 					Logger::println(Logger::TXT_BLACK,Logger::BG_RED, e.what());
 					FD_CLR(it->first, &read_set);
 					FD_CLR(it->first, &_server_fd_set);
-					clients_to_read.erase(it);
-					clients_to_write.erase(it);
+					clients_to_read.erase(it->first);
+					clients_to_write.erase(it->first);
 				}
 				select_status = 0;
 				break;

@@ -17,14 +17,29 @@ ClientSocket::ClientSocket(const ListeningSocket *parentSocket, int socket_fd,
 }
 
 /* FIXME POTENTIAL BUg IF MSG SIZE IS GREATER THAN 65535 BITES */
-bool ClientSocket::check_headers(const std::map<std::string, std::string> &headers) {
-	std::map<std::string, std::string>::const_iterator it = headers.find("Content-Length");
-	//FIXME check length of body here
-	it = headers.find("Connection");
-	if (it != headers.end() && it->second == "close")
+bool ClientSocket::check_headers(const Request &req, const std::map<std::string, std::string> *mime) {
+	std::map<std::string, std::string>::const_iterator it = req._header.find("Connection");
+	if (it != req._header.end() && it->second == "close")
 		_close_immediately = true;
+	it = req._header.find("Content-Length");
+	if (it != req._header.end()) {
+		size_t content_length = std::stoul(it->second);
+		if (req._request_body.length() < content_length) {
+			Logger::print(Logger::TXT_BLACK, Logger::BG_YELLOW, "Content-Length is ", content_length,
+							" got ");
+			Logger::println(Logger::TXT_BLACK, Logger::BG_YELLOW, req._request_body.length(), " bytes");
+			return false;
+		}
+		if (req._request_body.length() > content_length) {
+			_request.erase(content_length - 1);
+			Request new_req(_request.data(), this, mime);
+			_response = new_req._rep;
+		}
+	}
 	return true;
 }
+
+
 
 bool ClientSocket::recv_msg(const std::map<std::string, std::string> *mime){
 	char *data[BUF_SIZE];
@@ -35,15 +50,12 @@ bool ClientSocket::recv_msg(const std::map<std::string, std::string> *mime){
 		throw CannotAccessDataException("Connection is closed");
 	_request.append(reinterpret_cast<const char *>(data), read_status);
 	not_space_pos = _request.find_first_not_of(" \f\n\r\t\v");
-	//if (not_space_pos != std::string::npos && not_space_pos != 0) FIXME don't need
-	//	_request.erase(0, not_space_pos);
 	if (not_space_pos != std::string::npos &&
 		(_request.find("\r\n\r\n") != std::string::npos || _request.find("\n\n") != std::string::npos)) {
 		Request req(_request.data(), this, mime);
-		if (check_headers(req._header)) { //FIXME if rep is empty - do something
-			_response = req._rep;
+		_response = req._rep;
+		if (check_headers(req, mime)) {
 			Logger::print("\nGot request from client ", _socket_fd, ":\t");
-			//Logger::println(Logger::TXT_BLACK, Logger::BG_CYAN, _request.substr(0, _request.find('\n')));
 			Logger::println(Logger::TXT_BLACK, Logger::BG_CYAN, _request);
 			_request.clear();
 			return true;
@@ -57,12 +69,13 @@ bool ClientSocket::answer() {
 	ssize_t write_status = write(_socket_fd, _response.data(), _response.size());
 	if (write_status == -1)
 		throw CannotAccessDataException("Can't write data in socket");
+	if (_response.length() == 0)
+		throw std::runtime_error("Empty response, closing connection");
 	if (write_status == static_cast<ssize_t>(_response.size()) && _close_immediately)
 		throw std::runtime_error("Connection was closed by http \"Connection: close\" header");
 	if (write_status == static_cast<ssize_t>(_response.size())) {
 		Logger::print("\nMessage to", _socket_fd, ":\t");
 		Logger::println(Logger::TXT_BLACK, Logger::BG_CYAN,_response.substr(0, _response.find('\n')));
-		//Logger::println(_client_msg);
 		Logger::println("");
 		_response.clear();
 		return true;

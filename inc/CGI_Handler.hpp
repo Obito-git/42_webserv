@@ -30,7 +30,7 @@ public:
 	int getStatus() const;
 	const std::string &getResult() const;
 	void update_status_and_headers();
-	static std::string launch_cgi(const std::string &file_path, const std::string &cgi_path, char **env);
+	static std::string launch_cgi(const std::string &file_path, const std::string &cgi_path, const std::string &body, char **env);
 	virtual ~CGI_Handler();
 };
 
