@@ -190,7 +190,7 @@ int	Request::_check_second_line()
 
 void	Request::_check_line(int ind)
 {
-	if (!_message[ind].empty())
+	if (_message.size() && !_message[ind].empty())
 	{
 		if (*(_message[ind].end() - 1) == '\r')
 			_message[ind].erase(_message[ind].end() - 1);
