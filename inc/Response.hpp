@@ -3,12 +3,14 @@
 
 #include "webserv.hpp"
 #include "Request.hpp"
+#include "AutoIndex.hpp"
 #include "CGI_Handler.hpp"
 
 class Request;
 class Server;
 struct Location;
 class CGI_Handler;
+class AutoIndex;
 
 class Response
 {
