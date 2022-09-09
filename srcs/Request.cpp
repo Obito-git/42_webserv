@@ -85,20 +85,15 @@ int	Request::_check_location()
 {
 
 	std::string location = _url;
-	std::cout << "_url: " << _url << std::endl;
 	size_t pos = 0;
 	if (*(location.end() - 1) == '/' && location.length() != 1)
-	{
 		location = location.erase(location.size() - 1);
-		std::cout <<"location: " <<  location << std::endl;
-	}
 	while (location.length() > 1)
 	{
 		const std::map<std::string, Location> *map_loc = &(_server->getLocations());
 		std::map<std::string, Location>::const_iterator it_loc = map_loc->find(location);
 		if (it_loc != (*map_loc).end())
 		{
-			std::cout << "location1: " << location << std::endl;
 			_location = &(*it_loc).second;
 			return (_check_methods());
 		}
@@ -107,11 +102,9 @@ int	Request::_check_location()
 			// location.erase(location.end() - 1);
 			pos = location.find_last_of('/');	
 			location = location.substr(0, pos);
-			std::cout << "location2: " << location << std::endl;
 		}
 	}
 	_location = &(_server->getConstDefault());
-	std::cout <<"_location: " <<  _location->getLocation() << std::endl;
 	return (_check_methods());
 }
 
@@ -197,7 +190,7 @@ int	Request::_check_second_line()
 
 void	Request::_check_line(int ind)
 {
-	if (!_message[ind].empty())
+	if (_message.size() && !_message[ind].empty())
 	{
 		if (*(_message[ind].end() - 1) == '\r')
 			_message[ind].erase(_message[ind].end() - 1);

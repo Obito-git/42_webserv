@@ -7,8 +7,14 @@ _response(""), _index(std::set<std::string>()), _path(""), _content_type("") {};
 Response::Response(Request *request): _request(request), _location(request->getLocation()),
 _response(""), _index(_location->getIndex()), _path(""), _content_type("")
 {
+	std::ifstream in;
+	std::string file_content;
+	struct stat s;
+	
+
     _path = _concatenate_path();
-    if (_path[_path.length() - 1] == '/' && _index.size() != 0) // FIXME apres ajouter condition si index vide pour auto index
+	stat(_path.data(), &s);
+    if (s.st_mode & S_IFDIR)
         _path_is_to_folder(_path);
     else
         _path_is_to_file(_path);
@@ -44,13 +50,23 @@ void	Response::_path_is_to_folder(std::string path)
 		{
 			std::string code_page = ft_read_file(tmp_path);
 			_request->setPathToFile(tmp_path);
-			// _request->_path_to_requested_file = tmp_path;
 			if (_find_content_type(*it_index))
 				_response = _generate_reponse_ok(200, code_page);
-			break ;
+			return ;
 		}
 		catch (std::exception& e) {}
-		_response = _generate_reponse_error(_request, 404);
+	}
+	if (_request->_location->isAutoindex())
+	{
+		std::string auto_index_rep = AutoIndex::generate_autoindex_page(path, _request);
+		if (auto_index_rep != "")
+			_response = _generate_reponse_ok(200, auto_index_rep);
+		else
+			_response = _generate_reponse_error(_request, 403);//FIXME pas sure ou il faut mettre cette erreur
+	}
+	else
+	{
+		_response = _generate_reponse_error(_request, 403);
 	}
 }//FIXMI s'il n'y a pas de index
 
@@ -100,7 +116,6 @@ std::string	Response::_generate_reponse_cgi(const CGI_Handler &cgi, int status)
 
 std::string	Response::_concatenate_path()
 {
-
 	std::string path = _location->getRoot();
 		return path.append(_request->getUrl());
 }
