@@ -9,7 +9,7 @@ const std::string Server::_server_keywords[MAX_KEYWORDS] = {"listen", "port","se
 																 "autoindex", "root", "location",
 																 "return", "cgi_path"};
 
-const std::string Server::_cgi_types[MAX_CGI_TYPES] = {"php", "py"};
+const std::string Server::_cgi_types[MAX_CGI_TYPES] = {"php", "py", "bla"};
 
 Server::Server() {
 }

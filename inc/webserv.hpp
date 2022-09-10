@@ -40,7 +40,7 @@
 #define MAX_SERV_KEYWORDS	11
 #define MAX_LOC_KEYWORDS	9
 #define MAX_KEYWORDS 13
-#define MAX_CGI_TYPES 2
+#define MAX_CGI_TYPES 3
 #define BUF_SIZE 65535
 #define MIME_FILE "dependencies/mime"
 

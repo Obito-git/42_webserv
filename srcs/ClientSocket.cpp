@@ -48,7 +48,7 @@ bool ClientSocket::dechunk(const Request &req, const std::map<std::string, std::
 	std::string parsed_body;
 	size_t content_length = 1;
 
-	if (te == req._header.end() || te->second != "chunked")
+	if ((te == req._header.end() || te->second != "chunked") || req._header.find("Content-Length") == req._header.end())
 		return true;
 	if (req._request_body.find("\r\n0\r\n\r\n") == std::string::npos)
 		return false;

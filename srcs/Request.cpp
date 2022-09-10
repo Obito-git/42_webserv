@@ -314,6 +314,13 @@ void	Request::_fill_up_host(std::map<std::string, std::string>::iterator it)
 int	Request::_fill_up_content_length()
 {
 	std::map<std::string, std::string>::iterator it;
+	if ((it = _header.find("Transfer-Encoding")) !=_header.end()) {
+		if (it->second != "chunked") {
+			_rep = Response::_generate_reponse_error(this, 501);
+			return 0;
+		}
+		return 1;
+	}
 	it = _header.find("Content-Length");
 	if (it != _header.end())
 		this->_content_length = (*it).second;
