@@ -125,7 +125,7 @@ std::string	Response::_generate_reponse_ok(int code, std::string code_page)
 	std::stringstream buf;
 	
 	size_t size = code_page.length();
-	buf << _generate_reponse_headers(code, size); //FIXME
+	buf << _generate_reponse_headers(_request, code, size); //FIXME
 	buf << code_page << std::endl << std::endl;
 	return (buf.str());
 }
@@ -137,7 +137,7 @@ std::string	Response::_generate_reponse_error(Request *request, int code)
 
 	std::string body = _generate_error_body(request->getLocation(), code);
 
-	buf << _generate_reponse_headers(code, body.length());
+	buf << _generate_reponse_headers(request, code, body.length());
 	buf << body;
 	return (buf.str());
 }
@@ -167,7 +167,7 @@ std::string Response::_generate_error_body(const Location *location, short statu
 	return s;
 }
 
-std::string	Response::_generate_reponse_headers(int code, size_t size)
+std::string	Response::_generate_reponse_headers(Request *request, int code, size_t size)
 {
 	std::stringstream buf;
 	std::string code_status = HttpStatus::reasonPhrase(code);
@@ -175,12 +175,15 @@ std::string	Response::_generate_reponse_headers(int code, size_t size)
 	std::time_t now = time(0);
 	tm *gmtm = gmtime(&now);
 	char* date = asctime(gmtm);
-
+	
+	
 	buf << "HTTP/1.1 " << code << " " << code_status << std::endl;
 	buf << "Date: " << date;
 	buf << "Server:" << "Webserver" << std::endl;
     // if (_content_type != "")
 	    // buf << "Content-Type: " << _content_type << std::endl;
+	if (request->getHeader().find("Connection") != request->getHeader().end())
+		buf << request->getHeader().find("Connection")->second;//FIXME anton changes
 	buf << "Content-Length: " << size << std::endl << std::endl;
 	return (buf.str());
 }

@@ -449,3 +449,7 @@ void Request::setPathToFile(std::string path)
 {
 	_path_to_requested_file = path;
 }
+
+const std::map<std::string, std::string> &Request::getHeader() const {
+	return _header;
+}

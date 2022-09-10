@@ -50,7 +50,7 @@ bool ClientSocket::dechunk(const Request &req, const std::map<std::string, std::
 
 	if (te == req._header.end() || te->second != "chunked")
 		return true;
-	if (req._request_body.find("0\r\n\r\n") == std::string::npos)
+	if (req._request_body.find("\r\n0\r\n\r\n") == std::string::npos)
 		return false;
 	std::vector<std::string> parsed = ft_split(req._request_body, "\r\n");
 	for (it = parsed.begin(); it != parsed.end() && content_length; it += 2) {

@@ -53,8 +53,10 @@ class Request
 		const std::string getUrl() const;
 		const std::string getExtention() const;
 
+	const std::map<std::string, std::string> &getHeader() const;
 
-		void setExtention(std::string extention);
+
+	void setExtention(std::string extention);
 		void setPathToFile(std::string path);
 
 

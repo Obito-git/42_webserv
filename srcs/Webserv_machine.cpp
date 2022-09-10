@@ -7,7 +7,7 @@
 
 
 
-void Webserv_machine::up() { //FIXME add Connection: close verif
+void Webserv_machine::up() {
 	if (_servers.empty()) {
 		return;
 	}
@@ -66,8 +66,9 @@ void Webserv_machine::up() { //FIXME add Connection: close verif
 					}
 				} catch (std::exception& e){
 					Logger::println(Logger::TXT_BLACK,Logger::BG_RED, e.what());
-					FD_CLR(it->first, &read_set);
+					//FD_CLR(it->first, &read_set);
 					FD_CLR(it->first, &_server_fd_set);
+					delete it->second;
 					clients_to_read.erase(it->first);
 					clients_to_write.erase(it->first);
 				}
@@ -86,7 +87,7 @@ void Webserv_machine::up() { //FIXME add Connection: close verif
 					}
 				} catch (std::exception& e) {
 					FD_CLR(it->first, &_server_fd_set);
-					FD_CLR(it->first, &read_set); //FIXME dont need?
+					//FD_CLR(it->first, &read_set); //FIXME dont need?
 					delete it->second;
 					clients_to_read.erase(it->first);
 				}

@@ -19,7 +19,6 @@ public:
 	Server();
 	static const std::string    _server_keywords[];
 	static const std::string    _cgi_types[];
-	static const std::string    _all_keywords[]; //FIXME unused
 
 /******************************************************************************************************************
  ************************************************** GETTERS *******************************************************

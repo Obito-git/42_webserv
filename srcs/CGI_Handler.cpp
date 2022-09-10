@@ -30,13 +30,13 @@ void CGI_Handler::set_environment() {
 	//if ((delim_pos = autoris.find(' ')) != std::string::npos && delim_pos != autoris.length() - 1) {
 	//	remote_user = autoris.substr(delim_pos + 1);
 	//	autoris = autoris.substr(0, delim_pos);
-	//}
+	//} FIXME
 	//tmp_env["AUTH_TYPE"] = autoris;
-	tmp_env["CONTENT_LENGTH"] = (it = h.find("Content-Length")) == h.end() ? "" : it->second;;; //FIXME
+	tmp_env["CONTENT_LENGTH"] = (it = h.find("Content-Length")) == h.end() ? "" : it->second;
 	tmp_env["CONTENT_TYPE"] = (it = h.find("Content-Type")) == h.end() ? "" : it->second;;
 	tmp_env["GATEWAY_INTERFACE"] = "CGI/1.1";
 	tmp_env["PATH_INFO"] = _req->_path_info;
-	///tmp_env["PATH_TRANSLATED"] = _req->_location->getRoot() + _req->_path_info;
+	///tmp_env["PATH_TRANSLATED"] = _req->_location->getRoot() + _req->_path_info; FIXME
 	tmp_env["QUERY_STRING"] = _req->_query.find('?') != std::string::npos ? _req->_query.substr(1) : _req->_query;
 	tmp_env["REMOTE_ADDR"] = _req->_client_socket->getClientAddr();
 	tmp_env["REQUEST_METHOD"] = get_method_name(_req->_method);
@@ -63,7 +63,6 @@ void CGI_Handler::set_environment() {
 		return;
 	for (it = tmp_env.cbegin(); it != tmp_env.cend(); it++, _env_len++) {
 			res[_env_len] = strdup((it->first + "=" + it->second).data());
-			std::cout << res[_env_len];
 			if (!res[_env_len]) {
 				while (_env_len >= 0)
 					free(res[_env_len--]);
@@ -164,6 +163,8 @@ void CGI_Handler::update_status_and_headers() {
 		tmp.append("Content-type: text/html; charset=UTF-8\r\n\r\n");
 		_result = tmp.append(_result);
 	}
+	if (_req->getHeader().find("Connection") != _req->getHeader().end())
+		_result = std::string("Connection: ") + _req->getHeader().find("Connection")->second + "\r\n" + _result;
 	std::stringstream ss;
 	ss << "Content-Length: ";
 	size_t position = _result.find("\r\n\r\n");
