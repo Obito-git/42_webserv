@@ -31,6 +31,7 @@
 #include <fcntl.h>
 #include <csignal>
 #include <cstring>
+#include <cerrno>
 
 #include "HttpStatusCode.hpp"
 #include "Logger.hpp"
@@ -67,10 +68,12 @@ enum KEYWORDS {
 };
 
 
-std::vector<std::string>* ft_split(std::string s, char delim);
-std::string ft_read_file(const std::string& path);
-std::string get_method_name(HTTP_METHOD m);
-std::string ft_to_upper_case(const std::string &s);
+std::vector<std::string>	ft_split(std::string s, char delim);
+std::vector<std::string>	ft_split(std::string s, const std::string &delim);
+std::string					ft_read_file(const std::string& path);
+std::string					get_method_name(HTTP_METHOD m);
+std::string					ft_to_upper_case(const std::string &s);
+bool						ft_isnumeric(const char *s);
 
 template <class InputIterator>
 std::string ft_strjoin(InputIterator begin, InputIterator end, const std::string& delim) {

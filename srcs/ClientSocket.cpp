@@ -16,13 +16,15 @@ ClientSocket::ClientSocket(const ListeningSocket *parentSocket, int socket_fd,
 	Logger::println(Logger::TXT_BLACK, Logger::BG_WHITE, ss.str());
 }
 
-/* FIXME POTENTIAL BUg IF MSG SIZE IS GREATER THAN 65535 BITES */
 bool ClientSocket::check_headers(const Request &req, const std::map<std::string, std::string> *mime) {
 	std::map<std::string, std::string>::const_iterator it = req._header.find("Connection");
 	if (it != req._header.end() && it->second == "close")
 		_close_immediately = true;
-	it = req._header.find("Content-Length");
+	it = req._header.find("Transfer-Encoding");
 	if (it != req._header.end()) {
+		if (!dechunk(req, mime))
+			return false;
+	} else if ((it = req._header.find("Content-Length")) != req._header.end()) {
 		size_t content_length = std::stoul(it->second);
 		if (req._request_body.length() < content_length) {
 			Logger::print(Logger::TXT_BLACK, Logger::BG_YELLOW, "Content-Length is ", content_length,
@@ -39,7 +41,34 @@ bool ClientSocket::check_headers(const Request &req, const std::map<std::string,
 	return true;
 }
 
+//true if all data recived, in error cases or if not chunked
+bool ClientSocket::dechunk(const Request &req, const std::map<std::string, std::string> *mime) {
+	std::map<std::string, std::string>::const_iterator te = req._header.find("Transfer-Encoding");
+	std::vector<std::string>::iterator it;
+	std::string parsed_body;
+	size_t content_length = 1;
 
+	if (te == req._header.end() || te->second != "chunked")
+		return true;
+	if (req._request_body.find("0\r\n\r\n") == std::string::npos)
+		return false;
+	std::vector<std::string> parsed = ft_split(req._request_body, "\r\n");
+	for (it = parsed.begin(); it != parsed.end() && content_length; it += 2) {
+		errno = 0;
+		content_length = std::stoul(*it, NULL, 16);
+		if (errno != 0 || (content_length != 0 && (it + 1) == parsed.end()))
+			return true;
+		if (content_length == 0)
+			break;
+		if ((it + 1)->length() != content_length)
+			return true;
+		parsed_body.append(*(it + 1));
+	}
+	_request = _request.substr(0, _request.find("\r\n\r\n") + 4).append(parsed_body);
+	Request new_req(_request.data(), this, mime);
+	_response = new_req._rep;
+	return true;
+}
 
 bool ClientSocket::recv_msg(const std::map<std::string, std::string> *mime){
 	char *data[BUF_SIZE];
@@ -124,3 +153,5 @@ const std::vector<const Server *> &ClientSocket::getServers() const {
 std::string ClientSocket::getAddr() const {
 	return _parent_socket->getAddr();
 }
+
+

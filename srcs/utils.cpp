@@ -4,19 +4,33 @@
 
 #include "webserv.hpp"
 
-std::vector<std::string>* ft_split(std::string s, char delim) {
-	// given string with delimiter
-	std::vector<std::string>* tmp_res = new std::vector<std::string>();
+std::vector<std::string> ft_split(std::string s, char delim) {
+	std::vector<std::string> tmp_res;
 
 	size_t pos = 0;
 	while (( pos = s.find (delim)) != std::string::npos)
 	{
 		if (!s.substr(0, pos).empty())
-			tmp_res->push_back(s.substr(0, pos)); // store the substring
+			tmp_res.push_back(s.substr(0, pos)); // store the substring
 		s.erase(0, pos + 1);  /* erase() function store the current positon and move to next token. */
 	}
 	if (!s.substr(0, pos).empty())
-		tmp_res->push_back(s.substr(0, pos)); // store the substring
+		tmp_res.push_back(s.substr(0, pos)); // store the substring
+	return tmp_res;
+}
+
+std::vector<std::string> ft_split(std::string s, const std::string &delim) {
+	std::vector<std::string> tmp_res;
+
+	size_t pos = 0;
+	while (( pos = s.find (delim)) != std::string::npos)
+	{
+		if (!s.substr(0, pos).empty())
+			tmp_res.push_back(s.substr(0, pos)); // store the substring
+		s.erase(0, pos + delim.length());  /* erase() function store the current positon and move to next token. */
+	}
+	if (!s.substr(0, pos).empty())
+		tmp_res.push_back(s.substr(0, pos)); // store the substring
 	return tmp_res;
 }
 
@@ -62,5 +76,11 @@ std::string ft_to_upper_case(const std::string &s) {
 		if (islower(res[i]))
 			res[i] = toupper(res[i]);
 	return res;
+}
+
+bool ft_isnumeric(const char *s) {
+	for (int i = 0; s[i]; i++)
+		if (!isdigit(s[i])) { return false; }
+	return true;
 }
 

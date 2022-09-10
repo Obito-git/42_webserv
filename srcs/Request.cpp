@@ -151,7 +151,7 @@ int	Request::_check_url(std::vector<std::string> line)
 
 int	Request::_check_first_line()
 {
-	std::vector<std::string> line = *(ft_split(_message[0], ' '));//FIXME ft_split avec str
+	std::vector<std::string> line = ft_split(_message[0], ' ');//FIXME ft_split avec str
 
 	size_t pos = (_message[0]).find(" ");
 	if (pos == 0 || pos == std::string::npos || line.size() != 3)
@@ -190,7 +190,7 @@ int	Request::_check_second_line()
 
 void	Request::_check_line(int ind)
 {
-	if (_message.size() && !_message[ind].empty())
+	if (_message.size() > 1 && !_message[ind].empty())
 	{
 		if (*(_message[ind].end() - 1) == '\r')
 			_message[ind].erase(_message[ind].end() - 1);
@@ -203,7 +203,7 @@ void	Request::_check_line(int ind)
 
 int	Request::_read_message(const char * message)
 {
-	_message = *(ft_split(message, '\n'));
+	_message = ft_split(message, '\n');
 	_check_line(0);
 	if (!_check_first_line())
 	{
@@ -221,14 +221,16 @@ int	Request::_read_message(const char * message)
 void	Request::_read_body(const char * message)
 {
 	std::string str(message);
-	size_t pos = str.find("\n\r\n\r");
+	size_t pos = str.find("\r\n\r\n");
 	if (pos != std::string::npos)
-	{
-		if ((pos + 4 ) < (str.size() - 1))
-		{
+		if ((pos + 4 ) < (str.size() - 1)) {
 			_request_body = str.substr(pos + 4);
+			return;
 		}
-	}
+	pos = str.find("\n\n");
+	if (pos != std::string::npos)
+		if ((pos + 2) < (str.size() - 1))
+			_request_body = str.substr(pos + 2);
 }
 
 // MAKE MAP OF HEADERS
@@ -352,17 +354,18 @@ int	Request::_check_body()
 		_rep = Response::_generate_reponse_error(this, 400);//FIXME is this error?
 		return (0);
 	}
+	/*
 	if (real_size > _location->getMaxBodySize())
 	{
 		_rep = Response::_generate_reponse_error(this, 413);//FIXME is this error?
 		return (0);
-	}
+	}*/
 	return (1);
 }
 
 int	Request::_fill_up_request()
 {
-	std::vector<std::string> line = *(ft_split(_message[0], ' '));
+	std::vector<std::string> line = ft_split(_message[0], ' ');
 	_fill_up_method(line[0]);
 	_fill_up_url(line[1]);
 	_fill_up_protocol(line[2]);

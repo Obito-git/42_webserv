@@ -18,30 +18,27 @@ std::vector<Server *> &ConfigParser::getServers() {
 }
 
 std::map<std::string, std::string> *ConfigParser::getMime() {
-	std::vector<std::string>	*my_vector;
+	std::vector<std::string>	my_vector;
 	std::map<std::string, std::string> mimes;
 	std::string key;
 	std::string value;
 	size_t pos = 0;
 
 	my_vector= ft_split(ft_read_file(MIME_FILE), '\n');
-	for(std::vector<std::string>::iterator it = my_vector->begin(); it < my_vector->end(); ++it)
+	for(std::vector<std::string>::iterator it = my_vector.begin(); it < my_vector.end(); ++it)
 	{
 		pos = (*it).find(":");
 		if (pos == std::string::npos) {
-			delete my_vector;
 			throw std::runtime_error("mime file is incorrect");
 		}
 		key = (*it).substr(0,pos);
 		pos = (*it).find(" ");
 		if (pos == std::string::npos) {
-			delete my_vector;
 			throw std::runtime_error("mime file is incorrect");
 		}
 		value = (*it).substr(pos + 1);
 		mimes.insert(std::make_pair(key, value));
 	}
-	delete my_vector;
 	if (mimes.empty())
 		throw std::runtime_error("mime file is incorrect");
 	return new std::map<std::string, std::string>(mimes);
