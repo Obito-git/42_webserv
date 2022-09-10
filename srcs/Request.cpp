@@ -244,7 +244,7 @@ void	Request::_make_map_of_headers()
 
 	std::vector<std::string>::iterator it = _message.begin();
 	it++;
-	for(; it < _message.end() && (*it).front() != '\n'; ++it)
+	for(; it != _message.end() && it->length() > 0 && it->at(0) != '\n'; ++it)
 	{
 		pos_colon = (*it).find(":");
 		if (pos_colon != std::string::npos && (*it)[pos_colon - 1] != ' ')

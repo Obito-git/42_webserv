@@ -19,6 +19,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <dirent.h>
 #include <sys/stat.h>
 #include <unistd.h>

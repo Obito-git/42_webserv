@@ -400,10 +400,8 @@ void ConfigParser::parse_cgi_path(Server *s, std::vector<std::string> &args) {
 														  (ss.str()).data()).data());
 	if (access((args.begin() + 1)->data(), X_OK) == -1) {
 		ss.str("");
-		ss << "Can't execute " << _error_msg.append(*(args.begin() + 1));
-		ss << _error_msg.append(", absolute path to bin");
-		throw ConfigUnexpectedToken(find_unexpected_token((ft_strjoin(args.begin(), args.end(), " ")),
-														  ss.str().data()).data());
+		ss << "Can't execute " << *(args.begin() + 1) <<" absolute path to bin";
+		throw ConfigUnexpectedToken(find_unexpected_token("",ss.str().data()).data());
 	}
 	s->setCgiPaths(*args.begin(), *(args.begin() + 1));
 }
