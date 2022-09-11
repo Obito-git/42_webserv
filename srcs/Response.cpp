@@ -183,7 +183,7 @@ std::string	Response::_generate_reponse_headers(Request *request, int code, size
     // if (_content_type != "")
 	    // buf << "Content-Type: " << _content_type << std::endl;
 	if (request->getHeader().find("Connection") != request->getHeader().end())
-		buf << request->getHeader().find("Connection")->second;//FIXME anton changes
+		buf << request->getHeader().find("Connection")->second << std::endl;//FIXME anton changes
 	buf << "Content-Length: " << size << std::endl << std::endl;
 	return (buf.str());
 }

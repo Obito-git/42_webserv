@@ -361,6 +361,12 @@ int	Request::_check_body()
 		_rep = Response::_generate_reponse_error(this, 400);//FIXME is this error?
 		return (0);
 	}
+	size_t pos = _request_body.find("\r\n");
+	if (pos != std::string::npos)
+	{
+		_rep = Response::_generate_reponse_error(this, 400);
+		return (0);
+	}
 	/*
 	if (real_size > _location->getMaxBodySize())
 	{

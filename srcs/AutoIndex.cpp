@@ -34,10 +34,11 @@ std::string	AutoIndex::generate_autoindex_page(std::string path, Request* req)
     return page;
 }
 
-std::string AutoIndex::_getLink(std::string const &dirEntry, std::string const &dirName, std::string const &host)
+std::string AutoIndex::_getLink(std::string const &dirEntry, std::string path, std::string const &host)
 {
-    (void)dirName;
+    size_t pos = path.find_last_of("/");
+    path = path.substr(pos);
     std::stringstream   ss;
-    ss << "\t\t<p><h3><a  href=\"http://" + host << "/" + dirEntry + "\">" + dirEntry + "</a></h3></p>\n";
+    ss << "\t\t<p><h3><a  href=\"http://" + host << path + "/" + dirEntry + "\">" + dirEntry + "</a></h3></p>\n";
     return ss.str();
 }
