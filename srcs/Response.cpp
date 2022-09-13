@@ -62,13 +62,13 @@ void	Response::_path_is_to_folder(std::string path)
 		if (auto_index_rep != "")
 			_response = _generate_reponse_ok(200, auto_index_rep);
 		else
-			_response = _generate_reponse_error(_request, 403);//FIXME pas sure ou il faut mettre cette erreur
+			_response = _generate_reponse_error(_request, 403);
 	}
 	else
 	{
 		_response = _generate_reponse_error(_request, 403);
 	}
-}//FIXMI s'il n'y a pas de index
+}
 
 int	Response::_find_content_type(std::string filename)
 {
@@ -94,6 +94,19 @@ int	Response::_find_content_type(std::string filename)
 		return (0);
 	}
 }
+
+std::string	Response::_generate_reponse_redirection(Request *request, int code)
+{
+	std::stringstream buf;
+	std::string code_status = HttpStatus::reasonPhrase(code);
+
+	std::string body = _generate_redirection_body(request, code);
+
+	buf << _generate_reponse_headers(request, code, body.length());
+	buf << body;
+	return (buf.str());	
+}
+
 
 std::string	Response::_generate_reponse_cgi(const CGI_Handler &cgi, int status)
 {
@@ -167,6 +180,22 @@ std::string Response::_generate_error_body(const Location *location, short statu
 	return s;
 }
 
+std::string Response::_generate_redirection_body(Request *request, short status_code)
+{
+	std::string s = "<html>\n<head><title>";
+	std::stringstream code;
+	code << status_code << " " << HttpStatus::reasonPhrase(status_code);
+
+	std::cout << "request->getRedirection(): " << request->getRedirection() << std::endl;
+	s.append(code.str());
+	s.append("</title></head>\n<body bgcolor=\"black\">\n<p><img style=\"display: block; margin-left: auto;"
+			 "margin-right: auto;\"src=\"https://http.cat/").append("301\"");
+	s.append("width=\"750\" height=\"520\"/></p>");
+	s.append("<h1 color=\"yellow\">301 Moved</h1><h3><center style=\"color:white\"> The document has moved <a href=\"" + request->getRedirection() + "\">here</a>.</center>");
+	s.append("<hr><center style=\"color:white\">okushnir and amyroshn webserv</center>\n</body>\n</html>\n");
+	return s;
+}
+
 std::string	Response::_generate_reponse_headers(Request *request, int code, size_t size)
 {
 	std::stringstream buf;
@@ -179,7 +208,9 @@ std::string	Response::_generate_reponse_headers(Request *request, int code, size
 	
 	buf << "HTTP/1.1 " << code << " " << code_status << std::endl;
 	buf << "Date: " << date;
-	buf << "Server:" << "Webserver" << std::endl;
+	buf << "Server:" << " Webserver" << std::endl;
+	if (code == 301)
+		buf << "Location: " << request->getRedirection() << std::endl;
     // if (_content_type != "")
 	    // buf << "Content-Type: " << _content_type << std::endl;
 	if (request->getHeader().find("Connection") != request->getHeader().end())

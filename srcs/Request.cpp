@@ -105,9 +105,26 @@ int	Request::_check_location()
 		}
 	}
 	_location = &(_server->getConstDefault());
-	//FIXME ADD REDIRECTION HERE
 	return (_check_methods());
 }
+
+int	Request::_check_redirections()
+{
+	const std::map<std::string, std::string> redirections = _location->getRedirections();
+
+	if (!redirections.empty())
+	{
+		std::map<std::string, std::string>::const_iterator it = redirections.find(_url);
+		if (it != redirections.end())
+		{
+			_substitution = (*it).second;
+			_rep = Response::_generate_reponse_redirection(this, 301);
+			return (0);
+		}
+	}
+	return (1);
+}
+
 
 int	Request::_check_methods()
 {
@@ -120,7 +137,7 @@ int	Request::_check_methods()
 
 void	Request::_create_response()
 {
-	if (_check_server_name() && _check_location()) //FIXME ADD REDIRECTION HERE
+	if (_check_server_name() && _check_location() && _check_redirections()) //FIXME ADD REDIRECTION HERE
 	{
 		Response response(this);
 		_rep = response.getResponse();
@@ -437,7 +454,6 @@ void Request::_print_mime(std::map<std::string, std::string> mimes)
 	}
 }
 
-
 const Location*	Request::getLocation() const
 {
 	return (_location);
@@ -464,5 +480,11 @@ void Request::setPathToFile(std::string path)
 }
 
 const std::map<std::string, std::string> &Request::getHeader() const {
-	return _header;
+	return (_header);
 }
+
+const std::string Request::getRedirection() const
+{
+	return (_substitution);
+}
+

@@ -33,6 +33,8 @@ class Request
 		std::map<std::string, std::string> 			_header;
 		std::string									_host;
 		std::string									_content_length;
+		std::string									_substitution;
+
 		std::string									_rep;
 		const Server								*_server;
 		const Location								*_location;
@@ -52,6 +54,7 @@ class Request
 		const Location*	getLocation() const;
 		const std::string getUrl() const;
 		const std::string getExtention() const;
+		const std::string getRedirection() const;
 
 	const std::map<std::string, std::string> &getHeader() const;
 
@@ -89,6 +92,7 @@ class Request
 		int			_check_server_name();
 		int			_check_location();
 		int			_check_methods();
+		int			_check_redirections();
 
 		// reponse
 		void		_create_response();

@@ -41,7 +41,9 @@ class Response
 
 		static	std::string	_generate_reponse_error(Request *request, int code);
 		static	std::string _generate_error_body(const Location *location, short status_code);
+		static	std::string _generate_redirection_body(Request *request, short status_code);
 		static	std::string	_generate_reponse_headers(Request *request, int code, size_t size);
+		static	std::string	_generate_reponse_redirection(Request *request, int code);
 
 
 	private:
