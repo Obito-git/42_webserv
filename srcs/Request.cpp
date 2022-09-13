@@ -12,14 +12,14 @@ _server(NULL), _location(NULL), _ws(std::vector<const Server*>()),
 _mime(NULL)	{};
 
 
-Request::Request(const char *message,  const ClientSocket *sock,  const std::map<std::string, std::string> *mime):
+Request::Request(const std::string& message,  const ClientSocket *sock,  const std::map<std::string, std::string> *mime):
 _request_body(std::string()), _client_socket(sock), _method(INIT), _url(""),
 _http_version(""),
 _message(std::vector<std::string>()), _header(std::map<std::string, std::string>()), _host(""),
 _content_length(""), _server(NULL), _location(NULL),
 _ws(sock->getServers()), _mime(mime)
 {
-	if (message)
+	if (!message.empty())
 	{
 		if (_read_message(message))
 		{
@@ -201,7 +201,7 @@ void	Request::_check_line(int ind)
  ******************************************** PARSING *************************************************************
  *****************************************************************************************************************/
 
-int	Request::_read_message(const char * message)
+int	Request::_read_message(const std::string& message)
 {
 	_message = ft_split(message, '\n');
 	_check_line(0);
@@ -218,19 +218,18 @@ int	Request::_read_message(const char * message)
 	return (0);
 }
 
-void	Request::_read_body(const char * message)
+void	Request::_read_body(const std::string& message)
 {
-	std::string str(message);
-	size_t pos = str.find("\r\n\r\n");
+	size_t pos = message.find("\r\n\r\n");
 	if (pos != std::string::npos)
-		if ((pos + 4 ) < (str.size() - 1)) {
-			_request_body = str.substr(pos + 4);
+		if ((pos + 4 ) < (message.size() - 1)) {
+			_request_body = message.substr(pos + 4);
 			return;
 		}
-	pos = str.find("\n\n");
+	pos = message.find("\n\n");
 	if (pos != std::string::npos)
-		if ((pos + 2) < (str.size() - 1))
-			_request_body = str.substr(pos + 2);
+		if ((pos + 2) < (message.size() - 1))
+			_request_body = message.substr(pos + 2);
 }
 
 // MAKE MAP OF HEADERS
@@ -362,7 +361,7 @@ int	Request::_check_body()
 		return (0);
 	}
 	size_t pos = _request_body.find("\r\n");
-	if (pos != std::string::npos)
+	if (_header.find("Transfer-Encoding") != _header.end() && pos != std::string::npos)
 	{
 		_rep = Response::_generate_reponse_error(this, 400);
 		return (0);

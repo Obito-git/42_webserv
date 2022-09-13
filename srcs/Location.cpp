@@ -14,6 +14,7 @@ const std::string Location::_location_keywords[MAX_SERV_KEYWORDS] = {"error_page
  
 Location::Location(): _location(), _root(), _autoindex(false), _index(), _file_upload(false),
 						_max_body_size(1024), _redirect_to(), _error_pages(), _cgi_path(), _allowed_methods() {
+	_allowed_methods.insert(GET);
 }
 
 /******************************************************************************************************************

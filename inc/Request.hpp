@@ -41,7 +41,7 @@ class Request
 
 	public:
 		Request();
-		Request(const char *message, const ClientSocket *sock, const std::map<std::string, std::string> *mime);
+		Request(const std::string& message, const ClientSocket *sock, const std::map<std::string, std::string> *mime);
 		Request(const Request &other);
 		// Request& operator=(const Request &other) const;
 		~Request();
@@ -63,8 +63,8 @@ class Request
 
 		// parsing
 
-		int			_read_message(const char *message);
-		void		_read_body(const char * message);
+		int			_read_message(const std::string& message);
+		void		_read_body(const std::string& message);
 		void		_make_map_of_headers();
 
 		// check request

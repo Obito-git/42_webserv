@@ -81,7 +81,7 @@ bool ClientSocket::recv_msg(const std::map<std::string, std::string> *mime){
 	not_space_pos = _request.find_first_not_of(" \f\n\r\t\v");
 	if (not_space_pos != std::string::npos &&
 		(_request.find("\r\n\r\n") != std::string::npos || _request.find("\n\n") != std::string::npos)) {
-		Request req(_request.data(), this, mime);
+		Request req(_request, this, mime);
 		_response = req._rep;
 		if (check_headers(req, mime)) {
 			Logger::print("\nGot request from client ", _socket_fd, ":\t");

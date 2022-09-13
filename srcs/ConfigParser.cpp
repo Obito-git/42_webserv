@@ -73,6 +73,7 @@ void ConfigParser::parse_config(const char *path) {
 		parse_server_block(file_content, ++it);
 		it = skip_comments_and_spaces(file_content, it);
 	}
+	is_correct_servernames();
 }
 
 ConfigParser::str_iter ConfigParser::skip_comments_and_spaces(std::string& file_content, str_iter it) {
@@ -303,12 +304,10 @@ ConfigParser::parse_servername_args(Server *s, std::vector<std::string> &args) {
 					throw ConfigUnexpectedToken(find_unexpected_token(
 							*it,"Server is already exist."
 										 " Uniq server_name").data());
-//FIXME test empty servername
 			}
 		}
 		s->setServerName(*it);
 	}
-	
 }
 
 void
@@ -447,6 +446,30 @@ void ConfigParser::is_good_error_page(Server* s, Location& loc, short code, cons
 	if (extension == "php")
 		res = res.substr(res.find("\r\n\r\n") + 4);
 	loc.setErrorPages(code, res);
+}
+
+void ConfigParser::is_correct_servernames() {
+	int servers_without_name = 0;
+	for (std::vector<Server *>::iterator it_serv = _servers.begin(); it_serv != _servers.end(); it_serv++) {
+		if ((*it_serv)->getServerName().empty())
+			servers_without_name++;
+		if (servers_without_name > 1)
+			throw std::runtime_error("Can't have two same server name or two servers without server names");
+		for (std::vector<std::string>::const_iterator it_sname = (*it_serv)->getServerName().begin();
+			 it_sname != (*it_serv)->getServerName().end(); it_sname++) {
+			std::vector<Server *>::iterator next_serv = it_serv;
+			std::vector<std::string>::const_iterator next_str = it_sname + 1;
+			while (next_serv != _servers.end()) {
+				while (next_str != (*next_serv)->getServerName().end() && *it_sname != *next_str)
+					next_str++;
+				if (next_str != (*next_serv)->getServerName().end())
+					throw std::runtime_error("Can't have two same server name or two servers without server names");
+				next_serv++;
+				if (next_serv != _servers.end())
+					next_str = (*next_serv)->getServerName().begin();
+			}
+		}
+	}
 }
 
 /******************************************************************************************************************

@@ -59,6 +59,7 @@ private:
 	
 	void check_server_pages(Server *s);
 	void is_good_error_page(Server* s, Location& loc, short code, const std::string& path);
+	void is_correct_servernames();
 	
 	//void parse_return_args(Server* s, std::vector<std::string>& args, std::string& file_content);
 	
