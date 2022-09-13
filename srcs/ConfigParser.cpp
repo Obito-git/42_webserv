@@ -148,6 +148,7 @@ void ConfigParser::parse_server_block(std::string &file_content, str_iter &it) {
 			case ::AUTOINDEX: parse_autoindex_args(tmp_loc, args); break;
 			case ::ROOT: parse_root_args(tmp_loc, args); break;
 			case ::LOCATION: locations_blocks.push_back(skip_location_block(file_content, it)); break;
+			case ::RETURN: parse_return_args(tmp_loc, args); break;
 			case ::CGI_PATH: parse_cgi_path(s, args); break;
 			default: {
 				std::string tmp = "Expected one of\n [";
@@ -470,6 +471,14 @@ void ConfigParser::is_correct_servernames() {
 			}
 		}
 	}
+}
+
+void ConfigParser::parse_return_args(Location &loc, std::vector<std::string> &args) {
+	if (args.size() != 2) {
+		throw ConfigUnexpectedToken(find_unexpected_token(
+				ft_strjoin(args.begin(), args.end(), " "), "return [from] [to] ").data());
+	}
+	loc.setRedirections(args.at(0), args.at(1));
 }
 
 /******************************************************************************************************************

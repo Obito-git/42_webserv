@@ -105,6 +105,7 @@ int	Request::_check_location()
 		}
 	}
 	_location = &(_server->getConstDefault());
+	//FIXME ADD REDIRECTION HERE
 	return (_check_methods());
 }
 
@@ -119,7 +120,7 @@ int	Request::_check_methods()
 
 void	Request::_create_response()
 {
-	if (_check_server_name() && _check_location())
+	if (_check_server_name() && _check_location()) //FIXME ADD REDIRECTION HERE
 	{
 		Response response(this);
 		_rep = response.getResponse();

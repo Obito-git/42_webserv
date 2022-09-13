@@ -13,7 +13,7 @@ const std::string Location::_location_keywords[MAX_SERV_KEYWORDS] = {"error_page
  *****************************************************************************************************************/
  
 Location::Location(): _location(), _root(), _autoindex(false), _index(), _file_upload(false),
-						_max_body_size(1024), _redirect_to(), _error_pages(), _cgi_path(), _allowed_methods() {
+						_max_body_size(1024), _error_pages(), _cgi_path(), _allowed_methods(), _redirections() {
 	_allowed_methods.insert(GET);
 }
 
@@ -49,10 +49,6 @@ const std::set<HTTP_METHOD> &Location::getAllowedMethods() const {
 }
 const std::map<short, std::string> &Location::getErrorPages() const {
 	return _error_pages;
-}
-
-const std::pair<std::string, std::string> &Location::getRedirectTo() const {
-	return _redirect_to;
 }
 
 const std::vector<std::string> &Location::getCgiPath() const {
@@ -97,10 +93,6 @@ void Location::setErrorPages(short status_code, const std::string &errorPage) {
 	_error_pages.insert(std::make_pair(status_code, errorPage));
 }
 
-void Location::setRedirectTo(const std::pair<std::string, std::string> &redirectTo) {
-	_redirect_to = redirectTo;
-}
-
 void Location::setCgiPath(const std::vector<std::string> &cgiPath) {
 	_cgi_path = cgiPath;
 }
@@ -114,7 +106,7 @@ Location::Location(const Location& other) {
 	_index = other._index;
 	_file_upload = other._file_upload;
 	_max_body_size = other._max_body_size;
-	_redirect_to = other._redirect_to;
+	_redirections = other._redirections;
 	_error_pages = other._error_pages;
 	_cgi_path = other._cgi_path;
 	_allowed_methods = other._allowed_methods;
@@ -129,11 +121,19 @@ Location &Location::operator=(const Location& other){
 	_index = other._index;
 	_file_upload = other._file_upload;
 	_max_body_size = other._max_body_size;
-	_redirect_to = other._redirect_to;
 	_error_pages = other._error_pages;
 	_cgi_path = other._cgi_path;
 	_allowed_methods = other._allowed_methods;	
+	_redirections = other._redirections;
 	return *this;
+}
+
+const std::map<std::string, std::string> &Location::getRedirections() const {
+	return _redirections;
+}
+
+void Location::setRedirections(const std::string& k, const std::string &v) {
+	_redirections.insert(std::make_pair(*(k.end() - 1) == '/' ? k.substr(0, k.size() - 1): k, v));
 }
 
 

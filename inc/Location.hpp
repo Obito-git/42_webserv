@@ -14,10 +14,11 @@ private:
 	std::set <std::string>									_index;
 	bool													_file_upload;
 	unsigned long											_max_body_size;
-	std::pair<std::string, std::string>						_redirect_to; //<filename, file content>
 	std::map<short, std::string>							_error_pages;
 	std::vector<std::string>								_cgi_path;
 	std::set<HTTP_METHOD>									_allowed_methods;
+	std::map<std::string, std::string>						_redirections;
+	
 public:
 	//constructor
 	Location();
@@ -38,7 +39,9 @@ public:
 	const std::set<HTTP_METHOD> &getAllowedMethods() const;
 	const std::vector<std::string> &getCgiPath() const;
 	const std::string &getLocation() const;
-	const std::pair<std::string, std::string> &getRedirectTo() const;
+	const std::map<std::string, std::string> &getRedirections() const;
+
+	
 
 /******************************************************************************************************************
  ************************************************** SETTERS *******************************************************
@@ -53,7 +56,7 @@ public:
 	void setErrorPages(short status_code, const std::string &errorPage);
 	void setAllowedMethods(HTTP_METHOD allowedMethods);
 	void setCgiPath(const std::vector<std::string> &cgiPath);
-	void setRedirectTo(const std::pair<std::string, std::string> &redirectTo);
+	void setRedirections(const std::string& k, const std::string &v);
 
 };
 

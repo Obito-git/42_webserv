@@ -2,7 +2,7 @@
 server {
 	listen localhost
 	port 8080
-	server_name localhost:8080
+	server_name localhost
 	client_max_body_size 2048
 	file_upload on
 	root /Users/amyroshn/Documents/webserv/test_pages/our_site
@@ -10,7 +10,11 @@ server {
     autoindex        on     
 	methods POST GET DELETE
 	index index.html index.php
+	location /// {
+	    root suka
+	}
 	cgi_path php /Users/amyroshn/Documents/webserv/dependencies/php-cgi
+	return /folder /test.txt
 }
 
 #site (with js and animation)
