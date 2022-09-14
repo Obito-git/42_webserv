@@ -13,11 +13,16 @@ _response(""), _index(_location->getIndex()), _path(""), _content_type("")
 	
 
     _path = _concatenate_path();
-	stat(_path.data(), &s);
-    if (s.st_mode & S_IFDIR)
-        _path_is_to_folder(_path);
-    else
-        _path_is_to_file(_path);
+	if (_request->_method == DELETE)
+		_delete_method();
+	else
+	{
+		stat(_path.data(), &s);
+		if (!_is_file(_path))
+			_path_is_to_folder(_path);
+		else
+			_path_is_to_file(_path);
+	}
 };
 
 Response::~Response(){};
@@ -225,4 +230,36 @@ std::string	Response::_generate_reponse_headers(Request *request, int code, size
 const std::string Response::getResponse() const
 {
     return (_response);
+}
+
+
+bool Response::_is_file(std::string path)
+{
+	struct stat s;
+	if (stat(path.c_str(), &s) == 0 )
+	{
+		if (s.st_mode & S_IFDIR)
+			return false;
+		else if (s.st_mode & S_IFREG)
+			return true;
+	}
+	return false;
+}
+
+void	Response::_delete_method()
+{
+	_response = "";
+	if (_is_file(_path))
+	{
+		if (remove(_path.c_str()) == 0)
+		{
+			_response = _generate_reponse_ok(204, "");
+		}
+		else
+		{
+			_response = _generate_reponse_error(_request, 403);
+		}
+	}
+	else
+		_response = _generate_reponse_error(_request, 404);
 }

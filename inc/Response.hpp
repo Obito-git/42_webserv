@@ -45,7 +45,6 @@ class Response
 		static	std::string	_generate_reponse_headers(Request *request, int code, size_t size);
 		static	std::string	_generate_reponse_redirection(Request *request, int code);
 
-
 	private:
 		// GENERATE RESPONSE
 		std::string	_concatenate_path();
@@ -54,8 +53,8 @@ class Response
 		int			_find_content_type(std::string filename);
 		std::string	_generate_reponse_ok(int code, std::string code_page);
 		std::string	_generate_reponse_cgi(const CGI_Handler &cgi, int status);
-
-
+		void		_delete_method();
+		bool		_is_file(std::string path);
 };
 
 #endif //WEBSERV_WEBSERV_HPP
