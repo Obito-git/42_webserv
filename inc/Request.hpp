@@ -77,6 +77,7 @@ class Request
 		int			_check_first_line();
 		int			_check_second_line();
 		int			_check_body();
+		int			_check_body_size();
 
 
 
