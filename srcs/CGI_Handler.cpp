@@ -128,6 +128,7 @@ std::string CGI_Handler::launch_cgi(const std::string &file_path, const std::str
 			memset(buf, 0, BUF_SIZE);
 		}
 		waitpid(pid, NULL, 0);
+		close(tube[0]);
 	}
 	fclose(body_file);
 	close(bodyfile_fd);
