@@ -233,17 +233,13 @@ const std::string Response::getResponse() const
 }
 
 
-bool Response::_is_file(std::string path)
+bool Response::_is_file(const std::string &path)
 {
-	struct stat s;
-	if (stat(path.c_str(), &s) == 0 )
-	{
-		if (s.st_mode & S_IFDIR)
-			return false;
-		else if (s.st_mode & S_IFREG)
-			return true;
-	}
-	return false;
+	struct stat path_stat;
+	stat(path.data(), &path_stat);
+	if(!S_ISREG(path_stat.st_mode) && path.find_last_of('.') != std::string::npos)
+		return true;
+	return S_ISREG(path_stat.st_mode);
 }
 
 void	Response::_delete_method()

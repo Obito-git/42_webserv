@@ -10,7 +10,7 @@ void test_configs(int ac, char** av) {
 	for (int i = 1; i < ac; i++) {
 		std::string path = av[i];
 		path.insert(0, "config_files_tests/");
-		ConfigParser config(path);
+		ConfigParser config(path, NULL);
 		std::string msg;
 		try {
 			servers = config.getParsedServers();
@@ -52,7 +52,7 @@ int main(int ac, char** av) {
 		Logger::println(Logger::TXT_YELLOW, Logger::BG_RED, "No args detected");
 	else if (ac == 2) {
 		signal(SIGINT, handle_exit);
-		ws = new Webserv_machine(av[1]);
+		ws = new Webserv_machine(av[1], av[0]);
 		ws->up();
 		delete ws;
 	} else

@@ -22,7 +22,7 @@ private:
 	bool run_listening_sockets();
 public:
 	/*      construct / destruct        */
-	Webserv_machine(const char *path);
+	Webserv_machine(const char *path, const std::string &webserv_path);
 
 	virtual ~Webserv_machine();
 

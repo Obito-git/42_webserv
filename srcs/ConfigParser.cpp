@@ -4,7 +4,8 @@
 
 #include "ConfigParser.hpp"
 
-ConfigParser::ConfigParser(const std::string &path) : _line_number(1), _path(path) {}
+ConfigParser::ConfigParser(const std::string &path, const std::string &webserv_location) : _line_number(1), _path(path),
+																							_webserv_location(webserv_location){}
 
 //getter
 const std::vector<Server *> &ConfigParser::getParsedServers() {
@@ -399,6 +400,16 @@ void ConfigParser::parse_cgi_path(Server *s, std::vector<std::string> &args) {
 		throw ConfigUnexpectedToken(find_unexpected_token((ft_strjoin(args.begin(), args.end(), " ")),
 														  (ss.str()).data()).data());
 	if (access((args.begin() + 1)->data(), X_OK) == -1) {
+		std::string absolute_path = _webserv_location.substr(0, _webserv_location.find_last_of('/'));
+		if (_path.find('/') != std::string::npos)
+			absolute_path.append("/").append(_path.substr(0, _path.find_last_of('/')));
+		if (absolute_path.at(absolute_path.size() - 1) != '/' && (args.begin() + 1)->at(0) != '/')
+			absolute_path.append("/");
+		absolute_path.append(*(args.begin() + 1));
+		if (access(absolute_path.data(), X_OK) != -1) {
+			s->setCgiPaths(*args.begin(), absolute_path);
+			return;
+		}
 		ss.str("");
 		ss << "Can't execute " << *(args.begin() + 1) <<" absolute path to bin";
 		throw ConfigUnexpectedToken(find_unexpected_token("",ss.str().data()).data());

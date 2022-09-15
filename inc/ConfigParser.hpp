@@ -19,9 +19,10 @@ private:
 	std::string					    	_error_msg;
 	std::string 						_path;
 	std::vector<Server *>	    		_servers;
+	std::string 						_webserv_location;
 public:
 	//constructor
-	ConfigParser(const std::string &path);
+	ConfigParser(const std::string &path, const std::string &webserv_location);
 	//getter
 	const std::vector<Server *> &getParsedServers();
 	std::vector<Server *> &getServers();

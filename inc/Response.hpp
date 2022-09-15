@@ -54,7 +54,7 @@ class Response
 		std::string	_generate_reponse_ok(int code, std::string code_page);
 		std::string	_generate_reponse_cgi(const CGI_Handler &cgi, int status);
 		void		_delete_method();
-		bool		_is_file(std::string path);
+		bool		_is_file(const std::string &path);
 };
 
 #endif //WEBSERV_WEBSERV_HPP
