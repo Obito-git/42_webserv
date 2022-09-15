@@ -7,14 +7,30 @@ server {
 	file_upload on
 	root /Users/amyroshn/Documents/webserv/test_pages/our_site
 	#usr/site/www
-    autoindex        on     
-	methods POST GET DELETE
+    autoindex        off     
 	index index.html index.php
-	location /// {
-	    root suka
-	}
 	cgi_path php /Users/amyroshn/Documents/webserv/dependencies/php-cgi
-	return /folder /test.txt
+	cgi_path py /Users/amyroshn/Documents/webserv/dependencies/python3 
+	
+	location /forms/ {
+	    methods POST GET
+	}
+	
+	location /python {
+	    methods POST
+	}
+	
+	location /body_length/ {
+	    methods POST GET
+	    client_max_body_size 0
+	}
+	
+	location /autoindex_ok {
+	    autoindex on
+	}
+	
+	return /redirection/ /
+	
 }
 
 #site (with js and animation)
