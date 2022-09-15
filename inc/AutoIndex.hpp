@@ -29,7 +29,7 @@ class AutoIndex
 
 	private:
 
-		static  std::string _getLink(std::string const &dirEntry, std::string dirName, std::string const &host);
+		static  std::string _getLink(std::string const &dirEntry, std::string dirName, Request* req);
 };
 
 #endif //WEBSERV_WEBSERV_HPP

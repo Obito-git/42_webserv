@@ -325,7 +325,13 @@ void	Request::_fill_up_protocol(std::string line)
 
 void	Request::_fill_up_host(std::map<std::string, std::string>::iterator it)
 {
-	this->_host = (*it).second;
+	std::string host = (*it).second;
+	size_t pos = host.find(":");
+	if (pos!= std::string::npos)
+	{
+		_host = host.substr(0,pos);
+		_port = host.substr(pos + 1);
+	}
 }
 
 int	Request::_fill_up_content_length()

@@ -32,6 +32,7 @@ class Request
 		std::vector<std::string>					_message;
 		std::map<std::string, std::string> 			_header;
 		std::string									_host;
+		std::string									_port;
 		std::string									_content_length;
 		std::string									_substitution;
 
