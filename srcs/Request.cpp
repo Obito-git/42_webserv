@@ -95,7 +95,7 @@ int	Request::_check_location()
 		if (it_loc != (*map_loc).end())
 		{
 			_location = &(*it_loc).second;
-			return (_check_methods());
+			return (_check_methods() && _check_body_size());
 		}
 		else
 		{
