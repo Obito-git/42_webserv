@@ -167,7 +167,10 @@ std::string Response::_generate_error_body(const Location *location, short statu
 	code << status_code << " " << HttpStatus::reasonPhrase(status_code);
 
 	s.append(code.str());
-	s.append("</title></head>\n<body bgcolor=\"black\">\n<p><img style=\"display: block; margin-left: auto;"
+	s.append("</title></head>\n<body bgcolor=\"black\">\n<center style=\"color:white\">");
+	s.append(code.str());
+	s.append("</center>");
+	s.append("\n<p><img style=\"display: block; margin-left: auto;"
 			 "margin-right: auto;\"src=\"https://http.cat/").append(code.str().substr(0,code.str().find(' ')));
 	s.append("\" alt=\"");
 	s.append(code.str()).append(" width=\"750\" height=\"520\"/></p>\n"
