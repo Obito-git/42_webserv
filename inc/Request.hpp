@@ -103,16 +103,17 @@ private:
 		int			_check_location();
 		int			_check_methods();
 		int			_check_redirections();
+		bool		_check_upload();
 
 		// reponse
 		void		_create_response();
 
 		// printing
-
 		void		_print_message();
 		void		_print_dictionary();
 		void 		_print_mime(std::map<std::string, std::string> mimes);
 
+	
 };
 
 #endif
