@@ -55,13 +55,13 @@ void CGI_Handler::set_environment() {
 	tmp_env["SERVER_SOFTWARE"] = "webserv_amyroshn_okushnir/0.0.1";
 	
 	
-	for (it = _req->_header.cbegin(); it != _req->_header.cend(); it++)
+	for (it = _req->_header.begin(); it != _req->_header.end(); it++)
 		if (!it->first.empty() && !it->second.empty())
 			tmp_env.insert(std::make_pair("HTTP_" + ft_to_upper_case(it->first), it->second));
 	char **res = static_cast<char **>(calloc(sizeof(char *), (tmp_env.size() + 1)));
 	if (!res)
 		return;
-	for (it = tmp_env.cbegin(); it != tmp_env.cend(); it++, _env_len++) {
+	for (it = tmp_env.begin(); it != tmp_env.end(); it++, _env_len++) {
 			res[_env_len] = strdup((it->first + "=" + it->second).data());
 			if (!res[_env_len]) {
 				while (_env_len >= 0)

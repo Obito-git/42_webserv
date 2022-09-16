@@ -25,7 +25,7 @@ bool ClientSocket::check_headers(const Request &req, const std::map<std::string,
 		if (!dechunk(req, mime))
 			return false;
 	} else if ((it = req._header.find("Content-Length")) != req._header.end()) {
-		size_t content_length = std::stoul(it->second);
+		size_t content_length = std::strtol(it->second.data(), NULL, 10);
 		if (req._request_body.length() < content_length) {
 			Logger::print(Logger::TXT_BLACK, Logger::BG_YELLOW, "Content-Length is ", content_length,
 							" got ");
@@ -55,7 +55,7 @@ bool ClientSocket::dechunk(const Request &req, const std::map<std::string, std::
 	std::vector<std::string> parsed = ft_split(req._request_body, "\r\n");
 	for (it = parsed.begin(); it != parsed.end() && content_length; it += 2) {
 		errno = 0;
-		content_length = std::stoul(*it, NULL, 16);
+		content_length = std::strtol((*it).data(), NULL, 16);
 		if (errno != 0 || (content_length != 0 && (it + 1) == parsed.end()))
 			return true;
 		if (content_length == 0)
