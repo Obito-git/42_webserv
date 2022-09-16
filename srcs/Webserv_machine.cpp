@@ -174,7 +174,7 @@ Webserv_machine::Webserv_machine(const char *path, const std::string &webserv_pa
 				if (error_msg.substr(delim_pos + 2).empty())
 					Logger::println(Logger::BG_YELLOW, "\t\t\t\t\t\t\t");
 				else
-					Logger::println(Logger::BG_YELLOW, error_msg.substr(delim_pos + 2));
+					Logger::println(Logger::TXT_BLACK, Logger::BG_YELLOW, error_msg.substr(delim_pos + 2));
 			}
 		}
 	std::vector<Server *>& s = config.getServers();

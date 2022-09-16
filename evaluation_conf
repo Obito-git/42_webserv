@@ -11,6 +11,11 @@ server {
 	index index.html index.php
 	cgi_path php /mnt/nfs/homes/amyroshn/Documents/webserv/dependencies/php-cgi
 	cgi_path py /usr/bin/python3
+
+	location /upload.php {
+	    methods POST
+	    client_max_body_size 1000000
+	}
 	
 	location /forms/ {
 	    methods POST GET
