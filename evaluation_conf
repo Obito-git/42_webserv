@@ -32,6 +32,7 @@ server {
 	
 	location /autoindex_ok {
 	    autoindex on
+	    methods DELETE GET
 	}
 	
 	return /not_exist /autoindex_ok

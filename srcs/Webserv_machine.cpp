@@ -81,13 +81,10 @@ void Webserv_machine::up() {
 		for (it = clients_to_read.begin(); select_status && it != clients_to_read.end(); it++) {
 			if (FD_ISSET(it->first, &read_set)) {
 				try {
-					if (it->second->recv_msg(_mime)) {
+					if (it->second->recv_msg(_mime))
 						clients_to_write.insert(*it);		
-						//FIXME need to delete from to_read?
-					}
 				} catch (std::exception& e) {
 					FD_CLR(it->first, &_server_fd_set);
-					//FD_CLR(it->first, &read_set); //FIXME dont need?
 					delete it->second;
 					clients_to_read.erase(it->first);
 				}
