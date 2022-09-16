@@ -144,6 +144,15 @@ void	Request::_create_response()
 	}
 }
 
+bool Request::_check_upload() {
+	if (_method == POST && _header.find("Content-Type") != _header.end() && _header.find("Content-Type")->second.find(
+			"multipart") != std::string::npos && !_location->isFileUpload()) {
+		_rep = Response::_generate_reponse_error(this, 403);
+		return false;
+	}
+	return true;
+}
+
 /******************************************************************************************************************
  ******************************************** CHECK REQUEST *******************************************************
  *****************************************************************************************************************/
@@ -415,22 +424,10 @@ int	Request::_fill_up_request()
 	it = _header.find("Host");
 	if (it != _header.end())
 		_fill_up_host(it);
-	// it = _header.find("Accept");
-	// if (it != _header.end())
-	// 	_content_type = "text/html";
-		//this->_content_type = (*it).second;//FIXME à faire une new fonction
-	if (_method == POST) //FIXME _content_length n'est pas toujours obligatoir
+	if (_method == POST)
 	{
 		return (_fill_up_content_length() && _check_body());
 	}
-	// else FIXME 
-	// {
-	// 	if (!_request_body.empty())
-	// 	{
-	// 		_rep = Response::_generate_reponse_error(this, 400); //FIXME code d'erreur
-	// 		return (0);
-	// 	}
-	// }
 	return (1);
 }
 
