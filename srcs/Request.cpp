@@ -105,7 +105,7 @@ int	Request::_check_location()
 		}
 	}
 	_location = &(_server->getConstDefault());
-	return (_check_methods());
+	return (_check_methods() && _check_body_size());
 }
 
 int	Request::_check_redirections()
@@ -390,12 +390,17 @@ int	Request::_check_body()
 		_rep = Response::_generate_reponse_error(this, 400);
 		return (0);
 	}
-	/*
+	return (1);
+}
+
+int	Request::_check_body_size()
+{
+	size_t	real_size = _request_body.size();
 	if (real_size > _location->getMaxBodySize())
 	{
-		_rep = Response::_generate_reponse_error(this, 413);//FIXME is this error?
+		_rep = Response::_generate_reponse_error(this, 413);
 		return (0);
-	}*/
+	}
 	return (1);
 }
 
