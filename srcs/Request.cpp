@@ -379,7 +379,7 @@ int	Request::_check_body()
 {
 	size_t	int_content_length = atoi(_content_length.c_str());
 	size_t	real_size = _request_body.size();
-	if (int_content_length != real_size)
+	if (int_content_length != real_size && _header.find("Transfer-Encoding") == _header.end())
 	{
 		_rep = Response::_generate_reponse_error(this, 400);//FIXME is this error?
 		return (0);
