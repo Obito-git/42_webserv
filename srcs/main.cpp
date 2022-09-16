@@ -10,7 +10,7 @@ void test_configs(int ac, char** av) {
 	for (int i = 1; i < ac; i++) {
 		std::string path = av[i];
 		path.insert(0, "config_files_tests/");
-		ConfigParser config(path, NULL);
+		ConfigParser config(path, av[0]);
 		std::string msg;
 		try {
 			servers = config.getParsedServers();
