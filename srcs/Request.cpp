@@ -137,7 +137,7 @@ int	Request::_check_methods()
 
 void	Request::_create_response()
 {
-	if (_check_server_name() && _check_location() && _check_redirections()) //FIXME ADD REDIRECTION HERE
+	if (_check_server_name() && _check_location() && _check_redirections() && _check_upload())
 	{
 		Response response(this);
 		_rep = response.getResponse();

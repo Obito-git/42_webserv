@@ -219,6 +219,15 @@ std::string	Response::_generate_reponse_headers(Request *request, int code, size
 	buf << "Server:" << " Webserver" << std::endl;
 	if (code == 301)
 		buf << "Location: " << request->getRedirection() << std::endl;
+	if (code == 405 && request->getLocation() != NULL && (request->getMethod() != OTHER || request->getMethod() != INIT))
+	{
+		buf << "Allow:";
+		const std::set<HTTP_METHOD> methods = request->getLocation()->getAllowedMethods();
+		std::set<HTTP_METHOD>::const_iterator it = methods.begin();
+		for (; it != methods.end(); ++it)
+			buf << " " << get_method_name(*it);
+		buf << std::endl;
+	}
     // if (_content_type != "")
 	    // buf << "Content-Type: " << _content_type << std::endl;
 	if (request->getHeader().find("Connection") != request->getHeader().end())
