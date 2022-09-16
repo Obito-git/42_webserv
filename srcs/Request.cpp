@@ -499,3 +499,51 @@ const std::string Request::getRedirection() const
 	return (_substitution);
 }
 
+HTTP_METHOD Request::getMethod() const {
+	return _method;
+}
+
+const std::map<std::string, std::string> *Request::getMime() const {
+	return _mime;
+}
+
+const std::string &Request::getPort() const {
+	return _port;
+}
+
+const std::string &Request::getHost() const {
+	return _host;
+}
+
+const std::string &Request::getRequestBody() const {
+	return _request_body;
+}
+
+const std::string &Request::getPathToRequestedFile() const {
+	return _path_to_requested_file;
+}
+
+const std::string &Request::getQuery() const {
+	return _query;
+}
+
+const std::string &Request::getPathInfo() const {
+	return _path_info;
+}
+
+const ClientSocket *Request::getClientSocket() const {
+	return _client_socket;
+}
+
+const std::string &Request::getHttpVersion() const {
+	return _http_version;
+}
+
+const Server *Request::getServer() const {
+	return _server;
+}
+
+const std::string &Request::getRep() const {
+	return _rep;
+}
+
