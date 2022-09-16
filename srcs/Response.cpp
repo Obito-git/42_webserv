@@ -13,7 +13,7 @@ _response(""), _index(_location->getIndex()), _path(""), _content_type("")
 	
 
     _path = _concatenate_path();
-	if (_request->_method == DELETE)
+	if (_request->getMethod() == DELETE)
 		_delete_method();
 	else
 	{
@@ -61,7 +61,7 @@ void	Response::_path_is_to_folder(std::string path)
 		}
 		catch (std::exception& e) {}
 	}
-	if (_request->_location->isAutoindex())
+	if (_request->getLocation()->isAutoindex())
 	{
 		std::string auto_index_rep = AutoIndex::generate_autoindex_page(path, _request);
 		if (auto_index_rep != "")
@@ -82,8 +82,8 @@ int	Response::_find_content_type(std::string filename)
 	extention = (filename.substr(pos + 1));
 	_request->setExtention(extention);
 	// _request->_extention = extention;
-	std::map<std::string, std::string>::const_iterator it = _request->_mime->find(extention);
-	if (it != _request->_mime->end())
+	std::map<std::string, std::string>::const_iterator it = _request->getMime()->find(extention);
+	if (it != _request->getMime()->end())
 	{
 		_content_type = it->second;
 		return (1);

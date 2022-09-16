@@ -14,17 +14,14 @@ class ClientSocket;
 
 class Request
 {
-	public:
-
-	//FIXME anton CGI variables
+	private:
+	//CGI vars
 		std::string									_query;
 		std::string									_request_body;
 		std::string									_path_to_requested_file;
 		std::string									_path_info;
 		const ClientSocket*							_client_socket;
 		
-	
-	//FIXME CGI variables end
 		HTTP_METHOD 								_method;
 		std::string									_url;
 		std::string									_extention;
@@ -56,14 +53,25 @@ class Request
 		const std::string getUrl() const;
 		const std::string getExtention() const;
 		const std::string getRedirection() const;
+		HTTP_METHOD getMethod() const;
+		const std::string &getHost() const;
+		const std::string &getPort() const;
+		const std::map<std::string, std::string> *getMime() const;
+		const std::map<std::string, std::string> &getHeader() const;
+		const std::string &getRequestBody() const;
+		const std::string &getPathToRequestedFile() const;
+		const std::string &getQuery() const;
+		const std::string &getPathInfo() const;
+		const ClientSocket *getClientSocket() const;
+		const std::string &getRep() const;
+		const Server *getServer() const;
+		const std::string &getHttpVersion() const;
 
-	const std::map<std::string, std::string> &getHeader() const;
-
-
-	void setExtention(std::string extention);
+		//SETTERS
+		void setExtention(std::string extention);
 		void setPathToFile(std::string path);
 
-
+private:
 
 		// parsing
 

@@ -13,49 +13,42 @@ CGI_Handler::CGI_Handler(const Request *req) : _req(req), _env(NULL), _env_len()
 	set_environment();
 	if (!_env)
 		return;
-	_result = launch_cgi(_req->_path_to_requested_file, _cgi_path, _req->_request_body, _env);
+	_result = launch_cgi(_req->getPathToRequestedFile(), _cgi_path, _req->getRequestBody(), _env);
 	update_status_and_headers();
 }
 
 void CGI_Handler::set_environment() {
-	const std::map<std::string, std::string> &h = _req->_header;
+	const std::map<std::string, std::string> &h = _req->getHeader();
 	std::map<std::string, std::string>::const_iterator it;
 	std::map<std::string, std::string> tmp_env;
 
 	if (_cgi_type == "php")
 		tmp_env["REDIRECT_STATUS"] = "200";
-	//size_t delim_pos;
-	///std::string autoris = (it = h.find("Authorization")) == h.end() ? "" : it->second;;
-	//std::string remote_user;
-	//if ((delim_pos = autoris.find(' ')) != std::string::npos && delim_pos != autoris.length() - 1) {
-	//	remote_user = autoris.substr(delim_pos + 1);
-	//	autoris = autoris.substr(0, delim_pos);
-	//} FIXME
-	//tmp_env["AUTH_TYPE"] = autoris;
 	tmp_env["CONTENT_LENGTH"] = (it = h.find("Content-Length")) == h.end() ? "" : it->second;
 	tmp_env["CONTENT_TYPE"] = (it = h.find("Content-Type")) == h.end() ? "" : it->second;;
 	tmp_env["GATEWAY_INTERFACE"] = "CGI/1.1";
-	tmp_env["PATH_INFO"] = _req->_path_info;
+	tmp_env["PATH_INFO"] = _req->getPathInfo();
 	///tmp_env["PATH_TRANSLATED"] = _req->_location->getRoot() + _req->_path_info; FIXME
-	tmp_env["QUERY_STRING"] = _req->_query.find('?') != std::string::npos ? _req->_query.substr(1) : _req->_query;
-	tmp_env["REMOTE_ADDR"] = _req->_client_socket->getClientAddr();
-	tmp_env["REQUEST_METHOD"] = get_method_name(_req->_method);
-	tmp_env["REQUEST_URI"] = _req->_url;
-	tmp_env["SCRIPT_NAME"] = _req->_url;
-	tmp_env["SCRIPT_FILENAME"] = _req->_path_to_requested_file;
-	tmp_env["DOCUMENT_URI"] = _req->_url;
-	tmp_env["DOCUMENT_ROOT"] = _req->_path_to_requested_file.substr(0, _req->_path_to_requested_file.find(_req->_url));
-	tmp_env["REMOTE_PORT"] = _req->_client_socket->getClientPort();
-	tmp_env["REMOTE_ADDR"] = _req->_client_socket->getClientAddr();
-	tmp_env["SERVER_NAME"] = _req->_host.find(':') == std::string::npos ?
-			_req->_host : _req->_host.substr(0, _req->_host.find(':'));
-	tmp_env["SERVER_PORT"] = _req->_client_socket->getPort();
-	tmp_env["SERVER_ADDR"] = _req->_client_socket->getAddr();
+	tmp_env["QUERY_STRING"] = _req->getQuery().find('?') != std::string::npos ? _req->getQuery().substr(1) : _req->getQuery();
+	tmp_env["REMOTE_ADDR"] = _req->getClientSocket()->getClientAddr();
+	tmp_env["REQUEST_METHOD"] = get_method_name(_req->getMethod());
+	tmp_env["REQUEST_URI"] = _req->getUrl();
+	tmp_env["SCRIPT_NAME"] = _req->getUrl();
+	tmp_env["SCRIPT_FILENAME"] = _req->getPathToRequestedFile();
+	tmp_env["DOCUMENT_URI"] = _req->getUrl();
+	tmp_env["DOCUMENT_ROOT"] = _req->getPathToRequestedFile().
+			substr(0, _req->getPathToRequestedFile().find(_req->getUrl()));
+	tmp_env["REMOTE_PORT"] = _req->getClientSocket()->getClientPort();
+	tmp_env["REMOTE_ADDR"] = _req->getClientSocket()->getClientAddr();
+	tmp_env["SERVER_NAME"] = _req->getHost().find(':') == std::string::npos ?
+			_req->getHost() : _req->getHost().substr(0, _req->getHost().find(':'));
+	tmp_env["SERVER_PORT"] = _req->getClientSocket()->getPort();
+	tmp_env["SERVER_ADDR"] = _req->getClientSocket()->getAddr();
 	tmp_env["SERVER_PROTOCOL"] = "HTTP/1.1";
 	tmp_env["SERVER_SOFTWARE"] = "webserv_amyroshn_okushnir/0.0.1";
 	
 	
-	for (it = _req->_header.begin(); it != _req->_header.end(); it++)
+	for (it = _req->getHeader().begin(); it != _req->getHeader().end(); it++)
 		if (!it->first.empty() && !it->second.empty())
 			tmp_env.insert(std::make_pair("HTTP_" + ft_to_upper_case(it->first), it->second));
 	char **res = static_cast<char **>(calloc(sizeof(char *), (tmp_env.size() + 1)));
@@ -74,9 +67,9 @@ void CGI_Handler::set_environment() {
 }
 
 bool CGI_Handler::is_good_type() {
-	_cgi_type = _req->_extention;
-	std::map<std::string, std::string>::const_iterator it = _req->_server->getCgiPaths().find(_cgi_type);
-	if (it == _req->_server->getCgiPaths().end()) {
+	_cgi_type = _req->getExtention();
+	std::map<std::string, std::string>::const_iterator it = _req->getServer()->getCgiPaths().find(_cgi_type);
+	if (it == _req->getServer()->getCgiPaths().end()) {
 		_status = 501;
 		return false;
 	}

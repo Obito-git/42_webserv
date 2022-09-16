@@ -38,9 +38,9 @@ std::string AutoIndex::_getLink(std::string const &dirEntry, std::string path, R
 {
     size_t pos = path.find_last_of("/");
     path = path.substr(pos);
-    std::string addr = req->_host;
-    if (req->_port != "")
-        addr += ":" + req->_port;
+    std::string addr = req->getHost();
+    if (req->getPort() != "")
+        addr += ":" + req->getPort();
     std::stringstream   ss;
     ss << "\t\t<p><h3><a  href=\"http://" + addr << path + "/" + dirEntry + "\">" + dirEntry + "</a></h3></p>\n";
     return ss.str();
