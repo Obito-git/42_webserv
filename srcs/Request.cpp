@@ -133,6 +133,30 @@ bool Request::_check_upload() {
 		_rep = Response::_generate_reponse_error(this, 403);
 		return false;
 	}
+	_rep = Response::_generate_reponse_error(this, 400);
+	size_t pos = _request_body.find("filename=\"");
+	if (pos != std::string::npos) {
+		std::string filename = _request_body.substr(pos + 10);
+		pos = filename.find('\"');
+		if (pos == std::string::npos)
+			return false;
+		filename = filename.substr(0, pos);
+		pos = _request_body.find("\r\n\r\n");
+		if (pos == std::string::npos)
+			return false;
+		_request_body = _request_body.substr(pos + 4);
+		std::ofstream out;
+		out.open((_location->getRoot() + getUrl()).data(), std::ios::trunc);
+		if (!out.is_open()) {
+			_rep = Response::_generate_reponse_error(this, 500);
+			return false;
+		}
+		out << _request_body;
+		out.close();
+		_rep  = ;
+		return false;
+	} else
+		return false;
 	return true;
 }
 
