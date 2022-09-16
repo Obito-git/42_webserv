@@ -32,10 +32,8 @@ void Webserv_machine::up() {
 			for (it = clients_to_write.begin(); it != clients_to_write.end(); it++)
 				FD_SET(it->first, &write_set);
 		} while (!got_shutdown_signal && (select_status = select(max_fd_number + 1, &read_set, &write_set, NULL, NULL)) == 0);
-
-		//FIXME dont need exit, need clean up
 		if (got_shutdown_signal || select_status <= 0) {
-			for (it = clients_to_write.begin(); it != clients_to_write.end(); it++) { //FIXME test with .clear()
+			for (it = clients_to_write.begin(); it != clients_to_write.end(); it++) {
 				it->second->close();
 				delete it->second;
 			}
@@ -52,7 +50,7 @@ void Webserv_machine::up() {
 			FD_ZERO(&_server_fd_set);
 			for (std::map<int, ListeningSocket *>::iterator y = _machine_sockets.begin(); y != _machine_sockets.end(); y++)
 				FD_SET(y->first, &_server_fd_set);
-			Logger::println(Logger::TXT_BLACK, Logger::BG_RED, "Select returned 0"); //FIXME msg
+			Logger::println(Logger::TXT_BLACK, Logger::BG_RED, "Select returned 0");
 			Logger::println("Waiting for connections...");
 			continue;
 		}
@@ -66,7 +64,6 @@ void Webserv_machine::up() {
 					}
 				} catch (std::exception& e){
 					Logger::println(Logger::TXT_BLACK,Logger::BG_RED, e.what());
-					//FD_CLR(it->first, &read_set);
 					FD_CLR(it->first, &_server_fd_set);
 					delete it->second;
 					clients_to_read.erase(it->first);
@@ -183,7 +180,7 @@ Webserv_machine::Webserv_machine(const char *path, const std::string &webserv_pa
 Webserv_machine::~Webserv_machine() {
 	for (std::map<int, ListeningSocket *>::iterator it = _machine_sockets.begin(); it != _machine_sockets.end(); it++) {
 		it->second->close();
-		delete it->second; //FIXME clear test
+		delete it->second;
 	}
 	for (std::vector<Server *>::iterator it = _servers.begin(); it != _servers.end(); it++)
 		delete *it;

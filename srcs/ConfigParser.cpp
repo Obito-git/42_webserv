@@ -90,7 +90,7 @@ ConfigParser::str_iter ConfigParser::skip_comments_and_spaces(std::string& file_
 }
 
 std::string& ConfigParser::find_unexpected_token(std::string s, const char* token) {
-	std::stringstream sstm; //FIXME maybe only this?
+	std::stringstream sstm;
 	sstm << _line_number;
 	_error_msg = "Error, unexpected token. ";
 	_error_msg.append(token).append(" expected at line ");

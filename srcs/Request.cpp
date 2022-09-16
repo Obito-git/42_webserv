@@ -37,22 +37,6 @@ Request::Request(const Request &other) : _method(other._method), _url(other._url
 	_server(other._server), _location(other._location), _ws(other._ws)
 	 {};
 
-// Request& Request::operator=(const Request &other) const
-// {
-// 	_method = other._method;
-// 	_url = other._url;
-// 	_http_version = other._http_version;
-// 	_host = other._host;
-// 	_header = other._header;
-// 	_message = other._message;
-// 	_content_length = other._content_length;
-// 	_server = other._server;
-// 	_location = other._location;
-// 	_index = other._index;
-// 	_ws = other._ws;
-// 	return(*this);
-// }
-
 Request::~Request() {};
 
 /******************************************************************************************************************
@@ -99,8 +83,7 @@ int	Request::_check_location()
 		}
 		else
 		{
-			// location.erase(location.end() - 1);
-			pos = location.find_last_of('/');	
+			pos = location.find_last_of('/');
 			location = location.substr(0, pos);
 		}
 	}
@@ -131,7 +114,7 @@ int	Request::_check_methods()
 	const std::set<HTTP_METHOD> methods = _location->getAllowedMethods();
 	if (methods.empty() || methods.find(_method) != methods.end())
 		return (1);
-	_rep = Response::_generate_reponse_error(this, 405); // header : alowd_metods
+	_rep = Response::_generate_reponse_error(this, 405);
 	return (0);
 }
 
@@ -166,19 +149,12 @@ int	Request::_check_url(std::vector<std::string> line)
 		_rep = Response::_generate_reponse_error(this, 400);
 		return (1);
 	}
-	// size_t pos = element.find(".");
-	// size_t pos1 = element.find_last_of(".");
-	// if (pos != pos1)
-	// {
-	// 	_rep = Response::_generate_reponse_error(this, 400);
-	// 	return (1);
-	// }
 	return (0);
 }
 
 int	Request::_check_first_line()
 {
-	std::vector<std::string> line = ft_split(_message[0], ' ');//FIXME ft_split avec str
+	std::vector<std::string> line = ft_split(_message[0], ' ');
 
 	size_t pos = (_message[0]).find(" ");
 	if (pos == 0 || pos == std::string::npos || line.size() != 3)
@@ -205,7 +181,7 @@ int	Request::_check_first_line()
 
 int	Request::_check_second_line()
 {
-	if (_message.size() > 2 && !_message[2].empty() && (_message[1][0] == '\t' || _message[1][0] == 0 //FIXME condition
+	if (_message.size() > 2 && !_message[2].empty() && (_message[1][0] == '\t' || _message[1][0] == 0
 		|| _message[1][0] == '\v' || _message[1][0] == '\f'
 		|| _message[1][0] == '\r' || _message[1][0] == ' '))
 	{
@@ -364,33 +340,13 @@ int	Request::_fill_up_content_length()
 	return (1);
 }
 
-// void	Request::_fill_up_body()
-// {
-// 	std::vector<std::string>::iterator it = _message.begin();
-// 	for (; it < _message.end(); ++it)
-// 	{
-// 		if ((*it).empty())
-// 			break ;
-// 	}
-// 	it++;
-// 	if (it != _message.end())
-// 	{
-// 		for (; it != _message.end(); ++it)
-// 		{
-// 			_request_body += (*it);
-// 			if ((it + 1) != _message.end())
-// 				_request_body += "\n";
-// 		}
-// 	}
-// }
-
 int	Request::_check_body()
 {
 	size_t	int_content_length = atoi(_content_length.c_str());
 	size_t	real_size = _request_body.size();
 	if (int_content_length != real_size && _header.find("Transfer-Encoding") == _header.end())
 	{
-		_rep = Response::_generate_reponse_error(this, 400);//FIXME is this error?
+		_rep = Response::_generate_reponse_error(this, 400);
 		return (0);
 	}
 	size_t pos = _request_body.find("\r\n");
@@ -419,7 +375,6 @@ int	Request::_fill_up_request()
 	_fill_up_method(line[0]);
 	_fill_up_url(line[1]);
 	_fill_up_protocol(line[2]);
-	// _fill_up_body();
 	std::map<std::string, std::string>::iterator it;
 	it = _header.find("Host");
 	if (it != _header.end())

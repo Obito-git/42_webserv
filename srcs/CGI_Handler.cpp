@@ -28,7 +28,6 @@ void CGI_Handler::set_environment() {
 	tmp_env["CONTENT_TYPE"] = (it = h.find("Content-Type")) == h.end() ? "" : it->second;;
 	tmp_env["GATEWAY_INTERFACE"] = "CGI/1.1";
 	tmp_env["PATH_INFO"] = _req->getPathInfo();
-	///tmp_env["PATH_TRANSLATED"] = _req->_location->getRoot() + _req->_path_info; FIXME
 	tmp_env["QUERY_STRING"] = _req->getQuery().find('?') != std::string::npos ? _req->getQuery().substr(1) : _req->getQuery();
 	tmp_env["REMOTE_ADDR"] = _req->getClientSocket()->getClientAddr();
 	tmp_env["REQUEST_METHOD"] = get_method_name(_req->getMethod());

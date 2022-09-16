@@ -143,7 +143,7 @@ std::string	Response::_generate_reponse_ok(int code, std::string code_page)
 	std::stringstream buf;
 	
 	size_t size = code_page.length();
-	buf << _generate_reponse_headers(_request, code, size); //FIXME
+	buf << _generate_reponse_headers(_request, code, size);
 	buf << code_page << std::endl << std::endl;
 	return (buf.str());
 }
@@ -182,8 +182,6 @@ std::string Response::_generate_error_body(const Location *location, short statu
 		std::map<short, std::string>::const_iterator it = error_pages.find(status_code);
 		if (it != error_pages.end())
 			return (*it).second;
-		// else
-		// 	(*location).setErrorPages(status_code, s);
 	}
 	return s;
 }
@@ -228,10 +226,8 @@ std::string	Response::_generate_reponse_headers(Request *request, int code, size
 			buf << " " << get_method_name(*it);
 		buf << std::endl;
 	}
-    // if (_content_type != "")
-	    // buf << "Content-Type: " << _content_type << std::endl;
 	if (request->getHeader().find("Connection") != request->getHeader().end())
-		buf << request->getHeader().find("Connection")->second << std::endl;//FIXME anton changes
+		buf << request->getHeader().find("Connection")->second << std::endl;
 	buf << "Content-Length: " << size << std::endl << std::endl;
 	return (buf.str());
 }
