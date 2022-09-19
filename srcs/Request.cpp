@@ -128,10 +128,17 @@ void	Request::_create_response()
 }
 
 bool Request::_check_upload() {
-	if (_method == POST && _header.find("Content-Type") != _header.end() && _header.find("Content-Type")->second.find(
-			"multipart") != std::string::npos && !_location->isFileUpload()) {
-		_rep = Response::_generate_reponse_error(this, 403);
-		return false;
+	if (_method == POST && _header.find("Content-Type") != _header.end())
+	{
+		if (_header.find("Content-Type")->second.find(
+			"multipart") == std::string::npos)
+			return true;
+		else if (_header.find("Content-Type")->second.find(
+			"multipart") != std::string::npos && _location->getUploadPath().empty())
+		{
+			_rep = Response::_generate_reponse_error(this, 403);
+			return false;
+		}
 	}
 	_rep = Response::_generate_reponse_error(this, 400);
 	size_t pos = _request_body.find("filename=\"");
@@ -146,17 +153,26 @@ bool Request::_check_upload() {
 			return false;
 		_request_body = _request_body.substr(pos + 4);
 		std::ofstream out;
-		out.open((_location->getRoot() + getUrl()).data(), std::ios::trunc);
+		out.open((_location->getUploadPath() + "/" + filename).data(), std::ios::trunc);
 		if (!out.is_open()) {
 			_rep = Response::_generate_reponse_error(this, 500);
 			return false;
 		}
+		pos = _request_body.find("\n\r\n");
+		_request_body = _request_body.substr(0, pos);
 		out << _request_body;
 		out.close();
-		_rep  = ;
+
+		// _url = _location->getUploadPath().second;
+		// _method = GET;
+		_header.erase("Content-Length");
+		_request_body.clear();
+		// std::cout << "url: " << _url << std::endl;
+		// _create_response();
+
+		_rep = Response::_generate_reponse_error(this, 200);;
 		return false;
-	} else
-		return false;
+	}
 	return true;
 }
 

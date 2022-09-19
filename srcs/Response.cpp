@@ -112,7 +112,6 @@ std::string	Response::_generate_reponse_redirection(Request *request, int code)
 	return (buf.str());	
 }
 
-
 std::string	Response::_generate_reponse_cgi(const CGI_Handler &cgi, int status)
 {
 	std::stringstream buf;

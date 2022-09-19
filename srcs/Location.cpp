@@ -12,8 +12,8 @@ const std::string Location::_location_keywords[MAX_SERV_KEYWORDS] = {"error_page
  ************************************** CONSTRUCTORS/DESTRUCTORS **************************************************
  *****************************************************************************************************************/
  
-Location::Location(): _location(), _root(), _autoindex(false), _index(), _file_upload(false),
-						_max_body_size(1024), _error_pages(), _cgi_path(), _allowed_methods(), _redirections() {
+Location::Location(): _location(), _root(), _autoindex(false), _index(), _upload_path(),
+                      _max_body_size(1024), _error_pages(), _cgi_path(), _allowed_methods(), _redirections() {
 	_allowed_methods.insert(GET);
 }
 
@@ -36,10 +36,6 @@ const std::set<std::string> &Location::getIndex() const {
 	return _index;
 }
 
-bool Location::isFileUpload() const {
-	return _file_upload;
-}
-
 unsigned long Location::getMaxBodySize() const {
 	return _max_body_size;
 }
@@ -54,6 +50,10 @@ const std::map<short, std::string> &Location::getErrorPages() const {
 const std::vector<std::string> &Location::getCgiPath() const {
 	return _cgi_path;
 }
+const std::map<std::string, std::string> &Location::getRedirections() const {
+	return _redirections;
+}
+
 
 /******************************************************************************************************************
  ************************************************** SETTERS *******************************************************
@@ -76,10 +76,6 @@ void Location::setIndex(const std::string &index) {
 	_index.insert(index);
 }
 
-void Location::setFileUpload(bool fileUpload) {
-	_file_upload = fileUpload;
-}
-
 void Location::setMaxBodySize(unsigned long maxBodySize) {
 	_max_body_size = maxBodySize;
 }
@@ -97,6 +93,11 @@ void Location::setCgiPath(const std::vector<std::string> &cgiPath) {
 	_cgi_path = cgiPath;
 }
 
+void Location::setRedirections(const std::string& k, const std::string &v) {
+	_redirections.insert(std::make_pair(*(k.end() - 1) == '/' ? k.substr(0, k.size() - 1): k, v));
+}
+
+
 //--------------------------------------------------------------
 
 Location::Location(const Location& other) {
@@ -104,7 +105,7 @@ Location::Location(const Location& other) {
 	_root = other._root;
 	_autoindex = other._autoindex;
 	_index = other._index;
-	_file_upload = other._file_upload;
+	_upload_path = other._upload_path;
 	_max_body_size = other._max_body_size;
 	_redirections = other._redirections;
 	_error_pages = other._error_pages;
@@ -119,7 +120,7 @@ Location &Location::operator=(const Location& other){
 	_root = other._root;
 	_autoindex = other._autoindex;
 	_index = other._index;
-	_file_upload = other._file_upload;
+	_upload_path = other._upload_path;
 	_max_body_size = other._max_body_size;
 	_error_pages = other._error_pages;
 	_cgi_path = other._cgi_path;
@@ -128,12 +129,12 @@ Location &Location::operator=(const Location& other){
 	return *this;
 }
 
-const std::map<std::string, std::string> &Location::getRedirections() const {
-	return _redirections;
+const std::string &Location::getUploadPath() const {
+	return _upload_path;
 }
 
-void Location::setRedirections(const std::string& k, const std::string &v) {
-	_redirections.insert(std::make_pair(*(k.end() - 1) == '/' ? k.substr(0, k.size() - 1): k, v));
+void Location::setUploadPath(const std::string &uploadPath) {
+	_upload_path = uploadPath;
 }
 
 

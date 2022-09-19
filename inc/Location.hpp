@@ -12,7 +12,7 @@ private:
 	std::string												_root;
 	bool													_autoindex;
 	std::set <std::string>									_index;
-	bool													_file_upload;
+	std::string												_upload_path;
 	unsigned long											_max_body_size;
 	std::map<short, std::string>							_error_pages;
 	std::vector<std::string>								_cgi_path;
@@ -33,7 +33,6 @@ public:
 	const std::string &getRoot() const;
 	bool isAutoindex() const;
 	const std::set<std::string> &getIndex() const;
-	bool isFileUpload() const;
 	unsigned long getMaxBodySize() const;
 	const std::map<short, std::string> &getErrorPages() const;
 	const std::set<HTTP_METHOD> &getAllowedMethods() const;
@@ -51,13 +50,15 @@ public:
 	void setRoot(const std::string &root);
 	void setAutoindex(bool autoindex);
 	void setIndex(const std::string &index);
-	void setFileUpload(bool fileUpload);
 	void setMaxBodySize(unsigned long maxBodySize);
 	void setErrorPages(short status_code, const std::string &errorPage);
 	void setAllowedMethods(HTTP_METHOD allowedMethods);
 	void setCgiPath(const std::vector<std::string> &cgiPath);
 	void setRedirections(const std::string& k, const std::string &v);
 
+	const std::string &getUploadPath() const;
+
+	void setUploadPath(const std::string &uploadPath);
 };
 
 

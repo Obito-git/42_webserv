@@ -340,10 +340,10 @@ void ConfigParser::parse_bodysize_args(Location& loc, std::vector<std::string> &
 void
 ConfigParser::parse_fileupload_args(Location& loc, std::vector<std::string> &args) {
 	std::string str = *args.begin();
-	if (args.size() != 1 || (str != "on" && str != "off"))
-		throw ConfigUnexpectedToken(find_unexpected_token(
-				ft_strjoin(args.begin(), args.end(), " "), "on or off").data());
-	loc.setFileUpload(str == "on");
+	if (args.size() != 1)
+		throw ConfigUnexpectedToken(find_unexpected_token(*args.begin(),
+						"upload [PATH WHERE SAVE A FILE]").data());
+	loc.setUploadPath(*args.begin());
 }
 
 void ConfigParser::parse_methods_args(Location &loc, std::vector<std::string> &args) {

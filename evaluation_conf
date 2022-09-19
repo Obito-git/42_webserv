@@ -4,16 +4,17 @@ server {
 	port 8080
 	server_name localhost
 	client_max_body_size 2048
-	file_upload off
 	root /mnt/nfs/homes/amyroshn/Documents/webserv/test_pages/our_site
+	methods POST GET
 	#usr/site/www
     autoindex        off     
 	index index.html index.php
 	cgi_path php dependencies/php-cgi
 	cgi_path py /usr/bin/python3
 
-	location /upload.php {
+	location /uploads {
 	    methods POST
+	    file_upload /mnt/nfs/homes/amyroshn/Documents/webserv/test_pages/our_site/uploads
 	    client_max_body_size 1000000
 	}
 	
