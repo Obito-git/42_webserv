@@ -4,7 +4,7 @@ This project is here to make you write your own HTTP server. You will be able to
 
 ## Result
 
-Team project with: https://github.com/OlgaKush512
+Team project with: https://github.com/OlgaKush512 <br />
 Success: 110/100
 
 ## Installation
