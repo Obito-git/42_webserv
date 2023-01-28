@@ -4,7 +4,7 @@ server {
 	port 8080
 	server_name localhost
 	client_max_body_size 2048
-	root /mnt/nfs/homes/amyroshn/Documents/webserv/test_pages/our_site
+	root $(PROJECT_PATH)/test_pages/our_site
 	methods POST GET
 	#usr/site/www
     autoindex        off     
@@ -14,7 +14,7 @@ server {
 
 	location /uploads {
 	    methods POST
-	    file_upload /mnt/nfs/homes/amyroshn/Documents/webserv/test_pages/our_site/uploads
+	    file_upload $(PROJECT_PATH)/test_pages/our_site/uploads
 	    client_max_body_size 1000000
 	}
 	
@@ -39,11 +39,11 @@ server {
 	return /not_exist /autoindex_ok
 	
 	location /error_page_test {
-	    error_page 404 /mnt/nfs/homes/amyroshn/Documents/webserv/test_pages/our_site/error_page/custom_404.php
+	    error_page 404 $(PROJECT_PATH)/test_pages/our_site/error_page/custom_404.php
 	}
 	
 	location /42.png {
-	    root /mnt/nfs/homes/amyroshn/Documents/webserv/test_pages/our_site/images
+	    root $(PROJECT_PATH)/test_pages/our_site/images
 	}
 	
 }
@@ -53,7 +53,7 @@ server {
     listen localhost
     server_name site
     port 8080 8081
-    root /mnt/nfs/homes/amyroshn/Documents/webserv/test_pages/site
+    root $(PROJECT_PATH)/test_pages/site
     index index.html
 }
 
@@ -63,7 +63,7 @@ server {
     listen localhost
     server_name site2
     port 8080 8081 8082
-    root  /mnt/nfs/homes/amyroshn/Documents/webserv/test_pages/site2
+    root  $(PROJECT_PATH)/test_pages/site2
     index index.html
 
 }
